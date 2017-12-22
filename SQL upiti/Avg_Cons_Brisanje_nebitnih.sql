@@ -1,6 +1,6 @@
-delete from ARIMA.dbo.Average_Consumption
-where Item+CustNo in
-(select r.Item+r.CustNo from ARIMA.dbo.Tigers_Invoices r
-group by r.Item+r.CustNo
+delete from PED.dbo.CustItemAvgCons
+where ItemNo+CustNo in
+(select r.ItemNo+r.CustNo from PED.dbo.PurchaseHistory r
+group by r.ItemNo+r.CustNo
 having MAX(r.InvDate)<20170000
 )
