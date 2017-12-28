@@ -1,0 +1,7 @@
+c:\users\alexstojcic\source\repos\Baza\Baza\bin\Debug\Baza.dll.config
+c:\users\alexstojcic\source\repos\Baza\Baza\bin\Debug\Baza.dll
+c:\users\alexstojcic\source\repos\Baza\Baza\bin\Debug\Baza.pdb
+c:\users\alexstojcic\source\repos\Baza\Baza\obj\Debug\Baza.csprojResolveAssemblyReference.cache
+c:\users\alexstojcic\source\repos\Baza\Baza\obj\Debug\Baza.csproj.CoreCompileInputs.cache
+c:\users\alexstojcic\source\repos\Baza\Baza\obj\Debug\Baza.dll
+c:\users\alexstojcic\source\repos\Baza\Baza\obj\Debug\Baza.pdb

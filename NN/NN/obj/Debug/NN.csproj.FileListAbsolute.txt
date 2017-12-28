@@ -1,0 +1,10 @@
+c:\Users\alexstojcic\source\repos\Baza\NN\bin\Debug\NN.exe.config
+c:\Users\alexstojcic\source\repos\Baza\NN\bin\Debug\NN.exe
+c:\Users\alexstojcic\source\repos\Baza\NN\bin\Debug\NN.pdb
+c:\Users\alexstojcic\source\repos\Baza\NN\bin\Debug\Baza.dll
+c:\Users\alexstojcic\source\repos\Baza\NN\bin\Debug\Baza.pdb
+c:\Users\alexstojcic\source\repos\Baza\NN\bin\Debug\Baza.dll.config
+c:\Users\alexstojcic\source\repos\Baza\NN\obj\Debug\NN.csprojResolveAssemblyReference.cache
+c:\Users\alexstojcic\source\repos\Baza\NN\obj\Debug\NN.csproj.CoreCompileInputs.cache
+c:\Users\alexstojcic\source\repos\Baza\NN\obj\Debug\NN.exe
+c:\Users\alexstojcic\source\repos\Baza\NN\obj\Debug\NN.pdb
