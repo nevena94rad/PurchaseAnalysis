@@ -7,3 +7,5 @@ C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Baza.dl
 C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Baza.pdb
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Database.csprojResolveAssemblyReference.cache
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Database.csproj.CoreCompileInputs.cache
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Baza.dll
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Baza.pdb

@@ -18,3 +18,13 @@ C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.csproj
 C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.csproj.CoreCompileInputs.cache
 C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.exe
 C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.pdb
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\bin\Debug\NN.exe.config
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\bin\Debug\NN.exe
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\bin\Debug\NN.pdb
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\bin\Debug\Baza.dll
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\bin\Debug\Baza.pdb
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\bin\Debug\Baza.dll.config
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.csprojResolveAssemblyReference.cache
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.csproj.CoreCompileInputs.cache
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.exe
+C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.pdb

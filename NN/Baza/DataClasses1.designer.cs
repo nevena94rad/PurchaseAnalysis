@@ -36,7 +36,7 @@ namespace Baza
     #endregion
 		
 		public DataClasses1DataContext() : 
-				base(global::Baza.Properties.Settings.Default.PEDConnectionString, mappingSource)
+				base(global::Baza.Properties.Settings.Default.PEDConnectionString2, mappingSource)
 		{
 			OnCreated();
 		}
@@ -81,19 +81,19 @@ namespace Baza
 			}
 		}
 		
-		public System.Data.Linq.Table<RecommendHistory> RecommendHistories
+		public System.Data.Linq.Table<CustItemDailyCon> CustItemDailyCons
 		{
 			get
 			{
-				return this.GetTable<RecommendHistory>();
+				return this.GetTable<CustItemDailyCon>();
 			}
 		}
 		
-		public System.Data.Linq.Table<PurchasePeriod> PurchasePeriods
+		public System.Data.Linq.Table<ItemConsumption> ItemConsumptions
 		{
 			get
 			{
-				return this.GetTable<PurchasePeriod>();
+				return this.GetTable<ItemConsumption>();
 			}
 		}
 		
@@ -105,11 +105,19 @@ namespace Baza
 			}
 		}
 		
-		public System.Data.Linq.Table<ItemConsumption> ItemConsumptions
+		public System.Data.Linq.Table<PurchasePeriod> PurchasePeriods
 		{
 			get
 			{
-				return this.GetTable<ItemConsumption>();
+				return this.GetTable<PurchasePeriod>();
+			}
+		}
+		
+		public System.Data.Linq.Table<RecommendHistory> RecommendHistories
+		{
+			get
+			{
+				return this.GetTable<RecommendHistory>();
 			}
 		}
 	}
@@ -126,9 +134,9 @@ namespace Baza
 		
 		private double _AvgPurchasePeriod;
 		
-		private double _MaxPurchasePeriod;
-		
 		private double _MinPurchasePeriod;
+		
+		private double _MaxPurchasePeriod;
 		
 		private double _PurchasePeriodStDev;
 		
@@ -202,22 +210,6 @@ namespace Baza
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaxPurchasePeriod", DbType="Float NOT NULL")]
-		public double MaxPurchasePeriod
-		{
-			get
-			{
-				return this._MaxPurchasePeriod;
-			}
-			set
-			{
-				if ((this._MaxPurchasePeriod != value))
-				{
-					this._MaxPurchasePeriod = value;
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MinPurchasePeriod", DbType="Float NOT NULL")]
 		public double MinPurchasePeriod
 		{
@@ -230,6 +222,22 @@ namespace Baza
 				if ((this._MinPurchasePeriod != value))
 				{
 					this._MinPurchasePeriod = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaxPurchasePeriod", DbType="Float NOT NULL")]
+		public double MaxPurchasePeriod
+		{
+			get
+			{
+				return this._MaxPurchasePeriod;
+			}
+			set
+			{
+				if ((this._MaxPurchasePeriod != value))
+				{
+					this._MaxPurchasePeriod = value;
 				}
 			}
 		}
@@ -473,8 +481,8 @@ namespace Baza
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.RecommendHistory")]
-	public partial class RecommendHistory
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CustItemDailyCons")]
+	public partial class CustItemDailyCon
 	{
 		
 		private string _CustNo;
@@ -483,7 +491,9 @@ namespace Baza
 		
 		private int _ProcessingDate;
 		
-		public RecommendHistory()
+		private double _AvgConsumption;
+		
+		public CustItemDailyCon()
 		{
 		}
 		
@@ -534,40 +544,36 @@ namespace Baza
 				}
 			}
 		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PurchasePeriods")]
-	public partial class PurchasePeriod
-	{
 		
-		private string _CustNo;
-		
-		private string _ItemNo;
-		
-		private System.DateTime _InvDateCurr;
-		
-		private System.DateTime _InvDatePrior;
-		
-		private int _PurchasePeriod1;
-		
-		public PurchasePeriod()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string CustNo
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvgConsumption", DbType="Float NOT NULL")]
+		public double AvgConsumption
 		{
 			get
 			{
-				return this._CustNo;
+				return this._AvgConsumption;
 			}
 			set
 			{
-				if ((this._CustNo != value))
+				if ((this._AvgConsumption != value))
 				{
-					this._CustNo = value;
+					this._AvgConsumption = value;
 				}
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ItemConsumption")]
+	public partial class ItemConsumption
+	{
+		
+		private string _ItemNo;
+		
+		private int _Date;
+		
+		private double _Consumption;
+		
+		public ItemConsumption()
+		{
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
@@ -586,50 +592,34 @@ namespace Baza
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvDateCurr", DbType="Date NOT NULL")]
-		public System.DateTime InvDateCurr
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="Int NOT NULL")]
+		public int Date
 		{
 			get
 			{
-				return this._InvDateCurr;
+				return this._Date;
 			}
 			set
 			{
-				if ((this._InvDateCurr != value))
+				if ((this._Date != value))
 				{
-					this._InvDateCurr = value;
+					this._Date = value;
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvDatePrior", DbType="Date NOT NULL")]
-		public System.DateTime InvDatePrior
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Consumption", DbType="Float NOT NULL")]
+		public double Consumption
 		{
 			get
 			{
-				return this._InvDatePrior;
+				return this._Consumption;
 			}
 			set
 			{
-				if ((this._InvDatePrior != value))
+				if ((this._Consumption != value))
 				{
-					this._InvDatePrior = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="PurchasePeriod", Storage="_PurchasePeriod1", DbType="Int NOT NULL")]
-		public int PurchasePeriod1
-		{
-			get
-			{
-				return this._PurchasePeriod1;
-			}
-			set
-			{
-				if ((this._PurchasePeriod1 != value))
-				{
-					this._PurchasePeriod1 = value;
+					this._Consumption = value;
 				}
 			}
 		}
@@ -716,18 +706,38 @@ namespace Baza
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ItemConsumption")]
-	public partial class ItemConsumption
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PurchasePeriods")]
+	public partial class PurchasePeriod
 	{
+		
+		private string _CustNo;
 		
 		private string _ItemNo;
 		
-		private int _Date;
+		private System.DateTime _InvDateCurr;
 		
-		private double _Consumption;
+		private System.DateTime _InvDatePrior;
 		
-		public ItemConsumption()
+		private int _PurchasePeriod1;
+		
+		public PurchasePeriod()
 		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string CustNo
+		{
+			get
+			{
+				return this._CustNo;
+			}
+			set
+			{
+				if ((this._CustNo != value))
+				{
+					this._CustNo = value;
+				}
+			}
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
@@ -746,34 +756,113 @@ namespace Baza
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="Int NOT NULL")]
-		public int Date
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvDateCurr", DbType="DateTime NOT NULL")]
+		public System.DateTime InvDateCurr
 		{
 			get
 			{
-				return this._Date;
+				return this._InvDateCurr;
 			}
 			set
 			{
-				if ((this._Date != value))
+				if ((this._InvDateCurr != value))
 				{
-					this._Date = value;
+					this._InvDateCurr = value;
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Consumption", DbType="Float NOT NULL")]
-		public double Consumption
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvDatePrior", DbType="DateTime NOT NULL")]
+		public System.DateTime InvDatePrior
 		{
 			get
 			{
-				return this._Consumption;
+				return this._InvDatePrior;
 			}
 			set
 			{
-				if ((this._Consumption != value))
+				if ((this._InvDatePrior != value))
 				{
-					this._Consumption = value;
+					this._InvDatePrior = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="PurchasePeriod", Storage="_PurchasePeriod1", DbType="Int NOT NULL")]
+		public int PurchasePeriod1
+		{
+			get
+			{
+				return this._PurchasePeriod1;
+			}
+			set
+			{
+				if ((this._PurchasePeriod1 != value))
+				{
+					this._PurchasePeriod1 = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.RecommendHistory")]
+	public partial class RecommendHistory
+	{
+		
+		private string _CustNo;
+		
+		private string _ItemNo;
+		
+		private int _ProcessingDate;
+		
+		public RecommendHistory()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string CustNo
+		{
+			get
+			{
+				return this._CustNo;
+			}
+			set
+			{
+				if ((this._CustNo != value))
+				{
+					this._CustNo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string ItemNo
+		{
+			get
+			{
+				return this._ItemNo;
+			}
+			set
+			{
+				if ((this._ItemNo != value))
+				{
+					this._ItemNo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProcessingDate", DbType="Int NOT NULL")]
+		public int ProcessingDate
+		{
+			get
+			{
+				return this._ProcessingDate;
+			}
+			set
+			{
+				if ((this._ProcessingDate != value))
+				{
+					this._ProcessingDate = value;
 				}
 			}
 		}
