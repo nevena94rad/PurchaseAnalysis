@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,10 @@ namespace Baza.DTO
             pred.lastInvQty = lastInvQty;
 
             string connectionString = db.Connection.ConnectionString;
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand("Forecast", connection);
             
+
         }
     }
 }
