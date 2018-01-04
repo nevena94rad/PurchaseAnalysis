@@ -13,8 +13,23 @@ namespace Baza.DTO
 
         public void getAllItems()
         {
+            // testirano, radi sporo, 5 sec po customeru
+            // naci alternativu (nova tabela?)
+
+            var db = new DataClasses1DataContext();
+
+            var allItems = from customer in db.PurchaseHistories
+                           where customer.CustNo == custNo
+                           group customer by customer.ItemNo into groupedCustomer
+                           where groupedCustomer.Count() > 10
+                           select groupedCustomer.Key;
+
+
+            itemNos = allItems.ToList();
+                
+                            
             // ucitati sve iteme koje je cust narucio vise od 2 puta (3+) 
-            throw new Exception();
+            
         }
         public List<Prediction> makeAllPredictions()
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Baza.DTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,6 +21,22 @@ namespace WindowsFormsApp1
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Customer c = new Customer
+            {
+                custNo = "SUT101"
+            };
+
+            var t1 = DateTime.Now;
+            c.getAllItems();
+            var t2 = DateTime.Now;
+            var diff = t2 - t1;
+
+            MessageBox.Show("" + c.itemNos.Count);
+            MessageBox.Show("" + diff.TotalMilliseconds);
         }
     }
 }
