@@ -27,16 +27,20 @@ namespace WindowsFormsApp1
         {
             Customer c = new Customer
             {
-                custNo = "SUT101"
+                custNo = "ALL195"
             };
 
             var t1 = DateTime.Now;
             c.getAllItems();
             var t2 = DateTime.Now;
             var diff = t2 - t1;
+            var dates = c.makeAllPredictions();
+
 
             MessageBox.Show("" + c.itemNos.Count);
             MessageBox.Show("" + diff.TotalMilliseconds);
+            foreach (var date in dates)
+                MessageBox.Show(date.ToString());
         }
     }
 }
