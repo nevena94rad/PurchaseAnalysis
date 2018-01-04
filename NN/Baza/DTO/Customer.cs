@@ -51,9 +51,16 @@ namespace Baza.DTO
                     });
 
                 var start = listOfDates.First();
+<<<<<<< HEAD
                 listOfDates.RemoveRange(0, 2);
 
                 foreach(var date in listOfDates)
+=======
+                listOfDates.RemoveAt(0);
+                int numOfDates = listOfDates.Count();
+
+                for (int i= 0; i< numOfDates-1 ;++i)
+>>>>>>> a1c740ecab208c55b9c8bf47e7abfd97c93c5a5e
                 {
                     returnList.Add(Prediction.makePrediction(custNo, item, start, date));
                 }
