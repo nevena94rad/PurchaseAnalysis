@@ -30,7 +30,7 @@ namespace Baza.DTO
                 
                             
             // ucitati sve iteme koje je cust narucio vise od 2 puta (3+) 
-            
+           
         }
         public List<Prediction> makeAllPredictions()
         {

@@ -32,5 +32,16 @@ namespace Baza.Properties {
                 return ((string)(this["PEDConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=DESKTOP-I4LD1QU;Initial Catalog=PED;Integrated Security=True;Connect " +
+            "Timeout=30;Encrypt=False;TrustServerCertificate=True")]
+        public string PEDConnectionString1 {
+            get {
+                return ((string)(this["PEDConnectionString1"]));
+            }
+        }
     }
 }
