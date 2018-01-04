@@ -13,7 +13,6 @@ namespace Baza.DTO
 
         public void getAllItems()
         {
-            // ucitati sve iteme koje je cust narucio vise od 2 puta (3+) 
             throw new Exception();
         }
         public List<Prediction> makeAllPredictions()
