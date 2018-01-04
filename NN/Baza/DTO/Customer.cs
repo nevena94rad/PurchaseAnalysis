@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Baza.DTO
             var allItems = from customer in db.PurchaseHistories
                            where customer.CustNo == custNo
                            group customer by customer.ItemNo into groupedCustomer
-                           where groupedCustomer.Count() > 10
+                           where groupedCustomer.Count() > 26
                            select groupedCustomer.Key;
 
 
@@ -33,11 +34,37 @@ namespace Baza.DTO
         }
         public List<Prediction> makeAllPredictions()
         {
+            List<Prediction> returnList = new List<Prediction>();
+
+            var db = new DataClasses1DataContext();
+            
+            foreach (var item in itemNos)
+            {
+                var allDates = from purchase in db.PurchaseHistories
+                               where purchase.CustNo == custNo && purchase.ItemNo == item
+                               orderby purchase.InvDate
+                               select purchase.InvDate;
+
+                List<DateTime> listOfDates = allDates.ToList().ConvertAll<DateTime>(delegate (int i)
+                    {
+                        return DateTime.ParseExact(i.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture);
+                    });
+
+                var start = listOfDates.First();
+                listOfDates.RemoveRange(0, 2);
+
+                foreach(var date in listOfDates)
+                {
+                    returnList.Add(Prediction.makePrediction(custNo, item, start, date));
+                }
+ 
+            }
             // za svaki item se prave predikcije
             // ako item ima n kupovina od strane customera (n>=3)
             // predikcije se prave na osnovu k datuma gde je ( 2<=k<n)
             // za svaku predikciju se pamti za koj period je izvrsena, kad je predvidjena i kad se desila sl kupovina
-            throw new Exception();
+
+            return returnList;
         }
         public void addToLearningData()
         {
