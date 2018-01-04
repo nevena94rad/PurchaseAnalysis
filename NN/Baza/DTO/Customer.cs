@@ -52,10 +52,18 @@ namespace Baza.DTO
 
                 var start = listOfDates.First();
 <<<<<<< HEAD
+
+                listOfDates.RemoveRange(0, 2);
+
+                foreach(var date in listOfDates)
+
+=======
+<<<<<<< HEAD
                 listOfDates.RemoveRange(0, 2);
 
                 foreach(var date in listOfDates)
 =======
+>>>>>>> f39f3dae9dd6bca1e4bb37ec5b3364152db1b322
                 listOfDates.RemoveAt(0);
                 int numOfDates = listOfDates.Count();
 
