@@ -1,54 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="PED" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=DESKTOP-I4LD1QU;Initial Catalog=PED;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True" SettingsObjectName="Baza.Properties.Settings" SettingsPropertyName="PEDConnectionString1" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=DESKTOP-JUC2MU8;Initial Catalog=PED;Integrated Security=True" SettingsObjectName="Baza.Properties.Settings" SettingsPropertyName="PEDConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Analysis" Member="Analysis">
     <Type Name="Analysi">
       <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="DataPoints" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="AvgPurchasePeriod" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="MinPurchasePeriod" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="MaxPurchasePeriod" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="MinPurchasePeriod" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="PurchasePeriodStDev" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="NormalizedPurchasePeriodStDev" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="dbo.CustItemDailyCons" Member="CustItemDailyCons">
-    <Type Name="CustItemDailyCon">
-      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ProcessingDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="AvgConsumption" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ItemConsumption" Member="ItemConsumptions">
-    <Type Name="ItemConsumption">
-      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Date" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Consumption" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="dbo.PurchaseHistory" Member="PurchaseHistories">
-    <Type Name="PurchaseHistory">
-      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="InvDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="InvQty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="dbo.PurchasePeriods" Member="PurchasePeriods">
-    <Type Name="PurchasePeriod">
-      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="InvDateCurr" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="InvDatePrior" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="PurchasePeriod" Member="PurchasePeriod1" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="dbo.RecommendHistory" Member="RecommendHistories">
-    <Type Name="RecommendHistory">
-      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ProcessingDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.rpackages" Member="rpackages">
@@ -60,6 +21,37 @@
       <Column Name="ZipFile" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
       <Column Name="Manifest" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="Attributes" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RecommendHistory" Member="RecommendHistories">
+    <Type Name="RecommendHistory">
+      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ProcessingDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchasePeriods" Member="PurchasePeriods">
+    <Type Name="PurchasePeriod">
+      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="InvDateCurr" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="InvDatePrior" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="PurchasePeriod" Member="PurchasePeriod1" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchaseHistory" Member="PurchaseHistories">
+    <Type Name="PurchaseHistory">
+      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="InvDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InvQty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ItemConsumption" Member="ItemConsumptions">
+    <Type Name="ItemConsumption">
+      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Consumption" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
 </Database>

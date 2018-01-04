@@ -34,13 +34,13 @@ namespace WindowsFormsApp1
             c.getAllItems();
             var t2 = DateTime.Now;
             var diff = t2 - t1;
-            var dates = c.makeAllPredictions();
+            //var dates = c.makeAllPredictions();
 
 
             MessageBox.Show("" + c.itemNos.Count);
             MessageBox.Show("" + diff.TotalMilliseconds);
-            foreach (var date in dates)
-                MessageBox.Show(date.ToString());
+            //foreach (var date in dates)
+              //  MessageBox.Show(date.ToString());
         }
     }
 }
