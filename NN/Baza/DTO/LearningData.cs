@@ -13,7 +13,7 @@ namespace Baza.DTO
 
         private static LearningData _instance;
 
-        public LearningData Instance
+        public static LearningData Instance
         {
             get
             {
@@ -25,6 +25,10 @@ namespace Baza.DTO
             }
         }
 
+        public void addData(SinglePointOfData dataToAdd)
+        {
+            allData.Add(dataToAdd);
+        }
         private LearningData()
         {
             allData = new List<SinglePointOfData>();

@@ -80,7 +80,7 @@ namespace Baza.DTO
 
             return quantityQuery;
         }
-        public List<SinglePointOfData> addToLearningData()
+        public void addToLearningData()
         {
             // pozove se makeAllPredictions
             // na osnovu tih predikcija treba napraviti vise SinglePointOfData
@@ -93,8 +93,7 @@ namespace Baza.DTO
             getAllItems();
             List<Prediction> allCustomerPredictions = makeAllPredictions();
             allCustomerPredictions.OrderBy(x => x.to);
-
-            List<SinglePointOfData> returnList = new List<SinglePointOfData>();
+            
             int predictionCount = allCustomerPredictions.Count();
 
             for (int i = 0; i < predictionCount; ++i)
@@ -115,10 +114,29 @@ namespace Baza.DTO
                 double currentError = allCustomerPredictions[i].getError();
                 newData.addCategory(currentError);
 
-                returnList.Add(newData);
+                LearningData.Instance.addData(newData);
             }
+            
+        }
+        public static void getAllCustomerData()
+        {
+            List<Customer> returnList = new List<Customer>();
 
-            return returnList;
+            var db = new DataClasses1DataContext();
+
+            var allCustomers = (from customer in db.PurchaseHistories
+                                select customer.CustNo).Distinct();
+
+            foreach(var customer in allCustomers)
+            {
+                Customer newCustomer = new Customer()
+                {
+                    custNo = customer
+                };
+
+                newCustomer.makeAllPredictions();
+            }
+            
         }
     }
 }
