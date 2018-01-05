@@ -112,7 +112,7 @@ namespace Baza.DTO
                 }
 
                 newData.normalize();
-                double currentError = allCustomerPredictions[j].getError();
+                double currentError = allCustomerPredictions[i].getError();
                 newData.addCategory(currentError);
 
                 returnList.Add(newData);
