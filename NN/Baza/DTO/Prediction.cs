@@ -17,24 +17,15 @@ namespace Baza.DTO
         public int lastInvQty;
         public int ordersInbetween;
 
-        public static Prediction makePrediction(string customer,string item,DateTime begin,DateTime end, DateTime nextPurchase, int lastInvQty)
+        public static Prediction makePrediction(string customer,string item,int begin, int end, int nextPurchase, int lastInvQty)
         {
             // na osnovu parametara potrebno je popuniti polja
             // posmatra se period begin do end i predvidja se kad ce sledeca kupovina da bude
-            var db = new DataClasses1DataContext();
-
-            Prediction pred = new Prediction();
-            pred.itemNo = item;
-            pred.from = begin;
-            pred.to = end;
-            pred.occurred = nextPurchase;
-            pred.lastInvQty = lastInvQty;
-
-            string connectionString = db.Connection.ConnectionString;
-            SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand command = new SqlCommand("Forecast", connection);
-            
-
+            throw new Exception();
+        }
+        public double getError()
+        {
+            return Math.Abs(1 - predictedConsumption / lastInvQty);
         }
     }
 }

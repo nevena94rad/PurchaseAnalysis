@@ -12,10 +12,12 @@ namespace Baza.DTO
         public List<string> itemNos;
         public string custNo;
 
-        public void getAllItems()
+        private void getAllItems()
         {
+            // ucitati sve iteme koje je cust narucio vise od 2 puta (3+)
             // testirano, radi sporo, 5 sec po customeru
             // naci alternativu (nova tabela?)
+
 
             var db = new DataClasses1DataContext();
 
@@ -27,13 +29,15 @@ namespace Baza.DTO
 
 
             itemNos = allItems.ToList();
-                
-                            
-            // ucitati sve iteme koje je cust narucio vise od 2 puta (3+) 
-           
+            
         }
-        public List<Prediction> makeAllPredictions()
+        private List<Prediction> makeAllPredictions()
         {
+            // za svaki item se prave predikcije
+            // ako item ima n kupovina od strane customera (n>=3)
+            // predikcije se prave na osnovu k datuma gde je ( 2<=k<n)
+            // za svaku predikciju se pamti za koj period je izvrsena, kad je predvidjena i kad se desila sl kupovina
+
             List<Prediction> returnList = new List<Prediction>();
 
             var db = new DataClasses1DataContext();
@@ -45,38 +49,38 @@ namespace Baza.DTO
                                orderby purchase.InvDate
                                select purchase.InvDate;
 
-                List<DateTime> listOfDates = allDates.ToList().ConvertAll<DateTime>(delegate (int i)
-                    {
-                        return DateTime.ParseExact(i.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture);
-                    });
+                List<int> listOfDates = allDates.ToList();
 
                 var start = listOfDates.First();
-
-                listOfDates.RemoveRange(0, 2);
-
-                foreach(var date in listOfDates)
-
-
-                listOfDates.RemoveRange(0, 2);
-
-                foreach(var date in listOfDates)
+                
                 listOfDates.RemoveAt(0);
                 int numOfDates = listOfDates.Count();
 
                 for (int i= 0; i< numOfDates-1 ;++i)
                 {
-                    returnList.Add(Prediction.makePrediction(custNo, item, start, listOfDates[i],listOfDates[i+1],0));
+                    int quanaty = getPurchaseQuantity(item, listOfDates[i]);
+                    returnList.Add(Prediction.makePrediction(custNo, item, start, listOfDates[i],listOfDates[i+1],quanaty));
                 }
  
             }
-            // za svaki item se prave predikcije
-            // ako item ima n kupovina od strane customera (n>=3)
-            // predikcije se prave na osnovu k datuma gde je ( 2<=k<n)
-            // za svaku predikciju se pamti za koj period je izvrsena, kad je predvidjena i kad se desila sl kupovina
+            
 
             return returnList;
         }
-        public void addToLearningData()
+        private int getPurchaseQuantity(string item, int date)
+        {
+            var db = new DataClasses1DataContext();
+
+            var quantityQuery = (from purchase in db.PurchaseHistories
+                                 where purchase.CustNo == custNo &&
+                                         purchase.ItemNo == item &&
+                                         purchase.InvDate == date
+                                 select purchase.InvQty).SingleOrDefault();
+
+
+            return quantityQuery;
+        }
+        public List<SinglePointOfData> addToLearningData()
         {
             // pozove se makeAllPredictions
             // na osnovu tih predikcija treba napraviti vise SinglePointOfData
@@ -85,7 +89,36 @@ namespace Baza.DTO
             // u SPD se pravi statistika svih Predikcija koje su se desile do trenutka b
             // treba ih svrstati u grupe do 2% do 5% do 10% i vise od 10% kako za taj item tako i za sve ostale
             // na kraju se svi dodaju u LearningData
-            throw new Exception();
+
+            getAllItems();
+            List<Prediction> allCustomerPredictions = makeAllPredictions();
+            allCustomerPredictions.OrderBy(x => x.to);
+
+            List<SinglePointOfData> returnList = new List<SinglePointOfData>();
+            int predictionCount = allCustomerPredictions.Count();
+
+            for(int i = 0; i<predictionCount; ++i )
+            {
+                SinglePointOfData newData = new SinglePointOfData();
+
+                for(int j = 0; j<i; ++j)
+                {
+                    double previusError = allCustomerPredictions[j].getError();
+
+                    if (allCustomerPredictions[j].itemNo == allCustomerPredictions[i].itemNo)
+                        newData.addToItem(previusError);
+                    else
+                        newData.addToTotall(previusError);
+                }
+
+                newData.normalize();
+                double currentError = allCustomerPredictions[j].getError();
+                newData.addCategory(currentError);
+
+                returnList.Add(newData);
+            }
+
+            return returnList;
         }
     }
 }
