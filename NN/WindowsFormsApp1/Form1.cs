@@ -45,7 +45,7 @@ namespace WindowsFormsApp1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Prediction.makePrediction("10-4784", "FIV108", 20150816, 20170425, 20171005, 0);
+            Prediction.makePrediction("FIV108", "10-4784", 20150816, 20170425, 20171005, 0);
         }
     }
 }

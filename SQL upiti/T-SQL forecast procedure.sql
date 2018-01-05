@@ -70,7 +70,7 @@ EXECUTE sp_execute_external_script
 
 						rezultat<-(L1+ItemCust)/2
 							
-						OutputDataSet<-data.frame(rezultat)
+						OutputDataSet<-data.frame(sum(tail(rezultat,-sum)))
 	
 	'
 	, @input_data_1 = N'	select Consumption, Qty, Date from
