@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -10,14 +11,14 @@ namespace Baza.DTO
     public class Prediction
     {
         public string itemNo;
-        public DateTime from;
-        public DateTime to;
-        public DateTime occurred;
+        public int from;
+        public int to;
+        public int occurred;
         public double predictedConsumption;
         public int lastInvQty;
         public int ordersInbetween;
 
-        public static Prediction makePrediction(string customer,string item,DateTime begin,DateTime end, DateTime nextPurchase, int lastInvQty)
+        public static Prediction makePrediction(string customer,string item,int begin,int end, int nextPurchase, int lastInvQty)
         {
             // na osnovu parametara potrebno je popuniti polja
             // posmatra se period begin do end i predvidja se kad ce sledeca kupovina da bude
@@ -32,9 +33,23 @@ namespace Baza.DTO
 
             string connectionString = db.Connection.ConnectionString;
             SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+
             SqlCommand command = new SqlCommand("Forecast", connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@param1", "10-4784"));
+            command.Parameters.Add(new SqlParameter("@param2", "FIV108"));
+            command.Parameters.Add(new SqlParameter("@param3", 20150816));
+            command.Parameters.Add(new SqlParameter("@param4", 20170425));
+            command.Parameters.Add(new SqlParameter("@param5", 20171005));
+
             
 
+            DataTable dt = new DataTable();
+
+            dt.Load(command.ExecuteReader());
+            return pred;
         }
     }
 }

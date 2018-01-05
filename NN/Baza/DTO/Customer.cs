@@ -65,7 +65,7 @@ namespace Baza.DTO
 
                 for (int i= 0; i< numOfDates-1 ;++i)
                 {
-                    returnList.Add(Prediction.makePrediction(custNo, item, start, listOfDates[i],listOfDates[i+1],0));
+                    //returnList.Add(Prediction.makePrediction(custNo, item, start, listOfDates[i],listOfDates[i+1],0));
                 }
  
             }
