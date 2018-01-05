@@ -1,3 +1,5 @@
+USE PED;
+GO
 CREATE PROCEDURE Forecast (@param1 varchar(50), @param2 varchar(50), @param3 int, @param4 int, @param5 int)
 AS
 EXECUTE sp_execute_external_script
