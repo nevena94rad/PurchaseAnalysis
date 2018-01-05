@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,6 @@ namespace Baza.DTO
     public class Prediction
     {
         public string itemNo;
-        public DateTime from;
-        public DateTime to;
-        public DateTime occurred;
         public int from;
         public int to;
         public int occurred;
@@ -20,13 +18,11 @@ namespace Baza.DTO
         public int lastInvQty;
         public int ordersInbetween;
 
-        public static Prediction makePrediction(string customer,string item,int begin, int end, int nextPurchase, int lastInvQty)
-
         public static Prediction makePrediction(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         {
             // na osnovu parametara potrebno je popuniti polja
             // posmatra se period begin do end i predvidja se kad ce sledeca kupovina da bude
-            throw new Exception();
+           
             var db = new DataClasses1DataContext();
 
             Prediction pred = new Prediction();
@@ -48,8 +44,7 @@ namespace Baza.DTO
             command.Parameters.Add(new SqlParameter("@param3", 20150816));
             command.Parameters.Add(new SqlParameter("@param4", 20170425));
             command.Parameters.Add(new SqlParameter("@param5", 20171005));
-
-
+            
 
             DataTable dt = new DataTable();
 
