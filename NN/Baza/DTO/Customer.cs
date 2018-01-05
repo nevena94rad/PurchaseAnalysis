@@ -97,11 +97,11 @@ namespace Baza.DTO
             List<SinglePointOfData> returnList = new List<SinglePointOfData>();
             int predictionCount = allCustomerPredictions.Count();
 
-            for(int i = 0; i<predictionCount; ++i )
+            for (int i = 0; i < predictionCount; ++i)
             {
                 SinglePointOfData newData = new SinglePointOfData();
 
-                for(int j = 0; j<i; ++j)
+                for (int j = 0; j < i; ++j)
                 {
                     double previusError = allCustomerPredictions[j].getError();
 

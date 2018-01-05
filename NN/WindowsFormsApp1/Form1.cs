@@ -23,25 +23,25 @@ namespace WindowsFormsApp1
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Customer c = new Customer
-            {
-                custNo = "ALL195"
-            };
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    Customer c = new Customer
+        //    {
+        //        custNo = "ALL195"
+        //    };
 
-            var t1 = DateTime.Now;
-            c.getAllItems();
-            var t2 = DateTime.Now;
-            var diff = t2 - t1;
-            var dates = c.makeAllPredictions();
+        //    var t1 = DateTime.Now;
+        //    c.getAllItems();
+        //    var t2 = DateTime.Now;
+        //    var diff = t2 - t1;
+        //    var dates = c.makeAllPredictions();
 
 
-            MessageBox.Show("" + c.itemNos.Count);
-            MessageBox.Show("" + diff.TotalMilliseconds);
-            foreach (var date in dates)
-                MessageBox.Show(date.ToString());
-        }
+        //    MessageBox.Show("" + c.itemNos.Count);
+        //    MessageBox.Show("" + diff.TotalMilliseconds);
+        //    foreach (var date in dates)
+        //        MessageBox.Show(date.ToString());
+        //}
 
         private void button2_Click(object sender, EventArgs e)
         {

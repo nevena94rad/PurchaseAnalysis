@@ -47,8 +47,14 @@ namespace Baza.DTO
             
 
             DataTable dt = new DataTable();
-
             dt.Load(command.ExecuteReader());
+
+            List<double> consumption = new List<double>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                consumption.Add(Convert.ToDouble(dt.Rows[i]["Potrosnja"]));
+            }
+
             return pred;
         }
 
