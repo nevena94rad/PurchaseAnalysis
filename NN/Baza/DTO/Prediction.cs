@@ -16,7 +16,6 @@ namespace Baza.DTO
         public int occurred;
         public double predictedConsumption;
         public int lastInvQty;
-        public int ordersInbetween;
 
         public static Prediction makePrediction(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         {
@@ -39,21 +38,17 @@ namespace Baza.DTO
             SqlCommand command = new SqlCommand("Forecast", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
 
-            command.Parameters.Add(new SqlParameter("@param1", "10-4784"));
-            command.Parameters.Add(new SqlParameter("@param2", "FIV108"));
-            command.Parameters.Add(new SqlParameter("@param3", 20150816));
-            command.Parameters.Add(new SqlParameter("@param4", 20170425));
-            command.Parameters.Add(new SqlParameter("@param5", 20171005));
+            command.Parameters.Add(new SqlParameter("@param1", item));
+            command.Parameters.Add(new SqlParameter("@param2", customer));
+            command.Parameters.Add(new SqlParameter("@param3", begin));
+            command.Parameters.Add(new SqlParameter("@param4", end));
+            command.Parameters.Add(new SqlParameter("@param5", nextPurchase));
             
 
             DataTable dt = new DataTable();
             dt.Load(command.ExecuteReader());
 
-            List<double> consumption = new List<double>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                consumption.Add(Convert.ToDouble(dt.Rows[i]["Potrosnja"]));
-            }
+            pred.predictedConsumption = Convert.ToDouble(dt.Rows[0]["Potrosnja"]);
 
             return pred;
         }
