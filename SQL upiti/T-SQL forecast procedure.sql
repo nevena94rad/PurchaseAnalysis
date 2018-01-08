@@ -75,7 +75,7 @@ EXECUTE sp_execute_external_script
 	'
 	, @input_data_1 = N'	select Consumption, Qty, Date from
 							((SELECT Consumption, Date FROM PED.dbo.ItemConsumption
-							WHERE Date<@date3 AND Date>@date1 
+							WHERE Date<@date3 AND Date>=@date1 
 							and ItemNo=@item) a
 							left join
 							(SELECT Sum(InvQty) as Qty, InvDate FROM PED.dbo.PurchaseHistory 

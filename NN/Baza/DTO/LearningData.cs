@@ -11,6 +11,8 @@ namespace Baza.DTO
     {
         public List<SinglePointOfData> allData;
 
+        private Object thisLock = new Object();
+
         private static LearningData _instance;
 
         public static LearningData Instance
@@ -27,7 +29,12 @@ namespace Baza.DTO
 
         public void addData(SinglePointOfData dataToAdd)
         {
-            allData.Add(dataToAdd);
+            lock (thisLock)
+            {
+                allData.Add(dataToAdd);
+                Console.WriteLine(allData.Count());
+            }
+            
         }
         private LearningData()
         {

@@ -12,7 +12,7 @@ namespace Baza.DTO
         public List<string> itemNos;
         public string custNo;
 
-        private void getAllItems()
+        public void getAllItems()
         {
             // ucitati sve iteme koje je cust narucio vise od 2 puta (3+)
             // testirano, radi sporo, 5 sec po customeru
@@ -22,16 +22,16 @@ namespace Baza.DTO
             var db = new DataClasses1DataContext();
 
             var allItems = from customer in db.PurchaseHistories
-                           where customer.CustNo == custNo
+                           where customer.CustNo == custNo && customer.InvDate<20170600
                            group customer by customer.ItemNo into groupedCustomer
-                           where groupedCustomer.Count() > 26
+                           where groupedCustomer.Count() > 4
                            select groupedCustomer.Key;
 
 
             itemNos = allItems.ToList();
             
         }
-        private List<Prediction> makeAllPredictions()
+        public List<Prediction> makeAllPredictions()
         {
             // za svaki item se prave predikcije
             // ako item ima n kupovina od strane customera (n>=3)
@@ -44,10 +44,11 @@ namespace Baza.DTO
             
             foreach (var item in itemNos)
             {
-                var allDates = from purchase in db.PurchaseHistories
+                var allDates = (from purchase in db.PurchaseHistories
                                where purchase.CustNo == custNo && purchase.ItemNo == item
+                               && purchase.InvDate<20170600
                                orderby purchase.InvDate
-                               select purchase.InvDate;
+                               select purchase.InvDate).Distinct();
 
                 List<int> listOfDates = allDates.ToList();
 
@@ -75,7 +76,7 @@ namespace Baza.DTO
                                  where purchase.CustNo == custNo &&
                                          purchase.ItemNo == item &&
                                          purchase.InvDate == date
-                                 select purchase.InvQty).SingleOrDefault();
+                                 select purchase.InvQty).Sum();
 
 
             return quantityQuery;
@@ -127,15 +128,17 @@ namespace Baza.DTO
             var allCustomers = (from customer in db.PurchaseHistories
                                 select customer.CustNo).Distinct();
 
-            foreach(var customer in allCustomers)
+            int custCount = allCustomers.Count();
+            var listCust = allCustomers.ToList();
+            Parallel.For(0, custCount, i =>
             {
                 Customer newCustomer = new Customer()
                 {
-                    custNo = customer
+                    custNo = listCust[i]
                 };
 
-                newCustomer.makeAllPredictions();
-            }
+                newCustomer.addToLearningData();
+            });
             
         }
     }

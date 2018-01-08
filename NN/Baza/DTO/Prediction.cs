@@ -48,6 +48,9 @@ namespace Baza.DTO
             DataTable dt = new DataTable();
             dt.Load(command.ExecuteReader());
 
+            connection.Close();
+            connection.Dispose();
+
             pred.predictedConsumption = Convert.ToDouble(dt.Rows[0]["Potrosnja"]);
 
             return pred;
