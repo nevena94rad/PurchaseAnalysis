@@ -60,7 +60,11 @@ namespace Baza.DTO
                 for (int i= 0; i< numOfDates-1 ;++i)
                 {
                     int quanaty = getPurchaseQuantity(item, listOfDates[i]);
-                    returnList.Add(Prediction.makePrediction(custNo, item, start, listOfDates[i],listOfDates[i+1],quanaty));
+
+                    var prediction = Prediction.makePrediction(custNo, item, start, listOfDates[i], listOfDates[i + 1], quanaty);
+
+                    if (prediction.predictedConsumption>=0)
+                        returnList.Add(prediction);
                 }
  
             }
@@ -130,7 +134,7 @@ namespace Baza.DTO
 
             int custCount = allCustomers.Count();
             var listCust = allCustomers.ToList();
-            Parallel.For(0, custCount, i =>
+            Parallel.For(0, custCount,new ParallelOptions { MaxDegreeOfParallelism = 1}, i =>
             {
                 Customer newCustomer = new Customer()
                 {

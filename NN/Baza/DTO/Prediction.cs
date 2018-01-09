@@ -16,6 +16,8 @@ namespace Baza.DTO
         public int occurred;
         public double predictedConsumption;
         public int lastInvQty;
+        public static int succsess = 0;
+        public static int fail = 0;
 
         public static Prediction makePrediction(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         {
@@ -37,6 +39,7 @@ namespace Baza.DTO
 
             SqlCommand command = new SqlCommand("Forecast", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandTimeout = 30;
 
             command.Parameters.Add(new SqlParameter("@param1", item));
             command.Parameters.Add(new SqlParameter("@param2", customer));
@@ -46,12 +49,21 @@ namespace Baza.DTO
             
 
             DataTable dt = new DataTable();
-            dt.Load(command.ExecuteReader());
+            try
+            {
+                dt.Load(command.ExecuteReader());
+                pred.predictedConsumption = Convert.ToDouble(dt.Rows[0]["Potrosnja"]);
+                succsess++;
+
+            }
+            catch(Exception e)
+            {
+                fail++;
+                pred.predictedConsumption = -1;
+            }
 
             connection.Close();
             connection.Dispose();
-
-            pred.predictedConsumption = Convert.ToDouble(dt.Rows[0]["Potrosnja"]);
 
             return pred;
         }
