@@ -85,22 +85,60 @@ namespace Baza.DTO
                                       select new { Date = purchaseByDate.Key, Qty = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Qty);
 
 
+                                      select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvDate) }).OrderBy(x=>x.Qty);
 
+            List<DailyValue> consumptionList = customerConsumption.ToList();
+            consumptionList.RemoveAll(x => x.Value == 0);
+            consumptionList.Add(new DailyValue() { Date = nextPurchase, Value=0 });
+            List<DailyValue> customerFullConsumption = TransformConsumption(consumptionList);
 
+            int year1 = begin / 1000;
+            int day1 = (intToDateTime(begin)).DayOfYear;
+            int sum = (intToDateTime(end) - intToDateTime(end)).Days;
 
              throw new Exception();
         }
 
         public static List<double> TransformConsumption(List<double> purchases)
+        public static List<DailyValue> TransformConsumption(List<DailyValue> purchases)
         {
             List<double> returnList = new List<double>();
 
+            List<DailyValue> returnList = new List<DailyValue>();
+            DateTime current = intToDateTime(purchases[0].Date);
+            DateTime next = intToDateTime(purchases[1].Date);
+            int daysBetween = (next - current).Days;
+            int i = 0;
 
+            while (next!=null )
+            {
+                returnList.Add(new DailyValue() { Value = purchases[i].Value / daysBetween, Date = DateTimeToint(current) });
+                current.AddDays(1);
+                if (current == next)
+                {
+                    ++i;
+                    next = intToDateTime(purchases[i + 1].Date);
+                }
+            }
 
             return returnList;
         }
+        public static DateTime intToDateTime(int inDate)
+        {
+            int d = inDate % 100;
+            int m = (inDate / 100) % 100;
+            int y = inDate / 10000;
+
+            return new DateTime(y, m, d);
+
+        }
+        public static int DateTimeToint(DateTime inDate)
+        {
+            return inDate.Year * 10000 + inDate.Month * 100 + inDate.Day;
+        }
 
             public double getError()
+        public double getError()
         {
             return Math.Abs(1 - predictedConsumption / lastInvQty);
         }
