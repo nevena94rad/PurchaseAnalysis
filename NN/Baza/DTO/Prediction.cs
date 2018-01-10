@@ -79,17 +79,17 @@ namespace Baza.DTO
             var itemConsumption = (from purchases in db.ItemConsumptions
                                    where purchases.ItemNo == item && purchases.Date < nextPurchase
                                    && purchases.Date >= begin
-                                   select new { purchases.Consumption, purchases.Date }).OrderBy(x => x.Date);
+                                   select new DailyValue { Value=purchases.Consumption, Date=purchases.Date }).OrderBy(x => x.Date);
 
             List<double> Consumption = new List<double>();
             foreach (var itemCons in itemConsumption)
             {
-                Consumption.Add(itemCons.Consumption);
+                Consumption.Add(itemCons.Value);
             }
 
             var customerConsumption = (from purchases in db.PurchaseHistories
                                       where purchases.CustNo == customer && purchases.ItemNo == item
-                                      && purchases.InvDate < nextPurchase && purchases.InvDate >= begin
+                                      && purchases.InvDate < end && purchases.InvDate >= begin
                                       group purchases by purchases.InvDate into purchaseByDate
                                       select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Date);
 
@@ -123,18 +123,25 @@ namespace Baza.DTO
         {
             List<DailyValue> returnList = new List<DailyValue>();
             DateTime current = intToDateTime(purchases[0].Date);
-            DateTime next = intToDateTime(purchases[1].Date);
-            int daysBetween = (next - current).Days;
+            DateTime? next = intToDateTime(purchases[1].Date);
+            int daysBetween = ((DateTime)next - current).Days;
             int i = 0;
+            int count = purchases.Count();
 
             while (next!=null )
             {
                 returnList.Add(new DailyValue() { Value = purchases[i].Value / daysBetween, Date = DateTimeToint(current) });
-                current.AddDays(1);
+                current = current.AddDays(1);
                 if (current == next)
                 {
                     ++i;
-                    next = intToDateTime(purchases[i + 1].Date);
+                    if (i + 1 < count)
+                    {
+                        next = intToDateTime(purchases[i + 1].Date);
+                        daysBetween = ((DateTime)next - current).Days;
+                    }
+                    else
+                        next = null;
                 }
             }
 
