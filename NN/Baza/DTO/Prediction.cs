@@ -81,22 +81,42 @@ namespace Baza.DTO
                                    && purchases.Date >= begin
                                    select new { purchases.Consumption, purchases.Date }).OrderBy(x => x.Date);
 
+            List<double> Consumption = new List<double>();
+            foreach (var itemCons in itemConsumption)
+            {
+                Consumption.Add(itemCons.Consumption);
+            }
+
             var customerConsumption = (from purchases in db.PurchaseHistories
                                       where purchases.CustNo == customer && purchases.ItemNo == item
                                       && purchases.InvDate < nextPurchase && purchases.InvDate >= begin
                                       group purchases by purchases.InvDate into purchaseByDate
-                                      select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvDate) }).OrderBy(x=>x.Date);
+                                      select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Date);
+
+            List<double> Qty = new List<double>();
+            foreach(var qty in customerConsumption)
+            {
+                Qty.Add(qty.Value);
+            }
 
             List<DailyValue> consumptionList = customerConsumption.ToList();
             consumptionList.RemoveAll(x => x.Value == 0);
-            consumptionList.Add(new DailyValue() { Date = nextPurchase, Value=0 });
+            consumptionList.Add(new DailyValue() { Date = end, Value=0 });
             List<DailyValue> customerFullConsumption = TransformConsumption(consumptionList);
 
             int year1 = begin / 1000;
             int day1 = (intToDateTime(begin)).DayOfYear;
             int sum = (intToDateTime(end) - intToDateTime(end)).Days;
 
-             throw new Exception();
+            string filePath = "C:\\Users\\rneve\\Documents\\GitHub\\PurchaseAnalysis\\R skripta\\toExecuteInC#.r";
+            string executablePath = "rscript.exe";
+            string args = "\"" + Consumption + "\"" + "\"" + Qty + "\"" + "\"" + year1 + "\"" + "\"" + day1 + "\"" + "\"" + sum + "\"";
+            int predictConsumption = ExecuteRScript(filePath, executablePath, args);
+
+            Prediction retPredict = new Prediction();
+            retPredict.predictedConsumption = predictConsumption;
+
+            return retPredict;
         }
         
         public static List<DailyValue> TransformConsumption(List<DailyValue> purchases)
@@ -139,7 +159,7 @@ namespace Baza.DTO
             return Math.Abs(1 - predictedConsumption / lastInvQty);
         }
 
-        public int ExecuteRScript(string rCodeFilePath, string rScriptExecutablePath, string args)
+        public static int ExecuteRScript(string rCodeFilePath, string rScriptExecutablePath, string args)
         {
             string file = rCodeFilePath;
             string result = string.Empty;

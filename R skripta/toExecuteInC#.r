@@ -7,12 +7,9 @@ library("forecast")
 args = commandArgs(trailingOnly = TRUE)
 Consumption <- args[1];
 Qty <- args[2];
-date1 <- args[3];
-sum <- args[4];
-
-year1 <- date1 %/% 10000
-day1<-as.Date(toString(date1), "%Y%m%d")
-day1<-yday(day1)
+year1 <- args[3];
+day1 <- args[4];
+sum <- args[5];
 
 custItemCons <- ts(Qty, start=c(year1,day1),frequency = 365.25)         //vremenski za signal customer item Consumption 
 vremenskiItem<-ts(Consumption,start=c(year1,day1),frequency = 365.25)   //vremenski za signal item Consumption
