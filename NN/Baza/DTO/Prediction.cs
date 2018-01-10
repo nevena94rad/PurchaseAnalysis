@@ -41,11 +41,8 @@ namespace Baza.DTO
 
             SqlCommand command = new SqlCommand("Forecast", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
-<<<<<<< HEAD
+
             command.CommandTimeout = 300000;
-=======
-            command.CommandTimeout = 3000000;
->>>>>>> b76adb3dded93a5f70b673a2866ec2c062905c46
 
             command.Parameters.Add(new SqlParameter("@param1", item));
             command.Parameters.Add(new SqlParameter("@param2", customer));
@@ -88,10 +85,7 @@ namespace Baza.DTO
                                       where purchases.CustNo == customer && purchases.ItemNo == item
                                       && purchases.InvDate < nextPurchase && purchases.InvDate >= begin
                                       group purchases by purchases.InvDate into purchaseByDate
-                                      select new { Date = purchaseByDate.Key, Qty = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Qty);
-
-
-                                      select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvDate) }).OrderBy(x=>x.Qty);
+                                      select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvDate) }).OrderBy(x=>x.Date);
 
             List<DailyValue> consumptionList = customerConsumption.ToList();
             consumptionList.RemoveAll(x => x.Value == 0);
@@ -104,12 +98,9 @@ namespace Baza.DTO
 
              throw new Exception();
         }
-
-        public static List<double> TransformConsumption(List<double> purchases)
+        
         public static List<DailyValue> TransformConsumption(List<DailyValue> purchases)
         {
-            List<double> returnList = new List<double>();
-
             List<DailyValue> returnList = new List<DailyValue>();
             DateTime current = intToDateTime(purchases[0].Date);
             DateTime next = intToDateTime(purchases[1].Date);
@@ -142,8 +133,7 @@ namespace Baza.DTO
         {
             return inDate.Year * 10000 + inDate.Month * 100 + inDate.Day;
         }
-
-            public double getError()
+        
         public double getError()
         {
             return Math.Abs(1 - predictedConsumption / lastInvQty);
