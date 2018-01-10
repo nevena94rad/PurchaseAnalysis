@@ -48,6 +48,9 @@ namespace WindowsFormsApp1
             Customer.getAllCustomerData();
         }
 
-        
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Prediction.makePredictionAlternativeWay("FIV108", "10-4784", 20150816,20170425,20171005,2);
+        }
     }
 }
