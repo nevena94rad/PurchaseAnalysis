@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +41,7 @@ namespace Baza.DTO
 
             SqlCommand command = new SqlCommand("Forecast", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            command.CommandTimeout = 30;
+            command.CommandTimeout = 300000;
 
             command.Parameters.Add(new SqlParameter("@param1", item));
             command.Parameters.Add(new SqlParameter("@param2", customer));
@@ -71,6 +73,39 @@ namespace Baza.DTO
         public double getError()
         {
             return Math.Abs(1 - predictedConsumption / lastInvQty);
+        }
+
+        public int ExecuteRScript(string rCodeFilePath, string rScriptExecutablePath, string args)
+        {
+            string file = rCodeFilePath;
+            string result = string.Empty;
+
+            try
+            {
+
+                var info = new ProcessStartInfo();
+                info.FileName = rScriptExecutablePath;
+                info.WorkingDirectory = Path.GetDirectoryName(rScriptExecutablePath);
+                info.Arguments = rCodeFilePath + " " + args;
+
+                info.RedirectStandardInput = false;
+                info.RedirectStandardOutput = true;
+                info.UseShellExecute = false;
+                info.CreateNoWindow = true;
+
+                using (var proc = new Process())
+                {
+                    proc.StartInfo = info;
+                    proc.Start();
+                    result = proc.StandardOutput.ReadToEnd();
+                }
+
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("R Script failed: " + result, ex);
+            }
         }
     }
 }

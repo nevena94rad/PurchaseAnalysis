@@ -134,7 +134,7 @@ namespace Baza.DTO
 
             int custCount = allCustomers.Count();
             var listCust = allCustomers.ToList();
-            Parallel.For(0, custCount,new ParallelOptions { MaxDegreeOfParallelism = 1}, i =>
+            Parallel.For(0, custCount,new ParallelOptions { MaxDegreeOfParallelism = 3}, i =>
             {
                 Customer newCustomer = new Customer()
                 {
