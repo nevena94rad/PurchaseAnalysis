@@ -41,7 +41,11 @@ namespace Baza.DTO
 
             SqlCommand command = new SqlCommand("Forecast", connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
+<<<<<<< HEAD
             command.CommandTimeout = 300000;
+=======
+            command.CommandTimeout = 3000000;
+>>>>>>> b76adb3dded93a5f70b673a2866ec2c062905c46
 
             command.Parameters.Add(new SqlParameter("@param1", item));
             command.Parameters.Add(new SqlParameter("@param2", customer));
@@ -66,11 +70,43 @@ namespace Baza.DTO
 
             connection.Close();
             connection.Dispose();
+           
 
             return pred;
         }
 
-        public double getError()
+        public static Prediction makePredictionAlternativeWay(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
+        {
+            var db = new DataClasses1DataContext();
+
+            var itemConsumption = (from purchases in db.ItemConsumptions
+                                   where purchases.ItemNo == item && purchases.Date < nextPurchase
+                                   && purchases.Date >= begin
+                                   select new { purchases.Consumption, purchases.Date }).OrderBy(x => x.Date);
+
+            var customerConsumption = (from purchases in db.PurchaseHistories
+                                      where purchases.CustNo == customer && purchases.ItemNo == item
+                                      && purchases.InvDate < nextPurchase && purchases.InvDate >= begin
+                                      group purchases by purchases.InvDate into purchaseByDate
+                                      select new { Date = purchaseByDate.Key, Qty = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Qty);
+
+
+
+
+
+             throw new Exception();
+        }
+
+        public static List<double> TransformConsumption(List<double> purchases)
+        {
+            List<double> returnList = new List<double>();
+
+
+
+            return returnList;
+        }
+
+            public double getError()
         {
             return Math.Abs(1 - predictedConsumption / lastInvQty);
         }
