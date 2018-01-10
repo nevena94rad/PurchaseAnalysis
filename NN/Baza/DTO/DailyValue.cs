@@ -8,7 +8,8 @@ namespace Baza.DTO
 {
     public class DailyValue
     {
-        public int Date;
-        public double Value;
+        public double Value { get; set; }
+        public int Date { get; set; }
+
     }
 }
