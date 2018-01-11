@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RDotNet;
 
 namespace Baza.DTO
 {
@@ -104,14 +105,27 @@ namespace Baza.DTO
             consumptionList.Add(new DailyValue() { Date = end, Value=0 });
             List<DailyValue> customerFullConsumption = TransformConsumption(consumptionList);
 
-            int year1 = begin / 1000;
+            int year1 = begin / 10000;
             int day1 = (intToDateTime(begin)).DayOfYear;
-            int sum = (intToDateTime(end) - intToDateTime(end)).Days;
+            int sum = (intToDateTime(end) - intToDateTime(begin)).Days;
 
-            string filePath = "C:\\Users\\rneve\\Documents\\GitHub\\PurchaseAnalysis\\R skripta\\toExecuteInC#.r";
-            string executablePath = "rscript.exe";
-            string args = "\"" + Consumption + "\"" + "\"" + Qty + "\"" + "\"" + year1 + "\"" + "\"" + day1 + "\"" + "\"" + sum + "\"";
-            int predictConsumption = ExecuteRScript(filePath, executablePath, args);
+            string filePath = @"C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\R skripta\proba.r";
+            //string executablePath = @"C:\Program Files\R\R-3.4.3\bin\x64\Rscript.exe";
+
+            string args = "\"";
+            foreach(var cons in Consumption)
+            {
+                args = args + cons+ " ";
+            }
+            args = args + "\"" + "\"";
+            foreach(var qty in Qty)
+            {
+                args = args + qty + " ";
+            }
+            args = args + "\"" + "\"";
+            args = args + year1 + "\"" + "\"" + day1 + "\"" + "\"" + sum + "\"";
+
+            int predictConsumption = ExecuteRScript(filePath, args);
 
             Prediction retPredict = new Prediction();
             retPredict.predictedConsumption = predictConsumption;
@@ -166,36 +180,17 @@ namespace Baza.DTO
             return Math.Abs(1 - predictedConsumption / lastInvQty);
         }
 
-        public static int ExecuteRScript(string rCodeFilePath, string rScriptExecutablePath, string args)
+        public static int ExecuteRScript(string rCodeFilePath, string args)
         {
-            string file = rCodeFilePath;
-            string result = string.Empty;
-
-            try
+            using (var en = REngine.GetInstance())
             {
-
-                var info = new ProcessStartInfo();
-                info.FileName = rScriptExecutablePath;
-                info.WorkingDirectory = Path.GetDirectoryName(rScriptExecutablePath);
-                info.Arguments = rCodeFilePath + " " + args;
-
-                info.RedirectStandardInput = false;
-                info.RedirectStandardOutput = true;
-                info.UseShellExecute = false;
-                info.CreateNoWindow = true;
-
-                using (var proc = new Process())
-                {
-                    proc.StartInfo = info;
-                    proc.Start();
-                    result = proc.StandardOutput.ReadToEnd();
-                }
-
-                return Convert.ToInt32(result);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("R Script failed: " + result, ex);
+                //var args_r = new string[2] { paramForScript1, paramForScript2 };
+                var execution = "source('" + rCodeFilePath + "')";
+                //en.SetCommandLineArguments(args_r);
+                var result = en.Evaluate(execution);
+                
+                var ret = result.AsInteger().First();
+                return ret;
             }
         }
     }

@@ -26,4 +26,4 @@ ItemCust<-c(custItemCons,prognoza[["mean"]])
 
 rezultat<-(L1+ItemCust)/2
 
-print(sum(tail(rezultat,-sum)))
+return sum(tail(rezultat,-sum))
