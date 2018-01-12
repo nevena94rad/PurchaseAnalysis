@@ -19,59 +19,6 @@ namespace Baza.DTO
         public int occurred;
         public double predictedConsumption;
         public int lastInvQty;
-        public static int succsess = 0;
-        public static int fail = 0;
-
-        public static Prediction makePrediction(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
-        {
-            // na osnovu parametara potrebno je popuniti polja
-            // posmatra se period begin do end i predvidja se kad ce sledeca kupovina da bude
-           
-            var db = new DataClasses1DataContext();
-
-            Prediction pred = new Prediction();
-            pred.itemNo = item;
-            pred.from = begin;
-            pred.to = end;
-            pred.occurred = nextPurchase;
-            pred.lastInvQty = lastInvQty;
-
-            string connectionString = db.Connection.ConnectionString;
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-
-            SqlCommand command = new SqlCommand("Forecast", connection);
-            command.CommandType = System.Data.CommandType.StoredProcedure;
-
-            command.CommandTimeout = 300000;
-
-            command.Parameters.Add(new SqlParameter("@param1", item));
-            command.Parameters.Add(new SqlParameter("@param2", customer));
-            command.Parameters.Add(new SqlParameter("@param3", begin));
-            command.Parameters.Add(new SqlParameter("@param4", end));
-            command.Parameters.Add(new SqlParameter("@param5", nextPurchase));
-            
-
-            DataTable dt = new DataTable();
-            try
-            {
-                dt.Load(command.ExecuteReader());
-                pred.predictedConsumption = Convert.ToDouble(dt.Rows[0]["Potrosnja"]);
-                succsess++;
-
-            }
-            catch(Exception e)
-            {
-                fail++;
-                pred.predictedConsumption = -1;
-            }
-
-            connection.Close();
-            connection.Dispose();
-           
-
-            return pred;
-        }
 
         public static Prediction makePredictionAlternativeWay(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         {
@@ -94,39 +41,49 @@ namespace Baza.DTO
                                       group purchases by purchases.InvDate into purchaseByDate
                                       select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Date);
 
+            List<DailyValue> consumptionList = customerConsumption.ToList();
+            consumptionList.RemoveAll(x => x.Value == 0);
+            
+            List<DailyValue> customerFullConsumption = TransformConsumption(consumptionList);
+
             List<double> Qty = new List<double>();
-            foreach(var qty in customerConsumption)
+            foreach (var qty in customerFullConsumption)
             {
                 Qty.Add(qty.Value);
             }
-
-            List<DailyValue> consumptionList = customerConsumption.ToList();
-            consumptionList.RemoveAll(x => x.Value == 0);
-            consumptionList.Add(new DailyValue() { Date = end, Value=0 });
-            List<DailyValue> customerFullConsumption = TransformConsumption(consumptionList);
 
             int year1 = begin / 10000;
             int day1 = (intToDateTime(begin)).DayOfYear;
             int sum = (intToDateTime(end) - intToDateTime(begin)).Days;
 
-            string filePath = @"C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\R skripta\proba.r";
-            //string executablePath = @"C:\Program Files\R\R-3.4.3\bin\x64\Rscript.exe";
+            Prediction pred = new Prediction();
+            pred.itemNo = item;
+            pred.from = begin;
+            pred.to = end;
+            pred.occurred = nextPurchase;
+            pred.lastInvQty = lastInvQty;
 
-            string args = "\"";
-            foreach(var cons in Consumption)
+            string filePath = "C:/Users/rneve/Documents/GitHub/PurchaseAnalysis/R skripta/Rscript.r";
+
+            string param1 = "";
+            int i = 0;
+            for (i = 0; i < Consumption.Count - 1; i++)
             {
-                args = args + cons+ " ";
+                param1 = param1 + Consumption[i] + ", ";
             }
-            args = args + "\"" + "\"";
-            foreach(var qty in Qty)
+            param1 = param1 + Consumption[i];
+            string param2 = "";
+            int j = 0;
+            for (j = 0; j < Qty.Count - 1; j++)
             {
-                args = args + qty + " ";
+                param2 = param2 + Qty[j] + ", ";
             }
-            args = args + "\"" + "\"";
-            args = args + year1 + "\"" + "\"" + day1 + "\"" + "\"" + sum + "\"";
+            param2 = param2 + Qty[j];
+            string param3 = year1.ToString();
+            string param4 = day1.ToString();
+            string param5 = sum.ToString();
 
-            int predictConsumption = ExecuteRScript(filePath, args);
-
+            double predictConsumption = ExecuteRScript(filePath, param1, param2, param3, param4, param5);
             Prediction retPredict = new Prediction();
             retPredict.predictedConsumption = predictConsumption;
 
@@ -180,16 +137,17 @@ namespace Baza.DTO
             return Math.Abs(1 - predictedConsumption / lastInvQty);
         }
 
-        public static int ExecuteRScript(string rCodeFilePath, string args)
+        public static double ExecuteRScript(string rCodeFilePath, string p1, string p2, string p3, string p4, string p5)
         {
             using (var en = REngine.GetInstance())
             {
-                //var args_r = new string[2] { paramForScript1, paramForScript2 };
+                var args_r = new string[5] { p1, p2, p3, p4, p5 };
                 var execution = "source('" + rCodeFilePath + "')";
-                //en.SetCommandLineArguments(args_r);
+                en.Initialize();
+                en.SetCommandLineArguments(args_r);
                 var result = en.Evaluate(execution);
-                
-                var ret = result.AsInteger().First();
+                //string ret = result.AsCharacter().First();
+                double ret = result.AsNumeric().First();
                 return ret;
             }
         }

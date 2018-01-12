@@ -50,7 +50,10 @@ namespace WindowsFormsApp1
 
         private void button3_Click(object sender, EventArgs e)
         {
+            var pocetak = DateTime.Now;
             Prediction.makePredictionAlternativeWay("FIV108", "10-4784", 20150816,20170425,20171005,2);
+            var end = DateTime.Now;
+            var diff = end - pocetak;
         }
     }
 }
