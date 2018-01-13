@@ -19,6 +19,14 @@ namespace Baza.DTO
         public int occurred;
         public double predictedConsumption;
         public int lastInvQty;
+        public static int count=0;
+        public static REngine en = REngine.GetInstance();
+        private static Object thisLock = new Object();
+
+        public static void init()
+        {
+            en.Initialize();
+        }
 
         public static Prediction makePredictionAlternativeWay(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         {
@@ -37,7 +45,7 @@ namespace Baza.DTO
 
             var customerConsumption = (from purchases in db.PurchaseHistories
                                       where purchases.CustNo == customer && purchases.ItemNo == item
-                                      && purchases.InvDate < end && purchases.InvDate >= begin
+                                      && purchases.InvDate <= end && purchases.InvDate >= begin
                                       group purchases by purchases.InvDate into purchaseByDate
                                       select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Date);
 
@@ -63,7 +71,7 @@ namespace Baza.DTO
             pred.occurred = nextPurchase;
             pred.lastInvQty = lastInvQty;
 
-            string filePath = "C:/Users/rneve/Documents/GitHub/PurchaseAnalysis/R skripta/Rscript.r";
+            string filePath = "C:/Users/alexstojcic/Documents/GitHub/PurchaseAnalysis/R skripta/Rscript.r";
 
             string param1 = "";
             int i = 0;
@@ -85,8 +93,15 @@ namespace Baza.DTO
 
             double predictConsumption = ExecuteRScript(filePath, param1, param2, param3, param4, param5);
             Prediction retPredict = new Prediction();
+            retPredict.from = begin;
+            retPredict.itemNo = item;
+            retPredict.lastInvQty = lastInvQty;
+            retPredict.occurred = nextPurchase;
+            retPredict.to = end;
             retPredict.predictedConsumption = predictConsumption;
 
+            
+            count++;
             return retPredict;
         }
         
@@ -139,17 +154,20 @@ namespace Baza.DTO
 
         public static double ExecuteRScript(string rCodeFilePath, string p1, string p2, string p3, string p4, string p5)
         {
-            using (var en = REngine.GetInstance())
+
+            var args_r = new string[5] { p1, p2, p3, p4, p5 };
+            var execution = "source('" + rCodeFilePath + "')";
+            double ret;
+
+            en.SetCommandLineArguments(args_r);
+            lock (thisLock)
             {
-                var args_r = new string[5] { p1, p2, p3, p4, p5 };
-                var execution = "source('" + rCodeFilePath + "')";
-                en.Initialize();
-                en.SetCommandLineArguments(args_r);
                 var result = en.Evaluate(execution);
-                //string ret = result.AsCharacter().First();
-                double ret = result.AsNumeric().First();
-                return ret;
+                ret = result.AsNumeric().First(); 
             }
+            //string ret = result.AsCharacter().First();
+             
+            return ret;
         }
     }
 }

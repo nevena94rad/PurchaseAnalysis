@@ -6,13 +6,17 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        public System.Timers.Timer timerClock = new System.Timers.Timer();
+        
         public Form1()
         {
             InitializeComponent();
@@ -45,7 +49,18 @@ namespace WindowsFormsApp1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Customer.getAllCustomerData();
+            timerClock.Elapsed += new ElapsedEventHandler(OnTimer);
+            timerClock.Interval = 10000;
+            timerClock.Enabled = true;
+            Prediction.init();
+            Thread t = new Thread(Customer.getAllCustomerData);
+            t.Start();
+            
+        }
+        
+        public void OnTimer(Object source, ElapsedEventArgs e)
+        {
+            MessageBox.Show(Prediction.count.ToString());
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -55,5 +70,7 @@ namespace WindowsFormsApp1
             var end = DateTime.Now;
             var diff = end - pocetak;
         }
+
+        
     }
 }
