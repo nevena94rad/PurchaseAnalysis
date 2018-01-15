@@ -28,80 +28,89 @@ namespace Baza.DTO
             en.Initialize();
         }
 
-        public static Prediction makePredictionAlternativeWay(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
+        public static Prediction makePrediction(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         {
-            var db = new DataClasses1DataContext();
-
-            var itemConsumption = (from purchases in db.ItemConsumptions
-                                   where purchases.ItemNo == item && purchases.Date < nextPurchase
-                                   && purchases.Date >= begin
-                                   select new DailyValue { Value=purchases.Consumption, Date=purchases.Date }).OrderBy(x => x.Date);
-
-            List<double> Consumption = new List<double>();
-            foreach (var itemCons in itemConsumption)
-            {
-                Consumption.Add(itemCons.Value);
-            }
-
-            var customerConsumption = (from purchases in db.PurchaseHistories
-                                      where purchases.CustNo == customer && purchases.ItemNo == item
-                                      && purchases.InvDate <= end && purchases.InvDate >= begin
-                                      group purchases by purchases.InvDate into purchaseByDate
-                                      select new DailyValue{ Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x=>x.Date);
-
-            List<DailyValue> consumptionList = customerConsumption.ToList();
-            consumptionList.RemoveAll(x => x.Value == 0);
-            
-            List<DailyValue> customerFullConsumption = TransformConsumption(consumptionList);
-
-            List<double> Qty = new List<double>();
-            foreach (var qty in customerFullConsumption)
-            {
-                Qty.Add(qty.Value);
-            }
-
-            int year1 = begin / 10000;
-            int day1 = (intToDateTime(begin)).DayOfYear;
-            int sum = (intToDateTime(end) - intToDateTime(begin)).Days;
-
-            Prediction pred = new Prediction();
-            pred.itemNo = item;
-            pred.from = begin;
-            pred.to = end;
-            pred.occurred = nextPurchase;
-            pred.lastInvQty = lastInvQty;
-
-            string filePath = "C:/Users/alexstojcic/Documents/GitHub/PurchaseAnalysis/R skripta/Rscript.r";
-
-            string param1 = "";
-            int i = 0;
-            for (i = 0; i < Consumption.Count - 1; i++)
-            {
-                param1 = param1 + Consumption[i] + ", ";
-            }
-            param1 = param1 + Consumption[i];
-            string param2 = "";
-            int j = 0;
-            for (j = 0; j < Qty.Count - 1; j++)
-            {
-                param2 = param2 + Qty[j] + ", ";
-            }
-            param2 = param2 + Qty[j];
-            string param3 = year1.ToString();
-            string param4 = day1.ToString();
-            string param5 = sum.ToString();
-
-            double predictConsumption = ExecuteRScript(filePath, param1, param2, param3, param4, param5);
             Prediction retPredict = new Prediction();
-            retPredict.from = begin;
-            retPredict.itemNo = item;
-            retPredict.lastInvQty = lastInvQty;
-            retPredict.occurred = nextPurchase;
-            retPredict.to = end;
-            retPredict.predictedConsumption = predictConsumption;
+            try
+            {
+                var db = new DataClasses1DataContext();
 
-            
+                var itemConsumption = (from purchases in db.ItemConsumptions
+                                       where purchases.ItemNo == item && purchases.Date < nextPurchase
+                                       && purchases.Date >= begin
+                                       select new DailyValue { Value = purchases.Consumption, Date = purchases.Date }).OrderBy(x => x.Date);
+
+                List<double> Consumption = new List<double>();
+                foreach (var itemCons in itemConsumption)
+                {
+                    Consumption.Add(itemCons.Value);
+                }
+
+                var customerConsumption = (from purchases in db.PurchaseHistories
+                                           where purchases.CustNo == customer && purchases.ItemNo == item
+                                           && purchases.InvDate <= end && purchases.InvDate >= begin
+                                           group purchases by purchases.InvDate into purchaseByDate
+                                           select new DailyValue { Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x => x.Date);
+
+                List<DailyValue> consumptionList = customerConsumption.ToList();
+                consumptionList.RemoveAll(x => x.Value == 0);
+
+                if (consumptionList.Count() > 1)
+                {
+                    List<DailyValue> customerFullConsumption = TransformConsumption(consumptionList);
+
+                    List<double> Qty = new List<double>();
+                    foreach (var qty in customerFullConsumption)
+                    {
+                        Qty.Add(qty.Value);
+                    }
+
+                    int year1 = begin / 10000;
+                    int day1 = (intToDateTime(begin)).DayOfYear;
+                    int sum = (intToDateTime(end) - intToDateTime(begin)).Days;
+
+                    string filePath = "C:/Users/rneve/Documents/GitHub/PurchaseAnalysis/R skripta/Rscript.r";
+
+                    string param1 = "";
+                    int i = 0;
+                    for (i = 0; i < Consumption.Count - 1; i++)
+                    {
+                        param1 = param1 + Consumption[i] + ", ";
+                    }
+                    param1 = param1 + Consumption[i];
+                    string param2 = "";
+                    int j = 0;
+                    for (j = 0; j < Qty.Count - 1; j++)
+                    {
+                        param2 = param2 + Qty[j] + ", ";
+                    }
+                    param2 = param2 + Qty[j];
+                    string param3 = year1.ToString();
+                    string param4 = day1.ToString();
+                    string param5 = sum.ToString();
+
+                    double predictConsumption = ExecuteRScript(filePath, param1, param2, param3, param4, param5);
+                  
+                    retPredict.from = begin;
+                    retPredict.itemNo = item;
+                    retPredict.lastInvQty = lastInvQty;
+                    retPredict.occurred = nextPurchase;
+                    retPredict.to = end;
+                    retPredict.predictedConsumption = predictConsumption;
+
+                    if (predictConsumption < lastInvQty)
+                        retPredict.predictedConsumption = -1;
+                    count++;
+                    return retPredict;
+                }
+            }
+            catch(Exception e)
+            {
+
+            }
             count++;
+
+            retPredict.predictedConsumption = -1;
             return retPredict;
         }
         
@@ -146,12 +155,6 @@ namespace Baza.DTO
         {
             return inDate.Year * 10000 + inDate.Month * 100 + inDate.Day;
         }
-        
-        public double getError()
-        {
-            return Math.Abs(1 - predictedConsumption / lastInvQty);
-        }
-
         public static double ExecuteRScript(string rCodeFilePath, string p1, string p2, string p3, string p4, string p5)
         {
 
@@ -163,9 +166,8 @@ namespace Baza.DTO
             lock (thisLock)
             {
                 var result = en.Evaluate(execution);
-                ret = result.AsNumeric().First(); 
+                ret = result.AsNumeric().First();
             }
-            //string ret = result.AsCharacter().First();
              
             return ret;
         }

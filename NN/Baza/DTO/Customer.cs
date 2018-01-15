@@ -12,30 +12,37 @@ namespace Baza.DTO
         public List<string> itemNos;
         public string custNo;
 
-        public void getAllItems()
+        public void getAllItems(int date)
         {
             // ucitati sve iteme koje je cust narucio vise od 2 puta (3+)
-            // testirano, radi sporo, 5 sec po customeru
-            // naci alternativu (nova tabela?)
-
-
+        
             var db = new DataClasses1DataContext();
 
-            var allItems = from customer in db.PurchaseHistories
-                           where customer.CustNo == custNo && customer.InvDate<20170600
-                           group customer by customer.ItemNo into groupedCustomer
-                           where groupedCustomer.Count() > 4
-                           select groupedCustomer.Key;
+            DateTime bDate = Prediction.intToDateTime(date);
+
+            //var allItems1 = from customer in db.PurchaseHistories
+            //               where customer.CustNo == custNo && customer.InvDate < date
+            //               group customer by customer.ItemNo into groupedCustomer
+            //               where groupedCustomer.Count() > 2
+            //               select new { ItemNo = groupedCustomer.Key, max = groupedCustomer.ToList().Max(x => x.InvDate) };
 
 
-            itemNos = allItems.ToList();
-            
+            var allItems = from period in db.PurchasePeriods
+                           where period.CustNo == custNo && period.InvDateCurr < bDate
+                           group period by period.ItemNo into groupedPeriod
+                           select new { ItemNo = groupedPeriod.Key, last = groupedPeriod.ToList().Max(x => x.InvDateCurr),
+                                        min = groupedPeriod.ToList().Min(x => x.PurchasePeriod1),
+                                        max = groupedPeriod.ToList().Max(x => x.PurchasePeriod1)};
+
+            var items = allItems.ToList();
+            items.RemoveAll(x => x.last < bDate.AddMonths(-6) || x.min * 0.5 > (bDate-x.last).Days+7 || x.max *1.5 < (bDate - x.last).Days );
+           
+            itemNos = (from item in items
+                      select item.ItemNo).ToList();
         }
-        public List<Prediction> makeAllPredictions()
+        public List<Prediction> makeAllPredictions(int date)
         {
             // za svaki item se prave predikcije
-            // ako item ima n kupovina od strane customera (n>=3)
-            // predikcije se prave na osnovu k datuma gde je ( 2<=k<n)
             // za svaku predikciju se pamti za koj period je izvrsena, kad je predvidjena i kad se desila sl kupovina
 
             List<Prediction> returnList = new List<Prediction>();
@@ -46,30 +53,24 @@ namespace Baza.DTO
             {
                 var allDates = (from purchase in db.PurchaseHistories
                                where purchase.CustNo == custNo && purchase.ItemNo == item
-                               && purchase.InvDate<20170600
+                               && purchase.InvDate < date
                                orderby purchase.InvDate
                                select purchase.InvDate).Distinct();
 
                 List<int> listOfDates = allDates.ToList();
 
                 var start = listOfDates.First();
+                var end = listOfDates.Last();
+
+                int quantity = getPurchaseQuantity(item, end);
+
+                var prediction = Prediction.makePrediction(custNo, item, start, end, date, quantity);
+
+                if (prediction.predictedConsumption >= 0)
+                    returnList.Add(prediction);
                 
-                listOfDates.RemoveAt(0);
-                int numOfDates = listOfDates.Count();
-
-                for (int i= 0; i< numOfDates-1 ;++i)
-                {
-                    int quanaty = getPurchaseQuantity(item, listOfDates[i]);
-
-                    var prediction = Prediction.makePredictionAlternativeWay(custNo, item, start, listOfDates[i], listOfDates[i + 1], quanaty);
-
-                    if (prediction.predictedConsumption>=0)
-                        returnList.Add(prediction);
-                }
- 
             }
             
-
             return returnList;
         }
         private int getPurchaseQuantity(string item, int date)
@@ -85,45 +86,28 @@ namespace Baza.DTO
 
             return quantityQuery;
         }
-        public void addToLearningData()
+        public void PredictAllItems(int date)
         {
-            // pozove se makeAllPredictions
-            // na osnovu tih predikcija treba napraviti vise SinglePointOfData
-            // svaki SPD se vezuje za jednu Predikciju
-            // ako je predikcija bila na osnovu perioda a-b
-            // u SPD se pravi statistika svih Predikcija koje su se desile do trenutka b
-            // treba ih svrstati u grupe do 2% do 5% do 10% i vise od 10% kako za taj item tako i za sve ostale
-            // na kraju se svi dodaju u LearningData
-
-            getAllItems();
-            List<Prediction> allCustomerPredictions = makeAllPredictions();
+            getAllItems(date);
+            List<Prediction> allCustomerPredictions = makeAllPredictions(date);
             allCustomerPredictions.OrderBy(x => x.to);
-            
+
+            var db = new DataClasses1DataContext();
+
             int predictionCount = allCustomerPredictions.Count();
 
-            for (int i = 0; i < predictionCount; ++i)
+            for(int i = 0; i<predictionCount;i++)
             {
-                SinglePointOfData newData = new SinglePointOfData();
-
-                for (int j = 0; j < i; ++j)
-                {
-                    double previusError = allCustomerPredictions[j].getError();
-
-                    if (allCustomerPredictions[j].itemNo == allCustomerPredictions[i].itemNo)
-                        newData.addToItem(previusError);
-                    else
-                        newData.addToTotall(previusError);
-                }
-
-                newData.normalize();
-                double currentError = allCustomerPredictions[i].getError();
-                newData.addCategory(currentError);
-
-                LearningData.Instance.addData(newData);
+                PurchasePrediction newPrediction = new PurchasePrediction();
+                newPrediction.ItemNo = allCustomerPredictions[i].itemNo;
+                newPrediction.CustNo = custNo;
+                newPrediction.ProcessingDate = date;
+                db.PurchasePredictions.InsertOnSubmit(newPrediction);
             }
-            
+
+            db.SubmitChanges();
         }
-        public static void getAllCustomerData()
+        public static void nextWeekPredictions(int date)
         {
             List<Customer> returnList = new List<Customer>();
 
@@ -141,7 +125,7 @@ namespace Baza.DTO
                     custNo = listCust[i]
                 };
 
-                newCustomer.addToLearningData();
+                newCustomer.PredictAllItems(date);
             });
             
         }

@@ -34,39 +34,25 @@ namespace WindowsFormsApp1
                 custNo = "PRO275"
             };
 
-            var t1 = DateTime.Now;
-            c.getAllItems();
-            var t2 = DateTime.Now;
-            var diff = t2 - t1;
-            var dates = c.makeAllPredictions();
-
-
-            MessageBox.Show("" + c.itemNos.Count);
-            MessageBox.Show("" + diff.TotalMilliseconds);
-            foreach (var date in dates)
-                MessageBox.Show(date.ToString());
+            c.getAllItems(20171201);
+            
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            timerClock.Elapsed += new ElapsedEventHandler(OnTimer);
-            timerClock.Interval = 10000;
-            timerClock.Enabled = true;
-            Prediction.init();
-            Thread t = new Thread(Customer.getAllCustomerData);
-            t.Start();
-            
+            Customer.nextWeekPredictions(20170315);
+
         }
         
         public void OnTimer(Object source, ElapsedEventArgs e)
         {
-            MessageBox.Show(Prediction.count.ToString());
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             var pocetak = DateTime.Now;
-            Prediction.makePredictionAlternativeWay("FIV108", "10-4784", 20150816,20170425,20171005,2);
+            var a =Prediction.makePrediction("FIV108", "10-4784", 20150816,20170425,20171005,6);
             var end = DateTime.Now;
             var diff = end - pocetak;
         }

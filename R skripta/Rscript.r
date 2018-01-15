@@ -13,15 +13,16 @@ custItemCons <- ts(Qty, start=c(year1,day1),frequency = 365.25)
 vremenskiItem<-ts(Consumption,start=c(year1,day1),frequency = 365.25)  
 
 itemMean <- head(Consumption,sum)
-itemMean <- mean(itemMean)                                             
+itemMean <- mean(itemMean)                                            
 
-L1 <- (vremenskiItem/itemMean) * mean(custItemCons)                    
+L1 <- (vremenskiItem/itemMean) * mean(custItemCons)
 
-fit<-auto.arima(custItemCons, stepwise=FALSE, approximation=FALSE, lambda=0)
-prognoza<-forecast(fit,h=(length(Consumption)-sum))
+fit<-auto.arima(custItemCons, stepwise=FALSE, approximation=FALSE, lambda=0)                #model za customerItemConsumption
 
-ItemCust<-c(custItemCons,prognoza[["mean"]])
+prognoza<-forecast(fit,h=(length(Consumption)-sum + 7))                                       #prognoziran customerItemConsumption
+
+ItemCust<-c(custItemCons,head(prognoza[["mean"]], -7))
 
 rezultat<-(L1+ItemCust)/2
 
-return (sum(tail(rezultat,-sum)))
+return (sum(tail(rezultat,-sum))+sum(tail(prognoza[["mean"]],7)))
