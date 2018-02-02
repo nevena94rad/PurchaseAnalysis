@@ -18,8 +18,8 @@ itemMean <- mean(itemMean)
 L1 <- (vremenskiItem/itemMean) * mean(custItemCons)
 
 fit<-auto.arima(custItemCons, stepwise=FALSE, approximation=FALSE, lambda=0)                #model za customerItemConsumption
-
-prognoza<-forecast(fit,h=(length(Consumption)-sum + 7))                                       #prognoziran customerItemConsumption
+#model<-as.character(fit)                                                                   #iskoriscen model
+prognoza<-forecast(fit,h=(length(Consumption)-sum + 7))                                     #prognoziran customerItemConsumption
 
 ItemCust<-c(custItemCons,head(prognoza[["mean"]], -7))
 
