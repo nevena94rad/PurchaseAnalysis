@@ -46,3 +46,19 @@ C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\WindowsFormsApp1\obj\Debug\I
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\WindowsFormsApp1\obj\Debug\Interface.csproj.CoreCompileInputs.cache
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\Baza.dll
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\NN.exe
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\Baza.pdb
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\Baza.dll.config
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\NN.pdb
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\bin\Debug\NN.exe.config
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\obj\Debug\Interface.csprojResolveAssemblyReference.cache
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\obj\Debug\Interface.csproj.GenerateResource.Cache
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\obj\Debug\Interface.csproj.CoreCompileInputs.cache
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb

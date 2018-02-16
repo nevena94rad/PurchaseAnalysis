@@ -11,6 +11,11 @@ namespace Baza.DTO
     {
         public List<string> itemNos;
         public string custNo;
+        public static int Tcount = 0;
+        public static int Dcount = 0;
+        public static int totalWrites = 0;
+        public static Object thisLock = new Object();
+        public static event System.Action OnProgressUpdate;
 
         public void getAllItems(int date)
         {
@@ -30,6 +35,7 @@ namespace Baza.DTO
             var allItems = from period in db.PurchasePeriods
                            where period.CustNo == custNo && period.InvDateCurr < bDate
                            group period by period.ItemNo into groupedPeriod
+                           where groupedPeriod.Count()>1
                            select new { ItemNo = groupedPeriod.Key, last = groupedPeriod.ToList().Max(x => x.InvDateCurr),
                                         min = groupedPeriod.ToList().Min(x => x.PurchasePeriod1),
                                         max = groupedPeriod.ToList().Max(x => x.PurchasePeriod1)};
@@ -59,8 +65,11 @@ namespace Baza.DTO
 
                 List<int> listOfDates = allDates.ToList();
 
-                var start = listOfDates.First();
                 var end = listOfDates.Last();
+                var start = (from element in listOfDates
+                             where (Prediction.intToDateTime(end) - Prediction.intToDateTime(element)).Days < 700
+                             select element).Min();
+                
 
                 int quantity = getPurchaseQuantity(item, end);
 
@@ -96,7 +105,7 @@ namespace Baza.DTO
 
             int predictionCount = allCustomerPredictions.Count();
 
-            for(int i = 0; i<predictionCount;i++)
+            for (int i = 0; i < predictionCount; i++)
             {
                 PurchasePrediction newPrediction = new PurchasePrediction();
                 newPrediction.ItemNo = allCustomerPredictions[i].itemNo;
@@ -105,10 +114,17 @@ namespace Baza.DTO
                 db.PurchasePredictions.InsertOnSubmit(newPrediction);
             }
 
+            lock(thisLock)
+            {
+                totalWrites += predictionCount;
+            }
             db.SubmitChanges();
         }
-        public static void nextWeekPredictions(int date)
+        
+        public static void nextWeekPredictions(int date, Action t1_OnProgressUpdate)
         {
+            ItemConsumption.readAllItemData(date);
+            OnProgressUpdate += t1_OnProgressUpdate;
             List<Customer> returnList = new List<Customer>();
 
             var db = new DataClasses1DataContext();
@@ -118,6 +134,8 @@ namespace Baza.DTO
 
             int custCount = allCustomers.Count();
             var listCust = allCustomers.ToList();
+            Tcount = custCount;
+            Dcount = 0;
             Parallel.For(0, custCount,new ParallelOptions { MaxDegreeOfParallelism = 50}, i =>
             {
                 Customer newCustomer = new Customer()
@@ -126,6 +144,9 @@ namespace Baza.DTO
                 };
 
                 newCustomer.PredictAllItems(date);
+                Dcount++;
+
+                OnProgressUpdate?.Invoke();
             });
             
         }

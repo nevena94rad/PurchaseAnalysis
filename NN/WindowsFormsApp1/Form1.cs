@@ -27,36 +27,26 @@ namespace WindowsFormsApp1
 
         }
 
+
         private void button1_Click(object sender, EventArgs e)
         {
-            Customer c = new Customer
+            label3.Text = "Start: " + DateTime.Now;
+            backgroundWorker1.RunWorkerAsync();
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Customer.nextWeekPredictions(20170606, t1_OnProgressUpdate);
+        }
+        private void t1_OnProgressUpdate()
+        {
+            base.Invoke((Action)delegate
             {
-                custNo = "PRO275"
-            };
-
-            c.getAllItems(20171201);
-            
+                label1.Text = "Done: "+Customer.Dcount + "/" + Customer.Tcount;
+                label2.Text = "Percentage: " + (((double)Customer.Dcount / Customer.Tcount) * 100) + "%";
+                label4.Text = "Last Write: " + DateTime.Now;
+                label5.Text = "Total Writes: " + Customer.totalWrites;
+            });
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Customer.nextWeekPredictions(20170315);
-
-        }
-        
-        public void OnTimer(Object source, ElapsedEventArgs e)
-        {
-            
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            var pocetak = DateTime.Now;
-            var a =Prediction.makePrediction("FIV108", "10-4784", 20150816,20170425,20171005,6);
-            var end = DateTime.Now;
-            var diff = end - pocetak;
-        }
-
-        
     }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="PED" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=DESKTOP-I4LD1QU;Initial Catalog=PED;Integrated Security=True" SettingsObjectName="Baza.Properties.Settings" SettingsPropertyName="PEDConnectionString2" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=DESKTOP-D8VMERN;Initial Catalog=PED;Integrated Security=True" SettingsObjectName="Baza.Properties.Settings" SettingsPropertyName="PEDConnectionString3" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Analysis" Member="Analysis">
     <Type Name="Analysi">
       <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
@@ -12,23 +12,20 @@
       <Column Name="NormalizedPurchasePeriodStDev" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
-  <Table Name="dbo.rpackages" Member="rpackages">
-    <Type Name="rpackage">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
-      <Column Name="Owner" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
-      <Column Name="Scope" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="ZipFile" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Column Name="Manifest" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="Attributes" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="dbo.CustItemDailyCons" Member="CustItemDailyCons">
-    <Type Name="CustItemDailyCon">
-      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="ProcessingDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="AvgConsumption" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+  <Table Name="dbo.TrainingData" Member="TrainingDatas">
+    <Type Name="TrainingData">
+      <Column Name="[key]" Member="key" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="numOfItemPurchases" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="itemTwoPercent" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="itemFivePercent" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="itemTenPercent" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="itemAbsouloutError" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="numOfTotalPurchases" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="totalTwoPercent" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="totalFivePercent" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="totalTenPercent" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="totalAbsouloutError" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="forecastCategory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.ItemConsumption" Member="ItemConsumptions">
@@ -40,9 +37,9 @@
   </Table>
   <Table Name="dbo.PurchaseHistory" Member="PurchaseHistories">
     <Type Name="PurchaseHistory">
+      <Column Name="InvDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="InvDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="InvQty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
@@ -50,9 +47,17 @@
     <Type Name="PurchasePeriod">
       <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="InvDateCurr" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="InvDatePrior" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="InvDateCurr" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="InvDatePrior" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="PurchasePeriod" Member="PurchasePeriod1" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchasePrediction" Member="PurchasePredictions">
+    <Type Name="PurchasePrediction">
+      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ProcessingDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="[key]" Member="key" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.RecommendHistory" Member="RecommendHistories">
@@ -60,6 +65,18 @@
       <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="ProcessingDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Training" Member="Trainings">
+    <Type Name="Training">
+      <Column Name="[key]" Member="key" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CustNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ItemNo" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="[from]" Member="from" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="[to]" Member="to" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="occurred" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="predictedConsumption" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="lastInvQty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
 </Database>

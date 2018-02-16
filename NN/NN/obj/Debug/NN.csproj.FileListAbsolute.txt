@@ -28,3 +28,13 @@ C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.csprojResolv
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.csproj.CoreCompileInputs.cache
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.exe
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\NN\NN\obj\Debug\NN.pdb
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\bin\Debug\NN.exe.config
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\bin\Debug\NN.exe
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\bin\Debug\NN.pdb
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\bin\Debug\Baza.dll
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\bin\Debug\Baza.pdb
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\bin\Debug\Baza.dll.config
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\obj\Debug\NN.csprojResolveAssemblyReference.cache
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\obj\Debug\NN.csproj.CoreCompileInputs.cache
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\obj\Debug\NN.exe
+C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\NN\obj\Debug\NN.pdb
