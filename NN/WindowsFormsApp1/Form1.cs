@@ -36,7 +36,12 @@ namespace WindowsFormsApp1
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            Customer.nextWeekPredictions(20170606, t1_OnProgressUpdate);
+            //ItemConsumption.readAllItemData(20170517);
+            //var a = Prediction.makePrediction("GUA119", "02-1500", 20161117, 20161212, 20170512, 1);
+            Customer c = new Customer() { custNo = "GUA119" };
+            for(int i=0; i< 100; ++i)
+                c.getAllItems(20170512);
+            //Customer.nextWeekPredictions(20170606, t1_OnProgressUpdate);
         }
         private void t1_OnProgressUpdate()
         {

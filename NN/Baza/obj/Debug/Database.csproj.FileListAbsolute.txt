@@ -22,3 +22,16 @@ C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\Ba
 C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\Baza\obj\Debug\Baza.dll
 C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\Baza\obj\Debug\Baza.pdb
 C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\NN\Baza\obj\Debug\Database.csprojResolveAssemblyReference.cache
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Database.csproj.CoreCompileInputs.cache
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\Baza.dll.config
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\Baza.dll
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\Baza.pdb
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\DynamicInterop.dll
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\RDotNet.dll
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\RDotNet.NativeLibrary.dll
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\DynamicInterop.xml
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\RDotNet.xml
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\bin\Debug\RDotNet.NativeLibrary.xml
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Baza.dll
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Baza.pdb
+C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\NN\Baza\obj\Debug\Database.csprojResolveAssemblyReference.cache

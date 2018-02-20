@@ -67,6 +67,26 @@
       <Column Name="ProcessingDate" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="dbo.Testic" Member="Testics">
+    <Type Name="Testic">
+      <Column Name="CustNo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ItemNo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="PredhodniDatum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PredhodnaKupovina" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PredvidjenaKupovina" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Dali" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="SledecaPrva" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Greska" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.testing" Member="testings">
+    <Type Name="testing">
+      <Column Name="CustNo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ItemNo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="pred" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="[key]" Member="key" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+    </Type>
+  </Table>
   <Table Name="dbo.Training" Member="Trainings">
     <Type Name="Training">
       <Column Name="[key]" Member="key" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />

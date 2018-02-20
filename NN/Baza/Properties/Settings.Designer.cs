@@ -63,5 +63,15 @@ namespace Baza.Properties {
                 return ((string)(this["PEDConnectionString3"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=DESKTOP-JUC2MU8;Initial Catalog=PED;Integrated Security=True")]
+        public string PED {
+            get {
+                return ((string)(this["PED"]));
+            }
+        }
     }
 }

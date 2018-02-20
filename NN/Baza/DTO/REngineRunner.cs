@@ -18,7 +18,7 @@ namespace Baza.DTO
             
                 string result = string.Empty;
                 string file1 = string.Empty;
-                string file2 = string.Empty;
+                //string file2 = string.Empty;
 
             try
             {
@@ -27,11 +27,11 @@ namespace Baza.DTO
                 {
                     streamWriter.Write(args[0]);
                 }
-                file2 = TempFileHelper.CreateTmpFile();
-                using (var streamWriter = new StreamWriter(new FileStream(file2, FileMode.Open, FileAccess.Write)))
-                {
-                    streamWriter.Write(args[1]);
-                }
+                //file2 = TempFileHelper.CreateTmpFile();
+                //using (var streamWriter = new StreamWriter(new FileStream(file2, FileMode.Open, FileAccess.Write)))
+                //{
+                //    streamWriter.Write(args[1]);
+                //}
                 // Get path to R
                 var rCore = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\R-core") ??
                             Registry.CurrentUser.OpenSubKey(@"SOFTWARE\R-core");
@@ -43,10 +43,10 @@ namespace Baza.DTO
                     var binPath = Path.Combine(installPath, "bin");
                     binPath = Path.Combine(binPath, is64Bit ? "x64" : "i386");
                     binPath = Path.Combine(binPath, "Rscript");
-                    string strCmdLine = @"/c """"" + binPath + @""" """ + filePath + @""" """ + file1 + @""" """ + file2 + @"""""";
+                    string strCmdLine = @"/c """"" + binPath + @""" """ + filePath + @""" """ + file1 + @""""""; 
                     if (args.Any())
                     {
-                        strCmdLine += " " + args[2] + " " + args[3] + " " + args[4];
+                        strCmdLine += " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4];
                     }
                     var info = new ProcessStartInfo("cmd", strCmdLine);
                     info.RedirectStandardInput = false;
@@ -77,10 +77,10 @@ namespace Baza.DTO
                 {
                     TempFileHelper.DeleteTmpFile(file1, false);
                 }
-                if (!string.IsNullOrWhiteSpace(file2))
-                {
-                    TempFileHelper.DeleteTmpFile(file2, false);
-                }
+                //if (!string.IsNullOrWhiteSpace(file2))
+                //{
+                //    TempFileHelper.DeleteTmpFile(file2, false);
+                //}
             }
             
         }

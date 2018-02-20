@@ -37,20 +37,31 @@ namespace Baza.DTO
         }
         public static Prediction makePrediction(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         {
+            var now1 = DateTime.Now;
+
             Prediction retPredict = new Prediction();
             try
             {
                 var db = new DataClasses1DataContext();
 
-                
 
-                var itemData = ConsumptionData.Instance.readData(item);
-                int daysToRemove = (intToDateTime(begin) - intToDateTime(itemData.startDate)).Days;
-                int dateCount = itemData.listOfValues.Count();
+
+                //var itemData = ConsumptionData.Instance.readData(item);
+                //int daysToRemove = (intToDateTime(begin) - intToDateTime(itemData.startDate)).Days;
+                //int dateCount = itemData.listOfValues.Count();
+
+                //List<double> Consumption = new List<double>();
+                //for (int i = daysToRemove; i < dateCount; i++)
+                //    Consumption.Add(itemData.listOfValues[i]);
+                var itemConsumption = (from purchases in db.ItemConsumptions
+                                       where purchases.ItemNo == item && purchases.Date < nextPurchase && purchases.Date >= begin
+                                       select new DailyValue { Value = purchases.Consumption, Date = purchases.Date }).OrderBy(x => x.Date);
 
                 List<double> Consumption = new List<double>();
-                for (int i = daysToRemove; i < dateCount; i++)
-                    Consumption.Add(itemData.listOfValues[i]);
+                foreach (var itemCons in itemConsumption)
+                {
+                    Consumption.Add(itemCons.Value);
+                }
 
                 var customerConsumption = (from purchases in db.PurchaseHistories
                                            where purchases.CustNo == customer && purchases.ItemNo == item
@@ -76,22 +87,24 @@ namespace Baza.DTO
                     int sum = (intToDateTime(end) - intToDateTime(begin)).Days;
 
 
-                    string filePath = @"C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\R skripta\RscriptFull.r";
+                    string filePath = @"C:\Users\ne cackaj mi komp\Documents\GitHub\PurchaseAnalysis\R skripta\RscriptFull.r";
+                    //string filePath2 = @"C:\Users\ne cackaj mi komp\Desktop\Finalna verzija\PurchaseAnalysis-master\R skripta\RscriptFull.r";
 
-                    string param1 = "";
+                    string param0 = "";
                     int i = 0;
                     for (i = 0; i < Consumption.Count - 1; i++)
                     {
-                        param1 = param1 + Consumption[i] + " ";
+                        param0 = param0 + Consumption[i] + " ";
                     }
-                    param1 = param1 + Consumption[i];
-                    string param2 = "";
+                    param0 = param0 + Consumption[i];
+                    string param1 = "";
                     int j = 0;
                     for (j = 0; j < Qty.Count - 1; j++)
                     {
-                        param2 = param2 + Qty[j] + " ";
+                        param1 = param1 + Qty[j] + " ";
                     }
-                    param2 = param2 + Qty[j];
+                    param1 = param1 + Qty[j];
+                    string param2 = Consumption.Count().ToString();
                     string param3 = year1.ToString();
                     string param4 = day1.ToString();
                     string param5 = sum.ToString();
@@ -99,7 +112,8 @@ namespace Baza.DTO
 
                     //LogRecord rec = new LogRecord() { p1 = param1, p2 = param2, p3 = param3, p4 = param4, p5 = param5, customer = customer, item = item, nextPurchase = nextPurchase, lastPurchase = lastInvQty };
                     double predictConsumption = ExecuteRScript(filePath, param1, param2, param3, param4, param5);
-
+                    predictConsumption += getScaledItemDate(Consumption, customerFullConsumption.Average(x => x.Value), Consumption.Count() - Qty.Count()); 
+                    //double predictConsumption2 = ExecuteRScriptAlternativWay(filePath2,param0, param2,param3, param4, param5);
                     //LogQueue.Add(rec);
                     //added++;
                     retPredict.from = begin;
@@ -112,6 +126,8 @@ namespace Baza.DTO
                     if (predictConsumption < lastInvQty)
                         retPredict.predictedConsumption = -1;
                     count++;
+
+                    var diff = DateTime.Now - now1;
                     return retPredict;
                 }
             }
@@ -124,6 +140,23 @@ namespace Baza.DTO
             retPredict.predictedConsumption = -1;
             return retPredict;
         }
+
+        private static double getScaledItemDate(List<double> consumption, double customerAverage, int customerCount)
+        {
+            double returnValue = 0;
+            double average = 0;
+            int count = consumption.Count();
+
+            for (int i = 0; i < count-customerCount; ++i)
+                average += consumption[i];
+            average = average / (count-customerCount);
+
+            for (int i = (count - customerCount); i < count; ++i)
+                returnValue += consumption[i]/average;
+
+            return returnValue*customerAverage / 2;
+        }
+
         //public static Prediction makePredictionAlternativeWay(string customer, string item, int begin, int end, int nextPurchase, int lastInvQty)
         //{
         //    Prediction retPredict = new Prediction();
@@ -136,7 +169,7 @@ namespace Baza.DTO
         //                               && purchases.Date >= begin
         //                               select new DailyValue { Value = purchases.Consumption, Date = purchases.Date }).OrderBy(x => x.Date);
 
-                
+
 
         //        List<double> consumption = new List<double>();
         //        foreach (var itemCons in itemConsumption)
@@ -188,10 +221,10 @@ namespace Baza.DTO
 
         //                en.Evaluate("fit<-auto.arima(custItemCons, stepwise=FALSE, approximation=FALSE, lambda=0)");
 
-        //                en.Evaluate("prognoza<-forecast(fit,h=(" + "length(Consumption) - "+ sum+ " + 7 " + "))");
+        //                en.Evaluate("prognoza<-forecast(fit,h=(" + "length(Consumption) - " + sum + " + 7 " + "))");
         //                en.Evaluate("ItemCust<-c(custItemCons,head(prognoza[[\"mean\"]], -7))");
         //                var pr = en.Evaluate("rezultat<-(L1+ItemCust)/2").AsNumeric();
-                        
+
         //                rezultat = en.Evaluate("sum(tail(rezultat,-" + sum + "))+sum(tail(prognoza[[\"mean\"]],7))").AsNumeric().First();
 
         //                retPredict.from = begin;
@@ -218,7 +251,7 @@ namespace Baza.DTO
         //    retPredict.predictedConsumption = -1;
         //    return retPredict;
         //}
-        
+
 
         public static List<DailyValue> TransformConsumption(List<DailyValue> purchases)
         {

@@ -36,6 +36,9 @@ namespace Baza
     partial void InsertPurchasePrediction(PurchasePrediction instance);
     partial void UpdatePurchasePrediction(PurchasePrediction instance);
     partial void DeletePurchasePrediction(PurchasePrediction instance);
+    partial void Inserttesting(testing instance);
+    partial void Updatetesting(testing instance);
+    partial void Deletetesting(testing instance);
     partial void InsertTraining(Training instance);
     partial void UpdateTraining(Training instance);
     partial void DeleteTraining(Training instance);
@@ -124,6 +127,22 @@ namespace Baza
 			get
 			{
 				return this.GetTable<RecommendHistory>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Testic> Testics
+		{
+			get
+			{
+				return this.GetTable<Testic>();
+			}
+		}
+		
+		public System.Data.Linq.Table<testing> testings
+		{
+			get
+			{
+				return this.GetTable<testing>();
 			}
 		}
 		
@@ -1051,6 +1070,293 @@ namespace Baza
 				{
 					this._ProcessingDate = value;
 				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Testic")]
+	public partial class Testic
+	{
+		
+		private string _CustNo;
+		
+		private string _ItemNo;
+		
+		private int _PredhodniDatum;
+		
+		private int _PredhodnaKupovina;
+		
+		private double _PredvidjenaKupovina;
+		
+		private string _Dali;
+		
+		private string _SledecaPrva;
+		
+		private double _Greska;
+		
+		public Testic()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string CustNo
+		{
+			get
+			{
+				return this._CustNo;
+			}
+			set
+			{
+				if ((this._CustNo != value))
+				{
+					this._CustNo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string ItemNo
+		{
+			get
+			{
+				return this._ItemNo;
+			}
+			set
+			{
+				if ((this._ItemNo != value))
+				{
+					this._ItemNo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PredhodniDatum", DbType="Int NOT NULL")]
+		public int PredhodniDatum
+		{
+			get
+			{
+				return this._PredhodniDatum;
+			}
+			set
+			{
+				if ((this._PredhodniDatum != value))
+				{
+					this._PredhodniDatum = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PredhodnaKupovina", DbType="Int NOT NULL")]
+		public int PredhodnaKupovina
+		{
+			get
+			{
+				return this._PredhodnaKupovina;
+			}
+			set
+			{
+				if ((this._PredhodnaKupovina != value))
+				{
+					this._PredhodnaKupovina = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PredvidjenaKupovina", DbType="Float NOT NULL")]
+		public double PredvidjenaKupovina
+		{
+			get
+			{
+				return this._PredvidjenaKupovina;
+			}
+			set
+			{
+				if ((this._PredvidjenaKupovina != value))
+				{
+					this._PredvidjenaKupovina = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Dali", DbType="NVarChar(50)")]
+		public string Dali
+		{
+			get
+			{
+				return this._Dali;
+			}
+			set
+			{
+				if ((this._Dali != value))
+				{
+					this._Dali = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SledecaPrva", DbType="NVarChar(50)")]
+		public string SledecaPrva
+		{
+			get
+			{
+				return this._SledecaPrva;
+			}
+			set
+			{
+				if ((this._SledecaPrva != value))
+				{
+					this._SledecaPrva = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Greska", DbType="Float NOT NULL")]
+		public double Greska
+		{
+			get
+			{
+				return this._Greska;
+			}
+			set
+			{
+				if ((this._Greska != value))
+				{
+					this._Greska = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.testing")]
+	public partial class testing : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _CustNo;
+		
+		private string _ItemNo;
+		
+		private double _pred;
+		
+		private int _key;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnCustNoChanging(string value);
+    partial void OnCustNoChanged();
+    partial void OnItemNoChanging(string value);
+    partial void OnItemNoChanged();
+    partial void OnpredChanging(double value);
+    partial void OnpredChanged();
+    partial void OnkeyChanging(int value);
+    partial void OnkeyChanged();
+    #endregion
+		
+		public testing()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string CustNo
+		{
+			get
+			{
+				return this._CustNo;
+			}
+			set
+			{
+				if ((this._CustNo != value))
+				{
+					this.OnCustNoChanging(value);
+					this.SendPropertyChanging();
+					this._CustNo = value;
+					this.SendPropertyChanged("CustNo");
+					this.OnCustNoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string ItemNo
+		{
+			get
+			{
+				return this._ItemNo;
+			}
+			set
+			{
+				if ((this._ItemNo != value))
+				{
+					this.OnItemNoChanging(value);
+					this.SendPropertyChanging();
+					this._ItemNo = value;
+					this.SendPropertyChanged("ItemNo");
+					this.OnItemNoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pred", DbType="Float NOT NULL")]
+		public double pred
+		{
+			get
+			{
+				return this._pred;
+			}
+			set
+			{
+				if ((this._pred != value))
+				{
+					this.OnpredChanging(value);
+					this.SendPropertyChanging();
+					this._pred = value;
+					this.SendPropertyChanged("pred");
+					this.OnpredChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[key]", Storage="_key", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int key
+		{
+			get
+			{
+				return this._key;
+			}
+			set
+			{
+				if ((this._key != value))
+				{
+					this.OnkeyChanging(value);
+					this.SendPropertyChanging();
+					this._key = value;
+					this.SendPropertyChanged("key");
+					this.OnkeyChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}
