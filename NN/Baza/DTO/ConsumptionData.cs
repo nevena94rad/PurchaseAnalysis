@@ -1,9 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Baza.DTO
 {
@@ -29,19 +26,19 @@ namespace Baza.DTO
 
         public void addData(ItemConsumption dataToAdd)
         {
-            
-                allData.Add(dataToAdd);
-            
+
+            allData.Add(dataToAdd);
+
         }
         public ItemConsumption readData(string itemNo)
         {
-            
-                var returnItem = (from item in allData
-                                  where item.itemNo == itemNo
-                                  select item).SingleOrDefault();
 
-                return returnItem;
-            
+            var returnItem = (from item in allData
+                              where item.itemNo == itemNo
+                              select item).SingleOrDefault();
+
+            return returnItem;
+
         }
         private ConsumptionData()
         {

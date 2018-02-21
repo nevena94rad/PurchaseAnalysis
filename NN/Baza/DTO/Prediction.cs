@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -24,10 +25,6 @@ namespace Baza.DTO
         //public static REngine en = REngine.GetInstance();
         private static Object thisLock = new Object();
         private static BlockingCollection<LogRecord> LogQueue = new BlockingCollection<LogRecord>();
-        private static int stoper = 0;
-        private static int added = 0;
-        private static int done = 0;
-        private static LogRecord poslednji;
 
 
         public static void init()
@@ -44,8 +41,8 @@ namespace Baza.DTO
             {
                 var db = new DataClasses1DataContext();
 
-
-
+                //prvi deooooooooooooooooooooo
+                //ItemConsumption.readAllItemData(nextPurchase);
                 //var itemData = ConsumptionData.Instance.readData(item);
                 //int daysToRemove = (intToDateTime(begin) - intToDateTime(itemData.startDate)).Days;
                 //int dateCount = itemData.listOfValues.Count();
@@ -53,6 +50,7 @@ namespace Baza.DTO
                 //List<double> Consumption = new List<double>();
                 //for (int i = daysToRemove; i < dateCount; i++)
                 //    Consumption.Add(itemData.listOfValues[i]);
+
                 var itemConsumption = (from purchases in db.ItemConsumptions
                                        where purchases.ItemNo == item && purchases.Date < nextPurchase && purchases.Date >= begin
                                        select new DailyValue { Value = purchases.Consumption, Date = purchases.Date }).OrderBy(x => x.Date);
@@ -62,14 +60,44 @@ namespace Baza.DTO
                 {
                     Consumption.Add(itemCons.Value);
                 }
+                /////////////////
 
-                var customerConsumption = (from purchases in db.PurchaseHistories
-                                           where purchases.CustNo == customer && purchases.ItemNo == item
-                                           && purchases.InvDate <= end && purchases.InvDate >= begin
-                                           group purchases by purchases.InvDate into purchaseByDate
-                                           select new DailyValue { Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.InvQty) }).OrderBy(x => x.Date);
+                List<DailyValue> Consumptions = new List<DailyValue>();
+                
+                var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+                string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+                string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+                string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+                string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+                string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
 
-                List<DailyValue> consumptionList = customerConsumption.ToList();
+                string queryString = "select " + PurchaseDate + ", " + PurchaseQuantity + " from " + Table +
+                                       " where "+ ItemID + "= @ItemID and " + CustomerID + "= @CustID and "+
+                                       PurchaseDate + ">= @begin and " + PurchaseDate +"<= @end order by "+ PurchaseDate;
+
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    var command = new SqlCommand(queryString, connection);
+                    command.Parameters.AddWithValue("@ItemID", item);
+                    command.Parameters.AddWithValue("@CustID", customer);
+                    command.Parameters.AddWithValue("@end", end);
+                    command.Parameters.AddWithValue("@begin", begin);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Consumptions.Add(new DailyValue { Date = (int)reader[0], Value = (int)reader[1] });
+                        }
+                    }
+                }
+
+                List<DailyValue> consumptionList = (from purchases in Consumptions
+                                                   group purchases by purchases.Date into purchaseByDate
+                                                   select new DailyValue { Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.Value) }).OrderBy(x => x.Date).ToList();
+
                 consumptionList.RemoveAll(x => x.Value == 0);
 
                 if (consumptionList.Count() > 1)
@@ -338,32 +366,6 @@ namespace Baza.DTO
             string[] args_r = { p1, p2, p3, p4, p5 };
             double result = REngineRunner.RunFromCmd(rCodeFilePath, args_r);
             return result;
-        }
-        public static void Consumer()
-        {
-            //while (true)
-            //{
-            //    stoper = 0;
-            //    LogRecord rec = LogQueue.Take();
-            //    stoper = 1;
-            //    poslednji = rec;
-            //    double qty = ExecuteRScript(rec, rec.p1, rec.p2, rec.p3, rec.p4, rec.p5);
-            //    done++;
-            //    stoper = 2;
-            //    if (qty >= rec.lastPurchase)
-            //    {
-            //        var db = new DataClasses1DataContext();
-            //        PurchasePrediction newPrediction = new PurchasePrediction();
-            //        newPrediction.ItemNo = rec.item;
-            //        newPrediction.CustNo = rec.customer;
-            //        newPrediction.ProcessingDate = rec.nextPurchase;
-            //        db.PurchasePredictions.InsertOnSubmit(newPrediction);
-
-            //        stoper = 3;
-            //        db.SubmitChanges();
-            //        stoper = 4;
-            //    }
-            //}
         }
     }
 }

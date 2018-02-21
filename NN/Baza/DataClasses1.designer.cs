@@ -30,22 +30,13 @@ namespace Baza
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void InsertTrainingData(TrainingData instance);
-    partial void UpdateTrainingData(TrainingData instance);
-    partial void DeleteTrainingData(TrainingData instance);
     partial void InsertPurchasePrediction(PurchasePrediction instance);
     partial void UpdatePurchasePrediction(PurchasePrediction instance);
     partial void DeletePurchasePrediction(PurchasePrediction instance);
-    partial void Inserttesting(testing instance);
-    partial void Updatetesting(testing instance);
-    partial void Deletetesting(testing instance);
-    partial void InsertTraining(Training instance);
-    partial void UpdateTraining(Training instance);
-    partial void DeleteTraining(Training instance);
     #endregion
 		
 		public DataClasses1DataContext() : 
-				base(global::Baza.Properties.Settings.Default.PEDConnectionString3, mappingSource)
+				base(global::Baza.Properties.Settings.Default.PEDConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -82,11 +73,11 @@ namespace Baza
 			}
 		}
 		
-		public System.Data.Linq.Table<TrainingData> TrainingDatas
+		public System.Data.Linq.Table<RecommendHistory> RecommendHistories
 		{
 			get
 			{
-				return this.GetTable<TrainingData>();
+				return this.GetTable<RecommendHistory>();
 			}
 		}
 		
@@ -121,38 +112,6 @@ namespace Baza
 				return this.GetTable<PurchasePrediction>();
 			}
 		}
-		
-		public System.Data.Linq.Table<RecommendHistory> RecommendHistories
-		{
-			get
-			{
-				return this.GetTable<RecommendHistory>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Testic> Testics
-		{
-			get
-			{
-				return this.GetTable<Testic>();
-			}
-		}
-		
-		public System.Data.Linq.Table<testing> testings
-		{
-			get
-			{
-				return this.GetTable<testing>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Training> Trainings
-		{
-			get
-			{
-				return this.GetTable<Training>();
-			}
-		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Analysis")]
@@ -167,9 +126,9 @@ namespace Baza
 		
 		private double _AvgPurchasePeriod;
 		
-		private double _MinPurchasePeriod;
-		
 		private double _MaxPurchasePeriod;
+		
+		private double _MinPurchasePeriod;
 		
 		private double _PurchasePeriodStDev;
 		
@@ -243,22 +202,6 @@ namespace Baza
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MinPurchasePeriod", DbType="Float NOT NULL")]
-		public double MinPurchasePeriod
-		{
-			get
-			{
-				return this._MinPurchasePeriod;
-			}
-			set
-			{
-				if ((this._MinPurchasePeriod != value))
-				{
-					this._MinPurchasePeriod = value;
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaxPurchasePeriod", DbType="Float NOT NULL")]
 		public double MaxPurchasePeriod
 		{
@@ -271,6 +214,22 @@ namespace Baza
 				if ((this._MaxPurchasePeriod != value))
 				{
 					this._MaxPurchasePeriod = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MinPurchasePeriod", DbType="Float NOT NULL")]
+		public double MinPurchasePeriod
+		{
+			get
+			{
+				return this._MinPurchasePeriod;
+			}
+			set
+			{
+				if ((this._MinPurchasePeriod != value))
+				{
+					this._MinPurchasePeriod = value;
 				}
 			}
 		}
@@ -308,328 +267,65 @@ namespace Baza
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.TrainingData")]
-	public partial class TrainingData : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.RecommendHistory")]
+	public partial class RecommendHistory
 	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		private string _CustNo;
 		
-		private int _key;
+		private string _ItemNo;
 		
-		private int _numOfItemPurchases;
+		private int _ProcessingDate;
 		
-		private double _itemTwoPercent;
-		
-		private double _itemFivePercent;
-		
-		private double _itemTenPercent;
-		
-		private double _itemAbsouloutError;
-		
-		private int _numOfTotalPurchases;
-		
-		private double _totalTwoPercent;
-		
-		private double _totalFivePercent;
-		
-		private double _totalTenPercent;
-		
-		private double _totalAbsouloutError;
-		
-		private int _forecastCategory;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnkeyChanging(int value);
-    partial void OnkeyChanged();
-    partial void OnnumOfItemPurchasesChanging(int value);
-    partial void OnnumOfItemPurchasesChanged();
-    partial void OnitemTwoPercentChanging(double value);
-    partial void OnitemTwoPercentChanged();
-    partial void OnitemFivePercentChanging(double value);
-    partial void OnitemFivePercentChanged();
-    partial void OnitemTenPercentChanging(double value);
-    partial void OnitemTenPercentChanged();
-    partial void OnitemAbsouloutErrorChanging(double value);
-    partial void OnitemAbsouloutErrorChanged();
-    partial void OnnumOfTotalPurchasesChanging(int value);
-    partial void OnnumOfTotalPurchasesChanged();
-    partial void OntotalTwoPercentChanging(double value);
-    partial void OntotalTwoPercentChanged();
-    partial void OntotalFivePercentChanging(double value);
-    partial void OntotalFivePercentChanged();
-    partial void OntotalTenPercentChanging(double value);
-    partial void OntotalTenPercentChanged();
-    partial void OntotalAbsouloutErrorChanging(double value);
-    partial void OntotalAbsouloutErrorChanged();
-    partial void OnforecastCategoryChanging(int value);
-    partial void OnforecastCategoryChanged();
-    #endregion
-		
-		public TrainingData()
+		public RecommendHistory()
 		{
-			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[key]", Storage="_key", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int key
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string CustNo
 		{
 			get
 			{
-				return this._key;
+				return this._CustNo;
 			}
 			set
 			{
-				if ((this._key != value))
+				if ((this._CustNo != value))
 				{
-					this.OnkeyChanging(value);
-					this.SendPropertyChanging();
-					this._key = value;
-					this.SendPropertyChanged("key");
-					this.OnkeyChanged();
+					this._CustNo = value;
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_numOfItemPurchases", DbType="Int NOT NULL")]
-		public int numOfItemPurchases
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string ItemNo
 		{
 			get
 			{
-				return this._numOfItemPurchases;
+				return this._ItemNo;
 			}
 			set
 			{
-				if ((this._numOfItemPurchases != value))
+				if ((this._ItemNo != value))
 				{
-					this.OnnumOfItemPurchasesChanging(value);
-					this.SendPropertyChanging();
-					this._numOfItemPurchases = value;
-					this.SendPropertyChanged("numOfItemPurchases");
-					this.OnnumOfItemPurchasesChanged();
+					this._ItemNo = value;
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_itemTwoPercent", DbType="Float NOT NULL")]
-		public double itemTwoPercent
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProcessingDate", DbType="Int NOT NULL")]
+		public int ProcessingDate
 		{
 			get
 			{
-				return this._itemTwoPercent;
+				return this._ProcessingDate;
 			}
 			set
 			{
-				if ((this._itemTwoPercent != value))
+				if ((this._ProcessingDate != value))
 				{
-					this.OnitemTwoPercentChanging(value);
-					this.SendPropertyChanging();
-					this._itemTwoPercent = value;
-					this.SendPropertyChanged("itemTwoPercent");
-					this.OnitemTwoPercentChanged();
+					this._ProcessingDate = value;
 				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_itemFivePercent", DbType="Float NOT NULL")]
-		public double itemFivePercent
-		{
-			get
-			{
-				return this._itemFivePercent;
-			}
-			set
-			{
-				if ((this._itemFivePercent != value))
-				{
-					this.OnitemFivePercentChanging(value);
-					this.SendPropertyChanging();
-					this._itemFivePercent = value;
-					this.SendPropertyChanged("itemFivePercent");
-					this.OnitemFivePercentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_itemTenPercent", DbType="Float NOT NULL")]
-		public double itemTenPercent
-		{
-			get
-			{
-				return this._itemTenPercent;
-			}
-			set
-			{
-				if ((this._itemTenPercent != value))
-				{
-					this.OnitemTenPercentChanging(value);
-					this.SendPropertyChanging();
-					this._itemTenPercent = value;
-					this.SendPropertyChanged("itemTenPercent");
-					this.OnitemTenPercentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_itemAbsouloutError", DbType="Float NOT NULL")]
-		public double itemAbsouloutError
-		{
-			get
-			{
-				return this._itemAbsouloutError;
-			}
-			set
-			{
-				if ((this._itemAbsouloutError != value))
-				{
-					this.OnitemAbsouloutErrorChanging(value);
-					this.SendPropertyChanging();
-					this._itemAbsouloutError = value;
-					this.SendPropertyChanged("itemAbsouloutError");
-					this.OnitemAbsouloutErrorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_numOfTotalPurchases", DbType="Int NOT NULL")]
-		public int numOfTotalPurchases
-		{
-			get
-			{
-				return this._numOfTotalPurchases;
-			}
-			set
-			{
-				if ((this._numOfTotalPurchases != value))
-				{
-					this.OnnumOfTotalPurchasesChanging(value);
-					this.SendPropertyChanging();
-					this._numOfTotalPurchases = value;
-					this.SendPropertyChanged("numOfTotalPurchases");
-					this.OnnumOfTotalPurchasesChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_totalTwoPercent", DbType="Float NOT NULL")]
-		public double totalTwoPercent
-		{
-			get
-			{
-				return this._totalTwoPercent;
-			}
-			set
-			{
-				if ((this._totalTwoPercent != value))
-				{
-					this.OntotalTwoPercentChanging(value);
-					this.SendPropertyChanging();
-					this._totalTwoPercent = value;
-					this.SendPropertyChanged("totalTwoPercent");
-					this.OntotalTwoPercentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_totalFivePercent", DbType="Float NOT NULL")]
-		public double totalFivePercent
-		{
-			get
-			{
-				return this._totalFivePercent;
-			}
-			set
-			{
-				if ((this._totalFivePercent != value))
-				{
-					this.OntotalFivePercentChanging(value);
-					this.SendPropertyChanging();
-					this._totalFivePercent = value;
-					this.SendPropertyChanged("totalFivePercent");
-					this.OntotalFivePercentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_totalTenPercent", DbType="Float NOT NULL")]
-		public double totalTenPercent
-		{
-			get
-			{
-				return this._totalTenPercent;
-			}
-			set
-			{
-				if ((this._totalTenPercent != value))
-				{
-					this.OntotalTenPercentChanging(value);
-					this.SendPropertyChanging();
-					this._totalTenPercent = value;
-					this.SendPropertyChanged("totalTenPercent");
-					this.OntotalTenPercentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_totalAbsouloutError", DbType="Float NOT NULL")]
-		public double totalAbsouloutError
-		{
-			get
-			{
-				return this._totalAbsouloutError;
-			}
-			set
-			{
-				if ((this._totalAbsouloutError != value))
-				{
-					this.OntotalAbsouloutErrorChanging(value);
-					this.SendPropertyChanging();
-					this._totalAbsouloutError = value;
-					this.SendPropertyChanged("totalAbsouloutError");
-					this.OntotalAbsouloutErrorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_forecastCategory", DbType="Int NOT NULL")]
-		public int forecastCategory
-		{
-			get
-			{
-				return this._forecastCategory;
-			}
-			set
-			{
-				if ((this._forecastCategory != value))
-				{
-					this.OnforecastCategoryChanging(value);
-					this.SendPropertyChanging();
-					this._forecastCategory = value;
-					this.SendPropertyChanged("forecastCategory");
-					this.OnforecastCategoryChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}
@@ -701,32 +397,16 @@ namespace Baza
 	public partial class PurchaseHistory
 	{
 		
-		private int _InvDate;
-		
 		private string _CustNo;
 		
 		private string _ItemNo;
+		
+		private int _InvDate;
 		
 		private int _InvQty;
 		
 		public PurchaseHistory()
 		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvDate", DbType="Int NOT NULL")]
-		public int InvDate
-		{
-			get
-			{
-				return this._InvDate;
-			}
-			set
-			{
-				if ((this._InvDate != value))
-				{
-					this._InvDate = value;
-				}
-			}
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
@@ -757,6 +437,22 @@ namespace Baza
 				if ((this._ItemNo != value))
 				{
 					this._ItemNo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvDate", DbType="Int NOT NULL")]
+		public int InvDate
+		{
+			get
+			{
+				return this._InvDate;
+			}
+			set
+			{
+				if ((this._InvDate != value))
+				{
+					this._InvDate = value;
 				}
 			}
 		}
@@ -883,31 +579,51 @@ namespace Baza
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
+		private int _key;
+		
 		private string _CustNo;
 		
 		private string _ItemNo;
 		
 		private int _ProcessingDate;
 		
-		private int _key;
-		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
+    partial void OnkeyChanging(int value);
+    partial void OnkeyChanged();
     partial void OnCustNoChanging(string value);
     partial void OnCustNoChanged();
     partial void OnItemNoChanging(string value);
     partial void OnItemNoChanged();
     partial void OnProcessingDateChanging(int value);
     partial void OnProcessingDateChanged();
-    partial void OnkeyChanging(int value);
-    partial void OnkeyChanged();
     #endregion
 		
 		public PurchasePrediction()
 		{
 			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[key]", Storage="_key", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int key
+		{
+			get
+			{
+				return this._key;
+			}
+			set
+			{
+				if ((this._key != value))
+				{
+					this.OnkeyChanging(value);
+					this.SendPropertyChanging();
+					this._key = value;
+					this.SendPropertyChanged("key");
+					this.OnkeyChanged();
+				}
+			}
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
@@ -966,606 +682,6 @@ namespace Baza
 					this._ProcessingDate = value;
 					this.SendPropertyChanged("ProcessingDate");
 					this.OnProcessingDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[key]", Storage="_key", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int key
-		{
-			get
-			{
-				return this._key;
-			}
-			set
-			{
-				if ((this._key != value))
-				{
-					this.OnkeyChanging(value);
-					this.SendPropertyChanging();
-					this._key = value;
-					this.SendPropertyChanged("key");
-					this.OnkeyChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.RecommendHistory")]
-	public partial class RecommendHistory
-	{
-		
-		private string _CustNo;
-		
-		private string _ItemNo;
-		
-		private int _ProcessingDate;
-		
-		public RecommendHistory()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string CustNo
-		{
-			get
-			{
-				return this._CustNo;
-			}
-			set
-			{
-				if ((this._CustNo != value))
-				{
-					this._CustNo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string ItemNo
-		{
-			get
-			{
-				return this._ItemNo;
-			}
-			set
-			{
-				if ((this._ItemNo != value))
-				{
-					this._ItemNo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProcessingDate", DbType="Int NOT NULL")]
-		public int ProcessingDate
-		{
-			get
-			{
-				return this._ProcessingDate;
-			}
-			set
-			{
-				if ((this._ProcessingDate != value))
-				{
-					this._ProcessingDate = value;
-				}
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Testic")]
-	public partial class Testic
-	{
-		
-		private string _CustNo;
-		
-		private string _ItemNo;
-		
-		private int _PredhodniDatum;
-		
-		private int _PredhodnaKupovina;
-		
-		private double _PredvidjenaKupovina;
-		
-		private string _Dali;
-		
-		private string _SledecaPrva;
-		
-		private double _Greska;
-		
-		public Testic()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string CustNo
-		{
-			get
-			{
-				return this._CustNo;
-			}
-			set
-			{
-				if ((this._CustNo != value))
-				{
-					this._CustNo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string ItemNo
-		{
-			get
-			{
-				return this._ItemNo;
-			}
-			set
-			{
-				if ((this._ItemNo != value))
-				{
-					this._ItemNo = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PredhodniDatum", DbType="Int NOT NULL")]
-		public int PredhodniDatum
-		{
-			get
-			{
-				return this._PredhodniDatum;
-			}
-			set
-			{
-				if ((this._PredhodniDatum != value))
-				{
-					this._PredhodniDatum = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PredhodnaKupovina", DbType="Int NOT NULL")]
-		public int PredhodnaKupovina
-		{
-			get
-			{
-				return this._PredhodnaKupovina;
-			}
-			set
-			{
-				if ((this._PredhodnaKupovina != value))
-				{
-					this._PredhodnaKupovina = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PredvidjenaKupovina", DbType="Float NOT NULL")]
-		public double PredvidjenaKupovina
-		{
-			get
-			{
-				return this._PredvidjenaKupovina;
-			}
-			set
-			{
-				if ((this._PredvidjenaKupovina != value))
-				{
-					this._PredvidjenaKupovina = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Dali", DbType="NVarChar(50)")]
-		public string Dali
-		{
-			get
-			{
-				return this._Dali;
-			}
-			set
-			{
-				if ((this._Dali != value))
-				{
-					this._Dali = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SledecaPrva", DbType="NVarChar(50)")]
-		public string SledecaPrva
-		{
-			get
-			{
-				return this._SledecaPrva;
-			}
-			set
-			{
-				if ((this._SledecaPrva != value))
-				{
-					this._SledecaPrva = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Greska", DbType="Float NOT NULL")]
-		public double Greska
-		{
-			get
-			{
-				return this._Greska;
-			}
-			set
-			{
-				if ((this._Greska != value))
-				{
-					this._Greska = value;
-				}
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.testing")]
-	public partial class testing : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _CustNo;
-		
-		private string _ItemNo;
-		
-		private double _pred;
-		
-		private int _key;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnCustNoChanging(string value);
-    partial void OnCustNoChanged();
-    partial void OnItemNoChanging(string value);
-    partial void OnItemNoChanged();
-    partial void OnpredChanging(double value);
-    partial void OnpredChanged();
-    partial void OnkeyChanging(int value);
-    partial void OnkeyChanged();
-    #endregion
-		
-		public testing()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string CustNo
-		{
-			get
-			{
-				return this._CustNo;
-			}
-			set
-			{
-				if ((this._CustNo != value))
-				{
-					this.OnCustNoChanging(value);
-					this.SendPropertyChanging();
-					this._CustNo = value;
-					this.SendPropertyChanged("CustNo");
-					this.OnCustNoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string ItemNo
-		{
-			get
-			{
-				return this._ItemNo;
-			}
-			set
-			{
-				if ((this._ItemNo != value))
-				{
-					this.OnItemNoChanging(value);
-					this.SendPropertyChanging();
-					this._ItemNo = value;
-					this.SendPropertyChanged("ItemNo");
-					this.OnItemNoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pred", DbType="Float NOT NULL")]
-		public double pred
-		{
-			get
-			{
-				return this._pred;
-			}
-			set
-			{
-				if ((this._pred != value))
-				{
-					this.OnpredChanging(value);
-					this.SendPropertyChanging();
-					this._pred = value;
-					this.SendPropertyChanged("pred");
-					this.OnpredChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[key]", Storage="_key", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int key
-		{
-			get
-			{
-				return this._key;
-			}
-			set
-			{
-				if ((this._key != value))
-				{
-					this.OnkeyChanging(value);
-					this.SendPropertyChanging();
-					this._key = value;
-					this.SendPropertyChanged("key");
-					this.OnkeyChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Training")]
-	public partial class Training : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _key;
-		
-		private string _CustNo;
-		
-		private string _ItemNo;
-		
-		private int _from;
-		
-		private int _to;
-		
-		private int _occurred;
-		
-		private double _predictedConsumption;
-		
-		private int _lastInvQty;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnkeyChanging(int value);
-    partial void OnkeyChanged();
-    partial void OnCustNoChanging(string value);
-    partial void OnCustNoChanged();
-    partial void OnItemNoChanging(string value);
-    partial void OnItemNoChanged();
-    partial void OnfromChanging(int value);
-    partial void OnfromChanged();
-    partial void OntoChanging(int value);
-    partial void OntoChanged();
-    partial void OnoccurredChanging(int value);
-    partial void OnoccurredChanged();
-    partial void OnpredictedConsumptionChanging(double value);
-    partial void OnpredictedConsumptionChanged();
-    partial void OnlastInvQtyChanging(int value);
-    partial void OnlastInvQtyChanged();
-    #endregion
-		
-		public Training()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[key]", Storage="_key", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int key
-		{
-			get
-			{
-				return this._key;
-			}
-			set
-			{
-				if ((this._key != value))
-				{
-					this.OnkeyChanging(value);
-					this.SendPropertyChanging();
-					this._key = value;
-					this.SendPropertyChanged("key");
-					this.OnkeyChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string CustNo
-		{
-			get
-			{
-				return this._CustNo;
-			}
-			set
-			{
-				if ((this._CustNo != value))
-				{
-					this.OnCustNoChanging(value);
-					this.SendPropertyChanging();
-					this._CustNo = value;
-					this.SendPropertyChanged("CustNo");
-					this.OnCustNoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemNo", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string ItemNo
-		{
-			get
-			{
-				return this._ItemNo;
-			}
-			set
-			{
-				if ((this._ItemNo != value))
-				{
-					this.OnItemNoChanging(value);
-					this.SendPropertyChanging();
-					this._ItemNo = value;
-					this.SendPropertyChanged("ItemNo");
-					this.OnItemNoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[from]", Storage="_from", DbType="Int NOT NULL")]
-		public int from
-		{
-			get
-			{
-				return this._from;
-			}
-			set
-			{
-				if ((this._from != value))
-				{
-					this.OnfromChanging(value);
-					this.SendPropertyChanging();
-					this._from = value;
-					this.SendPropertyChanged("from");
-					this.OnfromChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[to]", Storage="_to", DbType="Int NOT NULL")]
-		public int to
-		{
-			get
-			{
-				return this._to;
-			}
-			set
-			{
-				if ((this._to != value))
-				{
-					this.OntoChanging(value);
-					this.SendPropertyChanging();
-					this._to = value;
-					this.SendPropertyChanged("to");
-					this.OntoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_occurred", DbType="Int NOT NULL")]
-		public int occurred
-		{
-			get
-			{
-				return this._occurred;
-			}
-			set
-			{
-				if ((this._occurred != value))
-				{
-					this.OnoccurredChanging(value);
-					this.SendPropertyChanging();
-					this._occurred = value;
-					this.SendPropertyChanged("occurred");
-					this.OnoccurredChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_predictedConsumption", DbType="Float NOT NULL")]
-		public double predictedConsumption
-		{
-			get
-			{
-				return this._predictedConsumption;
-			}
-			set
-			{
-				if ((this._predictedConsumption != value))
-				{
-					this.OnpredictedConsumptionChanging(value);
-					this.SendPropertyChanging();
-					this._predictedConsumption = value;
-					this.SendPropertyChanged("predictedConsumption");
-					this.OnpredictedConsumptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_lastInvQty", DbType="Int NOT NULL")]
-		public int lastInvQty
-		{
-			get
-			{
-				return this._lastInvQty;
-			}
-			set
-			{
-				if ((this._lastInvQty != value))
-				{
-					this.OnlastInvQtyChanging(value);
-					this.SendPropertyChanging();
-					this._lastInvQty = value;
-					this.SendPropertyChanged("lastInvQty");
-					this.OnlastInvQtyChanged();
 				}
 			}
 		}

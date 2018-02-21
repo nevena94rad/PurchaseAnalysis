@@ -19,28 +19,29 @@ namespace Baza.DTO
         public static Object thisLock = new Object();
         public static event System.Action OnProgressUpdate;
 
+        /// <summary>
+        /// nevena
+        /// </summary>
+        /// <param name="date"></param>
         public void getAllItems(int date)
         {
-            // ucitati sve iteme koje je cust narucio vise od 2 puta (3+)
-
-            
+            itemNos = new List<string>();
             DateTime bDate = Prediction.intToDateTime(date);
-            //var allItems1 = from customer in db.PurchaseHistories
-            //               where customer.CustNo == custNo && customer.InvDate < date
-            //               group customer by customer.ItemNo into groupedCustomer
-            //               where groupedCustomer.Count() > 2
-            //               select new { ItemNo = groupedCustomer.Key, max = groupedCustomer.ToList().Max(x => x.InvDate) };
             
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
 
-            string queryString = "select distinct(itemNo) from " + 
-                ConfigurationManager.AppSettings[name: "PurchasePeriods"]+
-                " where CustNo= @custNo and InvDateCurr<@bDate" +
-                " group by itemNo " + "having count(*)>1 and max(InvDateCurr)>@bDateMinus6Months " +
-                " and min(PurchasePeriod) * 0.5< DATEDIFF(DAY, max(InvDateCurr), @bDate) + 7" +
-                " and max(PurchasePeriod) * 1.5 > DATEDIFF(DAY, max(InvDateCurr), @bDate)";
+            string Table = ConfigurationManager.AppSettings[name: "PurchasePeriods"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePeriods_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchasePeriods_ItemID"];
+            string Period = ConfigurationManager.AppSettings[name: "PurchasePeriods_Period"];
+            string PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
 
-            itemNos = new List<string>();
+            string queryString = "select distinct("+ItemID+") from " + Table +
+                " where "+CustomerID+ "= @custNo" + " and " + PeriodEnd + "<@bDate" +
+                " group by "+ItemID + " having count(*)>1 and max("+ PeriodEnd + ")>@bDateMinus6Months " +
+                " and min(" + Period + ") * 0.5< DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) + 7" +
+                " and max(" + Period + ") * 1.5 > DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate)";
+
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -59,113 +60,173 @@ namespace Baza.DTO
                     
                 }
             }
-            //var db = new DataClasses1DataContext();
-            //var allItems = from period in db.PurchasePeriods
-            //               where period.CustNo == custNo && period.InvDateCurr < bDate
-            //               group period by period.ItemNo into groupedPeriod
-            //               where groupedPeriod.Count() > 1
-            //               select new
-            //               {
-            //                   ItemNo = groupedPeriod.Key,
-            //                   last = groupedPeriod.ToList().Max(x => x.InvDateCurr),
-            //                   min = groupedPeriod.ToList().Min(x => x.PurchasePeriod1),
-            //                   max = groupedPeriod.ToList().Max(x => x.PurchasePeriod1)
-            //               };
-
-            //var items = allItems.ToList();
-            //items.RemoveAll(x => x.last < bDate.AddMonths(-6) || x.min * 0.5 > (bDate - x.last).Days + 7 || x.max * 1.5 < (bDate - x.last).Days);
-
-            //var itemNos1 = (from item in items
-            //          select item.ItemNo).Distinct().ToList();
+            
         }
         public List<Prediction> makeAllPredictions(int date)
         {
-            // za svaki item se prave predikcije
-            // za svaku predikciju se pamti za koj period je izvrsena, kad je predvidjena i kad se desila sl kupovina
-
+            
             List<Prediction> returnList = new List<Prediction>();
-
-            var db = new DataClasses1DataContext();
+            
             
             foreach (var item in itemNos)
             {
-                var allDates = (from purchase in db.PurchaseHistories
-                               where purchase.CustNo == custNo && purchase.ItemNo == item
-                               && purchase.InvDate < date
-                               orderby purchase.InvDate
-                               select purchase.InvDate).Distinct();
 
-                List<int> listOfDates = allDates.ToList();
+                int start = -1;
+                int end = -1;
 
-                var end = listOfDates.Last();
-                var start = (from element in listOfDates
-                             where (Prediction.intToDateTime(end) - Prediction.intToDateTime(element)).Days < 700
-                             select element).Min();
-                
+                var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+                string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+                string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+                string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+                string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
 
-                int quantity = getPurchaseQuantity(item, end);
+                string queryString = "select min("+ PurchaseDate + "), max(" + PurchaseDate + ") from " +
+                    Table + " where "+CustomerID+"=@custNo and "+ItemID+"=@itemNo and "+ PurchaseDate+"<@todaysDate";
 
-                var prediction = Prediction.makePrediction(custNo, item, start, end, date, quantity);
 
-                if (prediction.predictedConsumption >= 0)
-                    returnList.Add(prediction);
-                
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    var command = new SqlCommand(queryString, connection);
+                    command.Parameters.AddWithValue("@custNo", custNo);
+                    command.Parameters.AddWithValue("@itemNo", item);
+                    command.Parameters.AddWithValue("@todaysDate", date);
+
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+
+                        if (reader.Read())
+                        {
+                            start = (int)reader[0];
+                            end = (int)reader[1];
+                        }
+
+                    }
+                }
+
+
+                if (start != -1 && end != -1)
+                {
+                    int quantity = getPurchaseQuantity(item, end);
+
+                    var prediction = Prediction.makePrediction(custNo, item, start, end, date, quantity);
+
+                    if (prediction.predictedConsumption >= 0)
+                        returnList.Add(prediction);
+                }
             }
             
             return returnList;
         }
         private int getPurchaseQuantity(string item, int date)
         {
-            var db = new DataClasses1DataContext();
+            int sum = 0;
 
-            var quantityQuery = (from purchase in db.PurchaseHistories
-                                 where purchase.CustNo == custNo &&
-                                         purchase.ItemNo == item &&
-                                         purchase.InvDate == date
-                                 select purchase.InvQty).Sum();
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+            string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+            string queryString = "select sum(" + PurchaseQuantity + ") from " + Table + 
+                " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "=@definedDate";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@custNo", custNo);
+                command.Parameters.AddWithValue("@itemNo", item);
+                command.Parameters.AddWithValue("@definedDate", date);
 
 
-            return quantityQuery;
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        sum = (int)reader[0];
+                    }
+                }
+            }
+
+            return sum;
         }
         public void PredictAllItems(int date)
         {
             getAllItems(date);
             List<Prediction> allCustomerPredictions = makeAllPredictions(date);
-            allCustomerPredictions.OrderBy(x => x.to);
 
-            var db = new DataClasses1DataContext();
 
             int predictionCount = allCustomerPredictions.Count();
 
-            for (int i = 0; i < predictionCount; i++)
-            {
-                PurchasePrediction newPrediction = new PurchasePrediction();
-                newPrediction.ItemNo = allCustomerPredictions[i].itemNo;
-                newPrediction.CustNo = custNo;
-                newPrediction.ProcessingDate = date;
-                db.PurchasePredictions.InsertOnSubmit(newPrediction);
-            }
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PurchasePrediction"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePrediction_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemID"];
+            string ProcessingDate = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingDate"];
 
+            string queryString = "insert into "+ Table + "("+CustomerID+","+ItemID+","+ProcessingDate+") values (" +
+                "@CustNo, @ItemNo, @ProcessingDate)";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                for (int i = 0; i < predictionCount; i++)
+                {
+
+                    var command = new SqlCommand(queryString, connection);
+                    command.Parameters.AddWithValue("@custNo", custNo);
+                    command.Parameters.AddWithValue("@itemNo", allCustomerPredictions[i].itemNo);
+                    command.Parameters.AddWithValue("@ProcessingDate", date);
+
+                    command.ExecuteNonQuery();
+                
+                }
+            }
             lock(thisLock)
             {
                 totalWrites += predictionCount;
             }
-            db.SubmitChanges();
+            
         }
         
         public static void nextWeekPredictions(int date, Action t1_OnProgressUpdate)
         {
             ItemConsumption.readAllItemData(date);
             OnProgressUpdate += t1_OnProgressUpdate;
-            List<Customer> returnList = new List<Customer>();
+            List<string> allCustomers = new List<string>();
 
-            var db = new DataClasses1DataContext();
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
 
-            var allCustomers = (from customer in db.PurchaseHistories
-                                select customer.CustNo).Distinct();
+            string queryString = "select distinct(" + CustomerID + ") from " + Table+ " where " + PurchaseDate + "< @date";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@date", date);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        allCustomers.Add(reader[0].ToString());
+                    }
+                }
+            }
 
             int custCount = allCustomers.Count();
             var listCust = allCustomers.ToList();
+            
             Tcount = custCount;
             Dcount = 0;
             Parallel.For(0, custCount,new ParallelOptions { MaxDegreeOfParallelism = 50}, i =>

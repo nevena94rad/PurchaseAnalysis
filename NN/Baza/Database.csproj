@@ -57,10 +57,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataClasses1.dbml</DependentUpon>
     </Compile>
+    <Compile Include="DTO\ConsumptionData.cs" />
     <Compile Include="DTO\Customer.cs" />
     <Compile Include="DTO\DailyValue.cs" />
     <Compile Include="DTO\ItemConsumption.cs" />
-    <Compile Include="DTO\ConsumptionData.cs" />
     <Compile Include="DTO\LogRecord.cs" />
     <Compile Include="DTO\Prediction.cs" />
     <Compile Include="DTO\REngineRunner.cs" />
