@@ -36,7 +36,6 @@ namespace WindowsFormsApp1
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            Prediction.init();
             Customer.nextWeekPredictionsAsync(DateManipulation.DateTimeToint(dateTimePicker1.Value), t1_OnProgressUpdate);
         }
         private void t1_OnProgressUpdate()

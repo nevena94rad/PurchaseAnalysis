@@ -27,7 +27,7 @@ namespace Baza.DTO
             en.Evaluate("library(\"forecast\")");
             en.Evaluate("source("+ ConfigurationManager.AppSettings[name: "LoadingScript"] +")");
         }
-        public static void doCustomer(string customerID, int date, List<string> itemNos)
+        public static void doCustomer(string customerID, List<string> itemNos)
         { 
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -50,7 +50,7 @@ namespace Baza.DTO
 
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.AddWithValue("@CustID", customerID);
-                command.Parameters.AddWithValue("@InvDate", date);
+                command.Parameters.AddWithValue("@InvDate", Parameters.processingDate);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -75,7 +75,7 @@ namespace Baza.DTO
                 }
             }
             var file = file1.Replace('\\', '/');
-            ExecuteRScriptAlternativeWay(ConfigurationManager.AppSettings[name: "ExecuteScript"], file, date.ToString(), customerID, itemNos, date);
+            ExecuteRScriptAlternativeWay(ConfigurationManager.AppSettings[name: "ExecuteScript"], file, Parameters.processingDate.ToString(), customerID, itemNos, date);
             TempFile.TempFileHelper.DeleteTmpFile(file1);
         }
         public static double makePredictionBTYD(string cust, string item)
