@@ -137,7 +137,7 @@ namespace Baza.DTO
 
             return sum;
         }
-        public void PredictAllItems()
+        public void PredictAllItems(int modelID)
         {
             getAllItems();
             List<Prediction> allCustomerPredictions = new List<Prediction>();
@@ -146,17 +146,32 @@ namespace Baza.DTO
                 allCustomerPredictions = makeAllPredictions();
             }
 
-            int predictionCount = allCustomerPredictions.Count();
+            allCustomerPredictions = allCustomerPredictions.OrderByDescending(x => x.predictedConsumption).ToList();
+            List<Prediction> sortedPredictions = new List<Prediction>();
+            int count = 0;
+            foreach(Prediction pr in allCustomerPredictions)
+            {
+                if (pr.predictedConsumption >= Parameters.predictionPercentageCutOff)
+                {
+                    sortedPredictions.Add(pr);
+                    count++;
+                }
+            }
+            while(count<=Parameters.predictionCountCutOff && count<=allCustomerPredictions.Count)
+            {
+                sortedPredictions.Add(allCustomerPredictions[count]);
+                count++;
+            }
+            int predictionCount = sortedPredictions.Count();
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "PurchasePrediction"];
             string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePrediction_CustomerID"];
             string ItemID = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemID"];
-            string ProcessingDate = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingDate"];
             string ProcessingValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
 
-            string queryString = "insert into "+ Table + "("+CustomerID+","+ItemID+","+ProcessingDate+","+ProcessingValue+"" +
-                ") values (@CustNo, @ItemNo, @ProcessingDate, @ProcessingValue)";
+            string queryString = "insert into "+ Table + "("+CustomerID+","+ItemID+","+ProcessingValue+"," + modelID + 
+                ") values (@CustNo, @ItemNo, @ProcessingDate, @ProcessingValue, @Model)";
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -166,10 +181,10 @@ namespace Baza.DTO
                 {
 
                     var command = new SqlCommand(queryString, connection);
-                    command.Parameters.AddWithValue("@custNo", custNo);
-                    command.Parameters.AddWithValue("@itemNo", allCustomerPredictions[i].itemNo);
+                    command.Parameters.AddWithValue("@CustNo", custNo);
+                    command.Parameters.AddWithValue("@ItemNo", allCustomerPredictions[i].itemNo);
                     command.Parameters.AddWithValue("@ProcessingValue", allCustomerPredictions[i].predictedConsumption);
-                    command.Parameters.AddWithValue("@ProcessingDate", Parameters.processingDate);
+                    command.Parameters.AddWithValue("@Model", modelID);
 
                     command.ExecuteNonQuery();
                 
