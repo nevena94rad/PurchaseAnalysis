@@ -75,7 +75,7 @@ namespace Baza.DTO
                 }
             }
             var file = file1.Replace('\\', '/');
-            ExecuteRScriptAlternativeWay(ConfigurationManager.AppSettings[name: "ExecuteScript"], file, Parameters.processingDate.ToString(), customerID, itemNos, date);
+            ExecuteRScriptAlternativeWay(ConfigurationManager.AppSettings[name: "ExecuteScript"], file, Parameters.processingDate.ToString(), customerID, itemNos, Parameters.processingDate);
             TempFile.TempFileHelper.DeleteTmpFile(file1);
         }
         public static double makePredictionBTYD(string cust, string item)
