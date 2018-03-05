@@ -17,6 +17,7 @@ namespace Baza.DTO
         public static int TotalCount = 0;
         public static int DoneCount = 0;
         public static int totalWrites = 0;
+        public static int modelID = 0;
         public static Object thisLock = new Object();
         public static Object thisLock2 = new Object();
         public static event System.Action OnProgressUpdate;
@@ -69,7 +70,7 @@ namespace Baza.DTO
             List<Prediction> returnList = new List<Prediction>();
 
             if (itemNos.Count() != 0)
-                Prediction.doCustomer(custNo, itemNos);
+                modelID = Prediction.doCustomer(custNo, itemNos);
 
             for (var i = 0; i < itemNos.Count(); i++)
             {
@@ -137,7 +138,7 @@ namespace Baza.DTO
 
             return sum;
         }
-        public void PredictAllItems(int modelID)
+        public void PredictAllItems()
         {
             getAllItems();
             List<Prediction> allCustomerPredictions = new List<Prediction>();
@@ -171,7 +172,7 @@ namespace Baza.DTO
             string ProcessingValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
 
             string queryString = "insert into "+ Table + "("+CustomerID+","+ItemID+","+ProcessingValue+"," + modelID + 
-                ") values (@CustNo, @ItemNo, @ProcessingDate, @ProcessingValue, @Model)";
+                ") values (@CustNo, @ItemNo, @ProcessingValue, @Model)";
 
             using (var connection = new SqlConnection(connectionString))
             {
