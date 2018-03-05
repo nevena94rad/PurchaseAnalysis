@@ -105,3 +105,16 @@ C:\Users\ne cackaj mi komp\Documents\poso\Radna\Code\Baza\obj\Debug\Database.csp
 C:\Users\ne cackaj mi komp\Documents\poso\Radna\Code\Baza\obj\Debug\Database.csproj.CoreCompileInputs.cache
 C:\Users\ne cackaj mi komp\Documents\poso\Radna\Code\Baza\obj\Debug\Baza.dll
 C:\Users\ne cackaj mi komp\Documents\poso\Radna\Code\Baza\obj\Debug\Baza.pdb
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\Baza.dll.config
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\Baza.dll
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\Baza.pdb
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\DynamicInterop.dll
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\RDotNet.dll
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\RDotNet.NativeLibrary.dll
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\DynamicInterop.xml
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\RDotNet.xml
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\bin\Debug\RDotNet.NativeLibrary.xml
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Database.csprojResolveAssemblyReference.cache
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Database.csproj.CoreCompileInputs.cache
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Baza.dll
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Baza.pdb

@@ -1,14 +1,14 @@
 
-elog$date <- as.Date(elog$date, "%Y%m%d");
-elog <- dc.MergeTransactionsOnSameDate(elog);
+try(elog$date <- as.Date(elog$date, "%Y%m%d"));
+try(elog <- dc.MergeTransactionsOnSameDate(elog));
 
-split.data <- dc.SplitUpElogForRepeatTrans(elog);
-clean.elog <- split.data$repeat.trans.elog;
-freq.cbt <- dc.CreateSpendCBT(clean.elog);
+try(split.data <- dc.SplitUpElogForRepeatTrans(elog));
+try(clean.elog <- split.data$repeat.trans.elog);
+try(freq.cbt <- dc.CreateSpendCBT(clean.elog));
 
-tot.cbt <- dc.CreateSpendCBT(elog)
-cal.cbt <- dc.MergeCustomers(tot.cbt, freq.cbt)
+try(tot.cbt <- dc.CreateSpendCBT(elog))
+try(cal.cbt <- dc.MergeCustomers(tot.cbt, freq.cbt))
 
-birth.periods <- split.data$cust.data$birth.per
-last.dates <- split.data$cust.data$last.date
+try(birth.periods <- split.data$cust.data$birth.per)
+try(last.dates <- split.data$cust.data$last.date)
 
