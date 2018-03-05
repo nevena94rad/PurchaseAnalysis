@@ -14,7 +14,7 @@ namespace Baza.DTO
         public static double predictionPercentageCutOff = 10;
         public static int predictionCountCutOff = 10;
         public static int processingDate;
-        public static int databaseID;
+        public static int tableID;
 
         public static void LoadParameters(int date)
         {
@@ -57,7 +57,7 @@ namespace Baza.DTO
                 command.Parameters.AddWithValue("@PercentageCutOff", predictionPercentageCutOff);
                 command.Parameters.AddWithValue("@CountCutOff", predictionCountCutOff);
 
-                databaseID = (int) command.ExecuteScalar();
+                tableID = (int) command.ExecuteScalar();
 
                 
             }

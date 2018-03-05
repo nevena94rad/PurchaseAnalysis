@@ -118,7 +118,7 @@ namespace Baza.DTO
                     var command = new SqlCommand(queryString, connection);
                     command.Parameters.AddWithValue("@custNo", cust);
                     command.Parameters.AddWithValue("@Model", param);
-                    command.Parameters.AddWithValue("@Parameters_ID", Parameters.databaseID);
+                    command.Parameters.AddWithValue("@Parameters_ID", Parameters.tableID);
 
                     return (int)command.ExecuteScalar();
 
