@@ -21,12 +21,12 @@ namespace Baza.DTO
         public static Object thisLock2 = new Object();
         public static event System.Action OnProgressUpdate;
         
-        public void getAllItems(int processingDate)
+        public void getAllItems()
         {
             itemNos = new List<string>();
             lastPurchases = new List<int>();
 
-            DateTime processingDateDateFormat = DateManipulation.intToDateTime(processingDate);
+            DateTime processingDateDateFormat = DateManipulation.intToDateTime(Parameters.processingDate);
             
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
 
@@ -63,13 +63,13 @@ namespace Baza.DTO
             }
             
         }
-        public List<Prediction> makeAllPredictions(int processingDate)
+        public List<Prediction> makeAllPredictions()
         {
 
             List<Prediction> returnList = new List<Prediction>();
 
             if (itemNos.Count() != 0)
-                Prediction.doCustomer(custNo, processingDate, itemNos);
+                Prediction.doCustomer(custNo, itemNos);
 
             for (var i = 0; i < itemNos.Count(); i++)
             {
@@ -80,25 +80,23 @@ namespace Baza.DTO
                 {
                     var predicted = Prediction.makePredictionBTYD(custNo, i.ToString());
                     var qty = getPurchaseQuantity(itemNos[i], end);
-                    var limit = 0.2 * qty;
-                    if (predicted >= limit && qty>0)
+
+                    if (predicted >= qty && predicted < 100 * qty)
                     {
-                        if (predicted >= qty && predicted < 100* qty)
-                        {
-                            var percentage = 50 + 45 * Math.Pow((1 - qty / predicted),4); 
-                            returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
-                        }
-                        else if (predicted > 100 * qty)
-                        {
-                            var percentage = 95;
-                            returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
-                        }
-                        else if (predicted < qty)
-                        {
-                            var percentage = 50 * (predicted / qty);
-                            returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
-                        }
+                        var percentage = 50 + 45 * Math.Pow((1 - qty / predicted), 4);
+                        returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
                     }
+                    else if (predicted > 100 * qty)
+                    {
+                        var percentage = 95;
+                        returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
+                    }
+                    else if (predicted < qty)
+                    {
+                        var percentage = 50 * (predicted / qty);
+                        returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
+                    }
+                    
                 }
             }
 
@@ -139,13 +137,13 @@ namespace Baza.DTO
 
             return sum;
         }
-        public void PredictAllItems(int date)
+        public void PredictAllItems()
         {
-            getAllItems(date);
+            getAllItems();
             List<Prediction> allCustomerPredictions = new List<Prediction>();
             lock (thisLock2)
             {
-                allCustomerPredictions = makeAllPredictions(date);
+                allCustomerPredictions = makeAllPredictions();
             }
 
             int predictionCount = allCustomerPredictions.Count();
@@ -171,7 +169,7 @@ namespace Baza.DTO
                     command.Parameters.AddWithValue("@custNo", custNo);
                     command.Parameters.AddWithValue("@itemNo", allCustomerPredictions[i].itemNo);
                     command.Parameters.AddWithValue("@ProcessingValue", allCustomerPredictions[i].predictedConsumption);
-                    command.Parameters.AddWithValue("@ProcessingDate", date);
+                    command.Parameters.AddWithValue("@ProcessingDate", Parameters.processingDate);
 
                     command.ExecuteNonQuery();
                 
@@ -186,6 +184,8 @@ namespace Baza.DTO
 
         public static async Task nextWeekPredictionsAsync(int date, Action t1_OnProgressUpdate)
         {
+            Parameters.LoadParameters(date);
+            Prediction.init();
             OnProgressUpdate += t1_OnProgressUpdate;
             List<string> allCustomers = new List<string>();
 
@@ -203,7 +203,8 @@ namespace Baza.DTO
 
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.AddWithValue("@date", date);
-                command.Parameters.AddWithValue("@dateMin", DateManipulation.DateTimeToint(DateManipulation.intToDateTime(date).AddMonths(-6)));
+                command.Parameters.AddWithValue("@dateMin", 
+                    DateManipulation.DateTimeToint(DateManipulation.intToDateTime(date).AddMonths(-Parameters.customerRecency)));
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -228,7 +229,7 @@ namespace Baza.DTO
                 };
 
                 int timeout = 300000;
-                var task = Task.Run(() => newCustomer.PredictAllItems(date));
+                var task = Task.Run(() => newCustomer.PredictAllItems());
                 if (await Task.WhenAny(task, Task.Delay(timeout)) == task)
                 {
                     // task completed within timeout

@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="DTO\Customer.cs" />
     <Compile Include="DTO\DateManipulation.cs" />
+    <Compile Include="DTO\Parameters.cs" />
     <Compile Include="DTO\Prediction.cs" />
     <Compile Include="DTO\TempFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
