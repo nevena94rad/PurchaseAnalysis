@@ -27,7 +27,7 @@ namespace Baza.DTO
             en.Evaluate("library(\"forecast\")");
             en.Evaluate("source("+ ConfigurationManager.AppSettings[name: "LoadingScript"] +")");
         }
-        public static void doCustomer(string customerID, List<string> itemNos)
+        public static int doCustomer(string customerID, List<string> itemNos)
         { 
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -75,8 +75,10 @@ namespace Baza.DTO
                 }
             }
             var file = file1.Replace('\\', '/');
-            ExecuteRScriptAlternativeWay(ConfigurationManager.AppSettings[name: "ExecuteScript"], file, Parameters.processingDate.ToString(), customerID, itemNos, Parameters.processingDate);
+            int modelID = ExecuteRScriptAlternativeWay(ConfigurationManager.AppSettings[name: "ExecuteScript"], file, Parameters.processingDate.ToString(), customerID, itemNos, Parameters.processingDate);
             TempFile.TempFileHelper.DeleteTmpFile(file1);
+
+            return modelID;
         }
         public static double makePredictionBTYD(string cust, string item)
         {
@@ -85,7 +87,7 @@ namespace Baza.DTO
             en.Evaluate("try(T.cal <- cal.cbs[\"" + item + "\", \"T.cal\"])");
             return en.Evaluate("try(pnbd.ConditionalExpectedTransactions(params, T.star = 1, x, t.x, T.cal))").AsNumeric().First();
         }
-        public static void ExecuteRScriptAlternativeWay(string rCodeFilePath, string p1, string p2, string cust, List<string> it, int date)
+        public static int ExecuteRScriptAlternativeWay(string rCodeFilePath, string p1, string p2, string cust, List<string> it, int date)
         {
 
             var args_r = new string[2] { p1, p2 };
@@ -104,10 +106,10 @@ namespace Baza.DTO
                 string Table = ConfigurationManager.AppSettings[name: "CustomerModel"];
                 string CustomerID = ConfigurationManager.AppSettings[name: "CustomerModel_CustomerID"];
                 string Model = ConfigurationManager.AppSettings[name: "CustomerModel_Model"];
-                string ProcessingDate = ConfigurationManager.AppSettings[name: "CustomerModel_ProcessingDate"];
+                string Parameters_ID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
 
-                string queryString = "insert into " + Table + " (" + CustomerID + "," + Model + "," + ProcessingDate +  "" +
-                ") values (@CustNo, @Model, @ProcessingDate)";
+                string queryString = "insert into " + Table + " (" + CustomerID + "," + Model + "," + Parameters_ID+"" +
+                ") values (@CustNo, @Model, @Parameters_ID)";
 
                 using (var connection = new SqlConnection(connectionString))
                 {
@@ -116,10 +118,10 @@ namespace Baza.DTO
                     var command = new SqlCommand(queryString, connection);
                     command.Parameters.AddWithValue("@custNo", cust);
                     command.Parameters.AddWithValue("@Model", param);
-                    command.Parameters.AddWithValue("@ProcessingDate", date);
+                    command.Parameters.AddWithValue("@Parameters_ID", Parameters.databaseID);
 
-                    command.ExecuteNonQuery();
-                    
+                    return (int)command.ExecuteScalar();
+
                 }
             }
         }
