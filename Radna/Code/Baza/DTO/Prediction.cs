@@ -56,9 +56,9 @@ namespace Baza.DTO
                 {
                     while (reader.Read())
                     {
-                        if (itemNos.Contains(reader[0].ToString()))
+                        if (itemNos.Contains(reader[0].ToString().Replace(" ", String.Empty)))
                         {
-                            ids.Add(reader[0].ToString());
+                            ids.Add(reader[0].ToString().Replace(" ", String.Empty));
                             purchaseDates.Add((int)reader[1]);
                             quantities.Add((int)reader[2]);
                         }
@@ -109,7 +109,7 @@ namespace Baza.DTO
                 string Parameters_ID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
 
                 string queryString = "insert into " + Table + " (" + CustomerID + "," + Model + "," + Parameters_ID+"" +
-                ") values (@CustNo, @Model, @Parameters_ID)";
+                ") OUTPUT INSERTED.ID values (@CustNo, @Model, @Parameters_ID)";
 
                 using (var connection = new SqlConnection(connectionString))
                 {

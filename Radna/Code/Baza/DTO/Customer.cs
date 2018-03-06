@@ -56,7 +56,7 @@ namespace Baza.DTO
                     
                     while (reader.Read())
                     {
-                        itemNos.Add((String)reader[0]);
+                        itemNos.Add(((String)reader[0]).Replace(" ", String.Empty));
                         lastPurchases.Add(DateManipulation.DateTimeToint((DateTime)reader[1]));
                     }
                     
@@ -158,7 +158,7 @@ namespace Baza.DTO
                     count++;
                 }
             }
-            while(count<=Parameters.predictionCountCutOff && count<=allCustomerPredictions.Count)
+            while(count<=Parameters.predictionCountCutOff && count<allCustomerPredictions.Count)
             {
                 sortedPredictions.Add(allCustomerPredictions[count]);
                 count++;
@@ -183,8 +183,8 @@ namespace Baza.DTO
 
                     var command = new SqlCommand(queryString, connection);
                     command.Parameters.AddWithValue("@CustNo", custNo);
-                    command.Parameters.AddWithValue("@ItemNo", allCustomerPredictions[i].itemNo);
-                    command.Parameters.AddWithValue("@ProcessingValue", allCustomerPredictions[i].predictedConsumption);
+                    command.Parameters.AddWithValue("@ItemNo", sortedPredictions[i].itemNo);
+                    command.Parameters.AddWithValue("@ProcessingValue", sortedPredictions[i].predictedConsumption);
                     command.Parameters.AddWithValue("@Model", modelID);
 
                     command.ExecuteNonQuery();
@@ -198,9 +198,9 @@ namespace Baza.DTO
             
         }
 
-        public static async Task nextWeekPredictionsAsync(int date, Action t1_OnProgressUpdate)
+        public static async Task nextWeekPredictionsAsync(int date,Action t1_OnProgressUpdate)
         {
-            Parameters.LoadParameters(date);
+            
             Prediction.init();
             OnProgressUpdate += t1_OnProgressUpdate;
             List<string> allCustomers = new List<string>();

@@ -16,19 +16,16 @@ namespace Baza.DTO
         public static int processingDate;
         public static int tableID;
 
-        public static void LoadParameters(int date)
+        public static void LoadParameters(int date, int recency, string percentage, string count)
         {
-            string cR = ConfigurationManager.AppSettings[name: "customerRecency"];
-            if (cR != null)
-                customerRecency = Int32.Parse(cR);
+            if (recency > 0)
+                customerRecency = recency;
 
-            string ppCO = ConfigurationManager.AppSettings[name: "predictionPercentageCutOff"];
-            if (ppCO != null)
-                predictionPercentageCutOff = Double.Parse(ppCO);
+            if (percentage != "")
+                predictionPercentageCutOff = Double.Parse(percentage);
 
-            string pCCO = ConfigurationManager.AppSettings[name: "predictionCountCutOff"];
-            if (pCCO != null)
-                predictionCountCutOff = Int32.Parse(pCCO);
+            if (count != "")
+                predictionCountCutOff = Int32.Parse(count);
 
             processingDate = date;
 
@@ -45,7 +42,7 @@ namespace Baza.DTO
             string CountCutOff = ConfigurationManager.AppSettings[name: "Parameters_CountCutOff"];
 
             string queryString = "insert into " + Table + "(" + Date + "," + CustRecency + "," + PercentageCutOff + ","
-                + CountCutOff + ") OUTPUT Inserted.key values (@Date, @CustRecency, @PercentageCutOff, @CountCutOff)";
+                + CountCutOff + ") OUTPUT INSERTED.ID values (@Date, @CustRecency, @PercentageCutOff, @CountCutOff)";
 
             using (var connection = new SqlConnection(connectionString))
             {

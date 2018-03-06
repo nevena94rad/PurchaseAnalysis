@@ -30,6 +30,7 @@ namespace WindowsFormsApp1
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text);
             label3.Text = "Start: " + DateTime.Now;
             backgroundWorker1.RunWorkerAsync();
         }
@@ -47,6 +48,11 @@ namespace WindowsFormsApp1
                 label4.Text = "Last Write: " + DateTime.Now;
                 label5.Text = "Total Writes: " + Customer.totalWrites;
             });
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
