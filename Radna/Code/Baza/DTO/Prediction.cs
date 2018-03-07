@@ -24,7 +24,6 @@ namespace Baza.DTO
         public static void init()
         {
             en.Initialize();
-            en.Evaluate("library(\"forecast\")");
             en.Evaluate("source("+ ConfigurationManager.AppSettings[name: "LoadingScript"] +")");
         }
         public static int doCustomer(string customerID, List<string> itemNos)
@@ -95,34 +94,41 @@ namespace Baza.DTO
 
             lock (thisLock)
             {
-                en.Evaluate("try(elog <- dc.ReadLines(\"" + p1 + "\", cust.idx = 1, date.idx = 2, sales.idx = 3))");
-                en.Evaluate(execution);
-                en.Evaluate("try(cal.cbs.dates <- data.frame(birth.periods, last.dates, as.Date(\"" + p2 + "\", \"%Y%m%d\")))");
-                en.Evaluate("try(cal.cbs <- dc.BuildCBSFromCBTAndDates(cal.cbt, cal.cbs.dates, per = \"week\"))");
-
-                var param = en.Evaluate("try(params <- pnbd.EstimateParameters(cal.cbs, max.param.value=100));").AsCharacter().ToString();
-
-                var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-                string Table = ConfigurationManager.AppSettings[name: "CustomerModel"];
-                string CustomerID = ConfigurationManager.AppSettings[name: "CustomerModel_CustomerID"];
-                string Model = ConfigurationManager.AppSettings[name: "CustomerModel_Model"];
-                string Parameters_ID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
-
-                string queryString = "insert into " + Table + " (" + CustomerID + "," + Model + "," + Parameters_ID+"" +
-                ") OUTPUT INSERTED.ID values (@CustNo, @Model, @Parameters_ID)";
-
-                using (var connection = new SqlConnection(connectionString))
+                try
                 {
-                    connection.Open();
-                    
-                    var command = new SqlCommand(queryString, connection);
-                    command.Parameters.AddWithValue("@custNo", cust);
-                    command.Parameters.AddWithValue("@Model", param);
-                    command.Parameters.AddWithValue("@Parameters_ID", Parameters.tableID);
+                    en.Evaluate("try(elog <- dc.ReadLines(\"" + p1 + "\", cust.idx = 1, date.idx = 2, sales.idx = 3))");
+                    en.Evaluate(execution);
+                    en.Evaluate("try(cal.cbs.dates <- data.frame(birth.periods, last.dates, as.Date(\"" + p2 + "\", \"%Y%m%d\")))");
+                    en.Evaluate("try(cal.cbs <- dc.BuildCBSFromCBTAndDates(cal.cbt, cal.cbs.dates, per = \"week\"))");
 
-                    return (int)command.ExecuteScalar();
+                    var param = en.Evaluate("try(withTimeout(params <- pnbd.EstimateParameters(cal.cbs, max.param.value=100), timeout=240, onTimeout=\"silent\"));").AsList();
+                    var model = "r= " + param[0].AsNumeric().First() + " alpha= " + param[1].AsNumeric().First();
+                    model += " s= " + param[2].AsNumeric().First() + " beta= " + param[3].AsNumeric().First();
+                    var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+                    string Table = ConfigurationManager.AppSettings[name: "CustomerModel"];
+                    string CustomerID = ConfigurationManager.AppSettings[name: "CustomerModel_CustomerID"];
+                    string Model = ConfigurationManager.AppSettings[name: "CustomerModel_Model"];
+                    string Parameters_ID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
+
+                    string queryString = "insert into " + Table + " (" + CustomerID + "," + Model + "," + Parameters_ID + "" +
+                    ") OUTPUT INSERTED.ID values (@CustNo, @Model, @Parameters_ID)";
+
+                    using (var connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        var command = new SqlCommand(queryString, connection);
+                        command.Parameters.AddWithValue("@custNo", cust);
+                        command.Parameters.AddWithValue("@Model", model);
+                        command.Parameters.AddWithValue("@Parameters_ID", Parameters.tableID);
+
+                        return (int)command.ExecuteScalar();
+
+                    }
 
                 }
+                catch(Exception e)
+                { return -1; }
             }
         }
     }

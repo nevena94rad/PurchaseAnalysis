@@ -1,8 +1,29 @@
-library("forecast")
+result = tryCatch({
+    library(gsl)
+}, warning = function(w) {
+}, error = function(e) {
+    install.packages(gsl)
+    library(gsl)
+}, finally = {
+})
 
-library(gsl)
+result = tryCatch({
+    library("BTYD")
+}, warning = function(w) {
+}, error = function(e) {
+    install.packages("BTYD")
+    library("BTYD")
+}, finally = {
+})
 
-library("BTYD")
+result = tryCatch({
+    library("R.utils")
+}, warning = function(w) {
+}, error = function(e) {
+    install.packages("R.utils")
+    library("R.utils")
+}, finally = {
+})
 
 h2f1 <- function(a,b,c,z){
     lenz <- length(z)

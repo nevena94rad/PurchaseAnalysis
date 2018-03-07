@@ -130,3 +130,4 @@ C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Datab
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Database.csproj.CoreCompileInputs.cache
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Baza.dll
 C:\Users\rneve\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Baza.pdb
+C:\Users\alexstojcic\Documents\GitHub\PurchaseAnalysis\Radna\Code\Baza\obj\Debug\Database.csprojResolveAssemblyReference.cache

@@ -72,35 +72,37 @@ namespace Baza.DTO
             if (itemNos.Count() != 0)
                 modelID = Prediction.doCustomer(custNo, itemNos);
 
-            for (var i = 0; i < itemNos.Count(); i++)
+            if (modelID > 0)
             {
-
-                var end = lastPurchases[i];
-
-                if (end != -1)
+                for (var i = 0; i < itemNos.Count(); i++)
                 {
-                    var predicted = Prediction.makePredictionBTYD(custNo, i.ToString());
-                    var qty = getPurchaseQuantity(itemNos[i], end);
 
-                    if (predicted >= qty && predicted < 100 * qty)
+                    var end = lastPurchases[i];
+
+                    if (end != -1)
                     {
-                        var percentage = 50 + 45 * Math.Pow((1 - qty / predicted), 4);
-                        returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
+                        var predicted = Prediction.makePredictionBTYD(custNo, i.ToString());
+                        var qty = getPurchaseQuantity(itemNos[i], end);
+
+                        if (predicted >= qty && predicted < 100 * qty)
+                        {
+                            var percentage = 50 + 45 * Math.Pow((1 - qty / predicted), 10);
+                            returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
+                        }
+                        else if (predicted > 100 * qty)
+                        {
+                            var percentage = 95;
+                            returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
+                        }
+                        else if (predicted < qty)
+                        {
+                            var percentage = 50 * Math.Pow((predicted / qty), 10);
+                            returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
+                        }
+
                     }
-                    else if (predicted > 100 * qty)
-                    {
-                        var percentage = 95;
-                        returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
-                    }
-                    else if (predicted < qty)
-                    {
-                        var percentage = 50 * (predicted / qty);
-                        returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
-                    }
-                    
                 }
             }
-
             return returnList;
         }
         private int getPurchaseQuantity(string item, int date)
@@ -170,8 +172,9 @@ namespace Baza.DTO
             string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePrediction_CustomerID"];
             string ItemID = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemID"];
             string ProcessingValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
+            string Model = ConfigurationManager.AppSettings[name: "PurchasePrediction_ModelID"];
 
-            string queryString = "insert into "+ Table + "("+CustomerID+","+ItemID+","+ProcessingValue+"," + modelID + 
+            string queryString = "insert into "+ Table + "("+CustomerID+","+ItemID+","+ProcessingValue+"," + Model + 
                 ") values (@CustNo, @ItemNo, @ProcessingValue, @Model)";
 
             using (var connection = new SqlConnection(connectionString))
@@ -194,6 +197,10 @@ namespace Baza.DTO
             lock(thisLock)
             {
                 totalWrites += predictionCount;
+
+                DoneCount++;
+
+                OnProgressUpdate?.Invoke();
             }
             
         }
@@ -237,28 +244,16 @@ namespace Baza.DTO
             TotalCount = custCount;
             DoneCount = 0;
 
-            foreach (var customer in listCust)
+            Parallel.For(0, custCount, new ParallelOptions { MaxDegreeOfParallelism = 3 }, index =>
             {
                 Customer newCustomer = new Customer()
                 {
-                    custNo = customer
+                    custNo = listCust[index]
                 };
 
-                int timeout = 300000;
-                var task = Task.Run(() => newCustomer.PredictAllItems());
-                if (await Task.WhenAny(task, Task.Delay(timeout)) == task)
-                {
-                    // task completed within timeout
-                }
-                else
-                {
-                    //Prediction.en.Evaluate("stop(\"dosta\")");
-                }
-
-                DoneCount++;
-
-                OnProgressUpdate?.Invoke();
-            }
+                newCustomer.PredictAllItems();
+            } );
+          
         
         }
     }
