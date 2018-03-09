@@ -19,13 +19,16 @@ namespace Baza.DTO
         public double predictedConsumption;
         public static REngine en = REngine.GetInstance();
         private static Object thisLock = new Object();
-
-
+        
         public static void init()
         {
             en.Initialize();
-            en.Evaluate("source("+ ConfigurationManager.AppSettings[name: "LoadingScript"] +")");
+            //string filePath = ConfigurationManager.AppSettings[name: "LoadingScript"];
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = dir + "R\\Functions.r";
+            en.Evaluate("source(" + filePath + ")");
         }
+
         public static int doCustomer(string customerID, List<string> itemNos)
         { 
 
@@ -74,11 +77,15 @@ namespace Baza.DTO
                 }
             }
             var file = file1.Replace('\\', '/');
-            int modelID = ExecuteRScriptAlternativeWay(ConfigurationManager.AppSettings[name: "ExecuteScript"], file, Parameters.processingDate.ToString(), customerID, itemNos, Parameters.processingDate);
+            //string rCodeFilePath = ConfigurationManager.AppSettings[name: "ExecuteScript"];
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
+            string rCodeFilePath = dir + "R\\Script.r";
+            int modelID = ExecuteRScriptAlternativeWay(rCodeFilePath, file, Parameters.processingDate.ToString(), customerID, itemNos, Parameters.processingDate);
             TempFile.TempFileHelper.DeleteTmpFile(file1);
 
             return modelID;
         }
+
         public static double makePredictionBTYD(string cust, string item)
         {
             en.Evaluate("try(x <- cal.cbs[\""+item+"\", \"x\"])");
@@ -86,9 +93,9 @@ namespace Baza.DTO
             en.Evaluate("try(T.cal <- cal.cbs[\"" + item + "\", \"T.cal\"])");
             return en.Evaluate("try(pnbd.ConditionalExpectedTransactions(params, T.star = 1, x, t.x, T.cal))").AsNumeric().First();
         }
+
         public static int ExecuteRScriptAlternativeWay(string rCodeFilePath, string p1, string p2, string cust, List<string> it, int date)
         {
-
             var args_r = new string[2] { p1, p2 };
             var execution = "source('" + rCodeFilePath + "')";
 

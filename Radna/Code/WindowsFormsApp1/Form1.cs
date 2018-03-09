@@ -24,10 +24,8 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
         }
-
-
+        
         private void button1_Click(object sender, EventArgs e)
         {
             Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text);
@@ -39,6 +37,7 @@ namespace WindowsFormsApp1
         {
             Customer.nextWeekPredictionsAsync(DateManipulation.DateTimeToint(dateTimePicker1.Value), t1_OnProgressUpdate);
         }
+
         private void t1_OnProgressUpdate()
         {
             base.Invoke((Action)delegate
@@ -52,7 +51,6 @@ namespace WindowsFormsApp1
 
         private void label6_Click(object sender, EventArgs e)
         {
-
         }
     }
 }
