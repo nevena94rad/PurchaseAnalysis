@@ -30,8 +30,8 @@ namespace Baza.DTO
             processingDate = date;
 
             InsertIntoDatabase();
-
         }
+
         public static void InsertIntoDatabase()
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -55,10 +55,7 @@ namespace Baza.DTO
                 command.Parameters.AddWithValue("@CountCutOff", predictionCountCutOff);
 
                 tableID = (int) command.ExecuteScalar();
-
-                
             }
-            
         }
     }
 }

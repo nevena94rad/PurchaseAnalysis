@@ -61,12 +61,11 @@ namespace Baza.DTO
                     }
                     
                 }
-            }
-            
+            }   
         }
+
         public List<Prediction> makeAllPredictions()
         {
-
             List<Prediction> returnList = new List<Prediction>();
 
             if (itemNos.Count() != 0)
@@ -76,7 +75,6 @@ namespace Baza.DTO
             {
                 for (var i = 0; i < itemNos.Count(); i++)
                 {
-
                     var end = lastPurchases[i];
 
                     if (end != -1)
@@ -105,6 +103,7 @@ namespace Baza.DTO
             }
             return returnList;
         }
+
         private int getPurchaseQuantity(string item, int date)
         {
             int sum = 0;
@@ -140,6 +139,7 @@ namespace Baza.DTO
 
             return sum;
         }
+
         public void PredictAllItems()
         {
             getAllItems();
@@ -183,7 +183,6 @@ namespace Baza.DTO
 
                 for (int i = 0; i < predictionCount; i++)
                 {
-
                     var command = new SqlCommand(queryString, connection);
                     command.Parameters.AddWithValue("@CustNo", custNo);
                     command.Parameters.AddWithValue("@ItemNo", sortedPredictions[i].itemNo);
@@ -191,7 +190,6 @@ namespace Baza.DTO
                     command.Parameters.AddWithValue("@Model", modelID);
 
                     command.ExecuteNonQuery();
-                
                 }
             }
             lock(thisLock)
@@ -202,12 +200,10 @@ namespace Baza.DTO
 
                 OnProgressUpdate?.Invoke();
             }
-            
         }
 
         public static async Task nextWeekPredictionsAsync(int date,Action t1_OnProgressUpdate)
         {
-            
             Prediction.init();
             OnProgressUpdate += t1_OnProgressUpdate;
             List<string> allCustomers = new List<string>();
@@ -253,8 +249,6 @@ namespace Baza.DTO
 
                 newCustomer.PredictAllItems();
             } );
-          
-        
         }
     }
 }

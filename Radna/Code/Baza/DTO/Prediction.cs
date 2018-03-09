@@ -31,7 +31,6 @@ namespace Baza.DTO
 
         public static int doCustomer(string customerID, List<string> itemNos)
         { 
-
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
             string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
@@ -130,12 +129,12 @@ namespace Baza.DTO
                         command.Parameters.AddWithValue("@Parameters_ID", Parameters.tableID);
 
                         return (int)command.ExecuteScalar();
-
                     }
-
                 }
                 catch(Exception e)
-                { return -1; }
+                {
+                    return -1;
+                }
             }
         }
     }
