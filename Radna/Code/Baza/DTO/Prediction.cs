@@ -24,9 +24,9 @@ namespace Baza.DTO
         {
             en.Initialize();
             //string filePath = ConfigurationManager.AppSettings[name: "LoadingScript"];
-            string dir = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = dir + "R\\Functions.r";
-            en.Evaluate("source(" + filePath + ")");
+            string dir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/");
+            string filePath = dir + "R/Functions.r";
+            en.Evaluate("source('" + filePath + "')");
         }
 
         public static int doCustomer(string customerID, List<string> itemNos)
@@ -77,8 +77,8 @@ namespace Baza.DTO
             }
             var file = file1.Replace('\\', '/');
             //string rCodeFilePath = ConfigurationManager.AppSettings[name: "ExecuteScript"];
-            string dir = AppDomain.CurrentDomain.BaseDirectory;
-            string rCodeFilePath = dir + "R\\Script.r";
+            string dir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\","/");
+            string rCodeFilePath = dir + "R/Script.r";
             int modelID = ExecuteRScriptAlternativeWay(rCodeFilePath, file, Parameters.processingDate.ToString(), customerID, itemNos, Parameters.processingDate);
             TempFile.TempFileHelper.DeleteTmpFile(file1);
 
