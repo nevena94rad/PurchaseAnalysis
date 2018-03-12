@@ -18,7 +18,7 @@ namespace Baza.DTO
         }
 
         public static int DateTimeToint(DateTime inDate)
-        {
+         {
             return inDate.Year * 10000 + inDate.Month * 100 + inDate.Day;
         }
     }

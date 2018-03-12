@@ -2,7 +2,7 @@ result = tryCatch({
     library(gsl)
 }, warning = function(w) {
 }, error = function(e) {
-    install.packages(gsl)
+    install.packages("gsl")
     library(gsl)
 }, finally = {
 })
@@ -22,6 +22,15 @@ result = tryCatch({
 }, error = function(e) {
     install.packages("R.utils")
     library("R.utils")
+}, finally = {
+})
+
+result = tryCatch({
+    library("data.table")
+}, warning = function(w) {
+}, error = function(e) {
+    install.packages("data.table")
+    library("data.table")
 }, finally = {
 })
 
@@ -831,7 +840,6 @@ pnbd.Plot.DERT <- function(params, x, t.x, T.cal, d, type = "wireframe") {
 
 
 library(Matrix)
-library(data.table)
 
 dc.ElogToCbsCbt <- function(elog, per = "week", T.cal = max(elog$date), T.tot = max(elog$date), 
     merge.same.date = TRUE, cohort.birth.per = T.cal, dissipate.factor = 1, statistic = "freq") {
