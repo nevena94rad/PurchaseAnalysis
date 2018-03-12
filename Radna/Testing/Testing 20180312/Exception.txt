@@ -1,0 +1,5 @@
+Na 1573:
+System.Data.SqlClient.SqlException
+"The INSERT statement conflicted with the FOREIGN KEY constraint "FK_PurchasePrediction_CustomerModel". 
+The conflict occurred in database "PED", table "dbo.CustomerModel", column 'ID'.
+The statement has been terminated."
