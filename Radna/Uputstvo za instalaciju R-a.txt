@@ -1,0 +1,3 @@
+1. Skinuti instalaciju za verziju R 3.4.3 sa https://cran.r-project.org/bin/windows/base/ i pokrenuti je
+
+2. Iz foldera C:\Program Files\R\R-3.4.3\etc obrisati fajl Renviron.site 
