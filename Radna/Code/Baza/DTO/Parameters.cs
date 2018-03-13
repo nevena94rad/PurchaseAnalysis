@@ -42,19 +42,21 @@ namespace Baza.DTO
             string CountCutOff = ConfigurationManager.AppSettings[name: "Parameters_CountCutOff"];
 
             string queryString = "insert into " + Table + "(" + Date + "," + CustRecency + "," + PercentageCutOff + ","
-                + CountCutOff + ") OUTPUT INSERTED.ID values (@Date, @CustRecency, @PercentageCutOff, @CountCutOff)";
+                + CountCutOff + ") OUTPUT INSERTED.ID values (@Date, @CustRecency, @PercentageCutOff, @CountCutOff) ";
+            queryString += @"SELECT SCOPE_IDENTITY();";
 
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
                 var command = new SqlCommand(queryString, connection);
+                command.Parameters.Clear();
                 command.Parameters.AddWithValue("@Date", processingDate);
                 command.Parameters.AddWithValue("@CustRecency", customerRecency);
                 command.Parameters.AddWithValue("@PercentageCutOff", predictionPercentageCutOff);
                 command.Parameters.AddWithValue("@CountCutOff", predictionCountCutOff);
 
-                tableID = (int) command.ExecuteScalar();
+                tableID = Convert.ToInt32(command.ExecuteScalar());
             }
         }
     }

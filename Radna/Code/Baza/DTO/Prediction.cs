@@ -117,18 +117,21 @@ namespace Baza.DTO
                     string Parameters_ID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
 
                     string queryString = "insert into " + Table + " (" + CustomerID + "," + Model + "," + Parameters_ID + "" +
-                    ") OUTPUT INSERTED.ID values (@CustNo, @Model, @Parameters_ID)";
+                    ") OUTPUT INSERTED.ID values (@CustNo, @Model, @Parameters_ID) ";
+                    queryString += @"SELECT SCOPE_IDENTITY();";
 
                     using (var connection = new SqlConnection(connectionString))
                     {
                         connection.Open();
 
                         var command = new SqlCommand(queryString, connection);
+                        command.Parameters.Clear();
                         command.Parameters.AddWithValue("@custNo", cust);
                         command.Parameters.AddWithValue("@Model", model);
                         command.Parameters.AddWithValue("@Parameters_ID", Parameters.tableID);
 
-                        return (int)command.ExecuteScalar();
+                        int idOfInserted = Convert.ToInt32(command.ExecuteScalar());
+                        return idOfInserted;
                     }
                 }
                 catch(Exception e)
