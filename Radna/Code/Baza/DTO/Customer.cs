@@ -14,10 +14,11 @@ namespace Baza.DTO
         public List<string> itemNos;
         public List<int> lastPurchases;
         public string custNo;
+        public int modelID = 0;
+
         public static int TotalCount = 0;
         public static int DoneCount = 0;
         public static int totalWrites = 0;
-        public static int modelID = 0;
         public static Object thisLock = new Object();
         public static Object thisLock2 = new Object();
         public static event System.Action OnProgressUpdate;
@@ -53,13 +54,11 @@ namespace Baza.DTO
 
                 using (var reader = command.ExecuteReader())
                 {
-                    
                     while (reader.Read())
                     {
                         itemNos.Add(((String)reader[0]).Replace(" ", String.Empty));
                         lastPurchases.Add(DateManipulation.DateTimeToint((DateTime)reader[1]));
                     }
-                    
                 }
             }   
         }
@@ -97,7 +96,6 @@ namespace Baza.DTO
                             var percentage = 50 * Math.Pow((predicted / qty), 10);
                             returnList.Add(new Prediction() { itemNo = itemNos[i], predictedConsumption = percentage });
                         }
-
                     }
                 }
             }
@@ -124,8 +122,6 @@ namespace Baza.DTO
                 command.Parameters.AddWithValue("@custNo", custNo);
                 command.Parameters.AddWithValue("@itemNo", item);
                 command.Parameters.AddWithValue("@definedDate", date);
-
-
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
