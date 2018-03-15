@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 using RDotNet;
 
 namespace Baza.DTO
@@ -19,7 +20,8 @@ namespace Baza.DTO
         public double predictedConsumption;
         public static REngine en = REngine.GetInstance();
         private static Object thisLock = new Object();
-        
+        private static ILog log = LogManager.GetLogger(typeof(Prediction));
+
         public static void init()
         {
             en.Initialize();
@@ -95,6 +97,7 @@ namespace Baza.DTO
 
         public static int ExecuteRScriptAlternativeWay(string rCodeFilePath, string p1, string p2, string cust, List<string> it, int date)
         {
+            
             var args_r = new string[2] { p1, p2 };
             var execution = "source('" + rCodeFilePath + "')";
 
@@ -102,6 +105,9 @@ namespace Baza.DTO
             {
                 try
                 {
+
+                    log.Info(cust);
+
                     en.Evaluate("try(elog <- dc.ReadLines(\"" + p1 + "\", cust.idx = 1, date.idx = 2, sales.idx = 3))");
                     en.Evaluate(execution);
                     en.Evaluate("try(cal.cbs.dates <- data.frame(birth.periods, last.dates, as.Date(\"" + p2 + "\", \"%Y%m%d\")))");
@@ -133,9 +139,11 @@ namespace Baza.DTO
                         int idOfInserted = Convert.ToInt32(command.ExecuteScalar());
                         return idOfInserted;
                     }
+                    
                 }
                 catch(Exception e)
                 {
+                    log.Warn(cust + " on: "+ date.ToString() + " " +e.Message);
                     return -1;
                 }
             }
