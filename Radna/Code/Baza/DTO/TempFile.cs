@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using log4net;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,9 +12,10 @@ namespace Baza.DTO
 {
     public static class TempFile
     {
+        private static ILog log = LogManager.GetLogger(typeof(TempFile));
         public class TempFileHelper
         {
-            public static string CreateTmpFile(bool throwException = true)
+            public static string CreateTmpFile(bool throwException = false)
             {
                 string fileName = string.Empty;
 
@@ -38,12 +40,13 @@ namespace Baza.DTO
                     {
                         throw new Exception("Unable to create TEMP file or set its attributes: " + ex.Message, ex);
                     }
+                    log.Error(ex.Message);
                 }
 
                 return fileName;
             }
 
-            public static void DeleteTmpFile(string tmpFile, bool throwException = true)
+            public static void DeleteTmpFile(string tmpFile, bool throwException = false)
             {
                 try
                 {
@@ -59,6 +62,7 @@ namespace Baza.DTO
                     {
                         throw new Exception("Error deleteing TEMP file: " + ex.Message, ex);
                     }
+                    log.Error(ex.Message);
                 }
             }
         }
