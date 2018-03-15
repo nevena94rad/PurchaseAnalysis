@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Baza.DTO
 {
@@ -14,7 +15,7 @@ namespace Baza.DTO
         public static double predictionPercentageCutOff = 10;
         public static int predictionCountCutOff = 10;
         public static int processingDate;
-        public static int tableID;
+        public static int ID;
 
         public static void LoadParameters(int date, int recency, string percentage, string count)
         {
@@ -36,14 +37,21 @@ namespace Baza.DTO
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "Parameters"];
-            string Date = ConfigurationManager.AppSettings[name: "Parameters_ProcessingDate"];
-            string CustRecency = ConfigurationManager.AppSettings[name: "Parameters_CustRecency"];
-            string PercentageCutOff = ConfigurationManager.AppSettings[name: "Parameters_PercentageCutOff"];
-            string CountCutOff = ConfigurationManager.AppSettings[name: "Parameters_CountCutOff"];
+            string ProcessingStart = ConfigurationManager.AppSettings[name: "Parameters_ProcessingStart"];
+            string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
 
-            string queryString = "insert into " + Table + "(" + Date + "," + CustRecency + "," + PercentageCutOff + ","
-                + CountCutOff + ") OUTPUT INSERTED.ID values (@Date, @CustRecency, @PercentageCutOff, @CountCutOff) ";
+            string queryString = "insert into " + Table + "(" + ProcessingStart + "," + ProcessingParameters + ") OUTPUT INSERTED.ID values (@ProcessingStart, @Parameters) ";
             queryString += @"SELECT SCOPE_IDENTITY();";
+
+            DateTime processingStart = DateTime.Now;
+
+            string jsonParameters = string.Empty;
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            values.Add("customerRecency", customerRecency.ToString());
+            values.Add("predictionPercentageCutOff", predictionPercentageCutOff.ToString());
+            values.Add("predictionCountCutOff", predictionCountCutOff.ToString());
+            values.Add("processingDate", processingDate.ToString());
+            jsonParameters = JsonConvert.SerializeObject(values);
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -51,12 +59,10 @@ namespace Baza.DTO
 
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.Clear();
-                command.Parameters.AddWithValue("@Date", processingDate);
-                command.Parameters.AddWithValue("@CustRecency", customerRecency);
-                command.Parameters.AddWithValue("@PercentageCutOff", predictionPercentageCutOff);
-                command.Parameters.AddWithValue("@CountCutOff", predictionCountCutOff);
+                command.Parameters.AddWithValue("@ProcessingStart", processingStart);
+                command.Parameters.AddWithValue("@Parameters", jsonParameters);
 
-                tableID = Convert.ToInt32(command.ExecuteScalar());
+                ID = Convert.ToInt32(command.ExecuteScalar());
             }
         }
     }

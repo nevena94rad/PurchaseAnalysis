@@ -59,14 +59,11 @@ namespace WindowsFormsApp1
                 progressBar1.Refresh();
             });
         }
-        private void t2_OnFinishUpdate(bool finish)
+        private void t2_OnFinishUpdate(string message)
         {
             base.Invoke((Action)delegate
             {
-                if (finish)
-                    MessageBox.Show("Predictions have successfully been made");
-                else
-                    MessageBox.Show("The process has been canceled");
+                MessageBox.Show(message);
 
                 StartB.Enabled = true;
                 StopB.Enabled = false;

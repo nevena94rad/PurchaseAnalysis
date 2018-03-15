@@ -22,16 +22,16 @@ namespace Baza.DTO
         public static Object thisLock = new Object();
         public static Object thisLock2 = new Object();
         public static event System.Action OnProgressUpdate;
-        public static event System.Action<bool> OnProgressFinis;
+        public static event System.Action<string> OnProgressFinish;
         public static System.ComponentModel.BackgroundWorker worker = null;
-        
+
         public void getAllItems()
         {
             itemNos = new List<string>();
             lastPurchases = new List<int>();
 
             DateTime processingDateDateFormat = DateManipulation.intToDateTime(Parameters.processingDate);
-            
+
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
 
             string Table = ConfigurationManager.AppSettings[name: "PurchasePeriods"];
@@ -40,9 +40,9 @@ namespace Baza.DTO
             string Period = ConfigurationManager.AppSettings[name: "PurchasePeriods_Period"];
             string PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
 
-            string queryString = "select distinct("+ItemID+"),max("+PeriodEnd+") from " + Table +
-                " where "+CustomerID+ "= @custNo" + " and " + PeriodEnd + "<@bDate" +
-                " group by "+ItemID + " having count(*)>1 and max("+ PeriodEnd + ")>@bDateMinus6Months " +
+            string queryString = "select distinct(" + ItemID + "),max(" + PeriodEnd + ") from " + Table +
+                " where " + CustomerID + "= @custNo" + " and " + PeriodEnd + "<@bDate" +
+                " group by " + ItemID + " having count(*)>1 and max(" + PeriodEnd + ")>@bDateMinus6Months " +
                 " and min(" + Period + ") * 0.5< DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) + 7" +
                 " and max(" + Period + ") * 1.5 > DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate)";
 
@@ -62,7 +62,7 @@ namespace Baza.DTO
                         lastPurchases.Add(DateManipulation.DateTimeToint((DateTime)reader[1]));
                     }
                 }
-            }   
+            }
         }
 
         public List<Prediction> makeAllPredictions()
@@ -115,7 +115,7 @@ namespace Baza.DTO
             string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
             string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
 
-            string queryString = "select sum(" + PurchaseQuantity + ") from " + Table + 
+            string queryString = "select sum(" + PurchaseQuantity + ") from " + Table +
                 " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "=@definedDate";
 
             using (var connection = new SqlConnection(connectionString))
@@ -150,7 +150,7 @@ namespace Baza.DTO
             allCustomerPredictions = allCustomerPredictions.OrderByDescending(x => x.predictedConsumption).ToList();
             List<Prediction> sortedPredictions = new List<Prediction>();
             int count = 0;
-            foreach(Prediction pr in allCustomerPredictions)
+            foreach (Prediction pr in allCustomerPredictions)
             {
                 if (pr.predictedConsumption >= Parameters.predictionPercentageCutOff)
                 {
@@ -158,7 +158,7 @@ namespace Baza.DTO
                     count++;
                 }
             }
-            while(count<=Parameters.predictionCountCutOff && count<allCustomerPredictions.Count)
+            while (count <= Parameters.predictionCountCutOff && count < allCustomerPredictions.Count)
             {
                 sortedPredictions.Add(allCustomerPredictions[count]);
                 count++;
@@ -172,7 +172,7 @@ namespace Baza.DTO
             string ProcessingValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
             string Model = ConfigurationManager.AppSettings[name: "PurchasePrediction_ModelID"];
 
-            string queryString = "insert into "+ Table + "("+CustomerID+","+ItemID+","+ProcessingValue+"," + Model + 
+            string queryString = "insert into " + Table + "(" + CustomerID + "," + ItemID + "," + ProcessingValue + "," + Model +
                 ") values (@CustNo, @ItemNo, @ProcessingValue, @Model)";
 
             using (var connection = new SqlConnection(connectionString))
@@ -190,7 +190,7 @@ namespace Baza.DTO
                     command.ExecuteNonQuery();
                 }
             }
-            lock(thisLock)
+            lock (thisLock)
             {
                 totalWrites += predictionCount;
 
@@ -199,70 +199,84 @@ namespace Baza.DTO
                 OnProgressUpdate?.Invoke();
             }
         }
-
-        public static async Task nextWeekPredictionsAsync(int date,Action t1_OnProgressUpdate,Action<bool> t2_OnFinishUpdate, System.ComponentModel.BackgroundWorker bWorker)
+        public static async Task nextWeekPredictionsAsync(int date, Action t1_OnProgressUpdate, Action<string> t2_OnFinishUpdate, System.ComponentModel.BackgroundWorker bWorker)
         {
-            Prediction.init();
-            OnProgressUpdate = t1_OnProgressUpdate;
-            OnProgressFinis = t2_OnFinishUpdate;
-            List<string> allCustomers = new List<string>();
-            Customer.worker = bWorker;
-
-            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
-            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
-            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
-
-            string queryString = "select distinct(" + CustomerID + ") from " + Table + " where " + PurchaseDate + "< @date and "+
-                PurchaseDate+ "> @dateMin";
-
-            using (var connection = new SqlConnection(connectionString))
+            string error = "";
+            try
             {
-                connection.Open();
+                Prediction.init();
+                OnProgressUpdate = t1_OnProgressUpdate;
+                OnProgressFinish = t2_OnFinishUpdate;
+                List<string> allCustomers = new List<string>();
+                Customer.worker = bWorker;
 
-                var command = new SqlCommand(queryString, connection);
-                command.Parameters.AddWithValue("@date", date);
-                command.Parameters.AddWithValue("@dateMin", 
-                    DateManipulation.DateTimeToint(DateManipulation.intToDateTime(date).AddMonths(-Parameters.customerRecency)));
+                var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+                string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+                string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+                string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
 
-                using (var reader = command.ExecuteReader())
+                string queryString = "select distinct(" + CustomerID + ") from " + Table + " where " + PurchaseDate + "< @date and " +
+                    PurchaseDate + "> @dateMin";
+
+
+                using (var connection = new SqlConnection(connectionString))
                 {
-                    while (reader.Read())
+                    connection.Open();
+
+                    var command = new SqlCommand(queryString, connection);
+                    command.Parameters.AddWithValue("@date", date);
+                    command.Parameters.AddWithValue("@dateMin",
+                        DateManipulation.DateTimeToint(DateManipulation.intToDateTime(date).AddMonths(-Parameters.customerRecency)));
+
+                    using (var reader = command.ExecuteReader())
                     {
-                        allCustomers.Add(reader[0].ToString());
+                        while (reader.Read())
+                        {
+                            allCustomers.Add(reader[0].ToString());
+                        }
                     }
                 }
+
+                int custCount = allCustomers.Count();
+                var listCust = allCustomers.ToList();
+
+                TotalCount = custCount;
+                DoneCount = 0;
+                bool stop = false;
+
+                t1_OnProgressUpdate?.Invoke();
+
+                Parallel.For(0, custCount, new ParallelOptions { MaxDegreeOfParallelism = 3 }, (index, state) =>
+                {
+
+                    Customer newCustomer = new Customer()
+                    {
+                        custNo = listCust[index]
+                    };
+                    if (worker.CancellationPending)
+                    {
+                        stop = true;
+                        state.Stop();
+                    }
+                    if (!stop)
+                        newCustomer.PredictAllItems();
+                });
+            }
+            catch(Exception ex)
+            {
+                error = ex.Message;
             }
 
-            int custCount = allCustomers.Count();
-            var listCust = allCustomers.ToList();
-
-            TotalCount = custCount;
-            DoneCount = 0;
-            bool stop = false;
-
-            t1_OnProgressUpdate?.Invoke();
-
-            Parallel.For(0, custCount, new ParallelOptions { MaxDegreeOfParallelism = 3 }, ( index, state) =>
-            {
-
-                Customer newCustomer = new Customer()
-                {
-                    custNo = listCust[index]
-                };
-                if (worker.CancellationPending)
-                {
-                    stop = true;
-                    state.Stop();
-                }
-                if(!stop)
-                    newCustomer.PredictAllItems();
-            } );
-
             if (DoneCount == TotalCount)
-                OnProgressFinis?.Invoke(true);
+            {
+                string message = "Predictions have successfully been made";
+                OnProgressFinish?.Invoke(message);
+            }
             else
-                OnProgressFinis?.Invoke(false);
+            {
+                OnProgressFinish?.Invoke(error);
+            }
         }
     }
 }
+
