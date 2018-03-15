@@ -134,7 +134,7 @@ namespace Baza.DTO
                         command.Parameters.Clear();
                         command.Parameters.AddWithValue("@custNo", cust);
                         command.Parameters.AddWithValue("@Model", model);
-                        command.Parameters.AddWithValue("@Parameters_ID", Parameters.tableID);
+                        command.Parameters.AddWithValue("@Parameters_ID", Parameters.ID);
 
                         int idOfInserted = Convert.ToInt32(command.ExecuteScalar());
                         return idOfInserted;

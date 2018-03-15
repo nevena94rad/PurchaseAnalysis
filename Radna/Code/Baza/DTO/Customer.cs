@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 
 namespace Baza.DTO
 {
@@ -24,6 +25,7 @@ namespace Baza.DTO
         public static event System.Action OnProgressUpdate;
         public static event System.Action<string> OnProgressFinish;
         public static System.ComponentModel.BackgroundWorker worker = null;
+        private static ILog log = LogManager.GetLogger(typeof(Customer));
 
         public void getAllItems()
         {
@@ -265,6 +267,7 @@ namespace Baza.DTO
             catch(Exception ex)
             {
                 error = ex.Message;
+                log.Error(ex.Message);
             }
 
             if (DoneCount == TotalCount)
