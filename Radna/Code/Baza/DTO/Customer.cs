@@ -22,6 +22,8 @@ namespace Baza.DTO
         public static Object thisLock = new Object();
         public static Object thisLock2 = new Object();
         public static event System.Action OnProgressUpdate;
+        public static event System.Action<bool> OnProgressFinis;
+        public static System.ComponentModel.BackgroundWorker worker = null;
         
         public void getAllItems()
         {
@@ -198,11 +200,13 @@ namespace Baza.DTO
             }
         }
 
-        public static async Task nextWeekPredictionsAsync(int date,Action t1_OnProgressUpdate)
+        public static async Task nextWeekPredictionsAsync(int date,Action t1_OnProgressUpdate,Action<bool> t2_OnFinishUpdate, System.ComponentModel.BackgroundWorker bWorker)
         {
             Prediction.init();
-            OnProgressUpdate += t1_OnProgressUpdate;
+            OnProgressUpdate = t1_OnProgressUpdate;
+            OnProgressFinis = t2_OnFinishUpdate;
             List<string> allCustomers = new List<string>();
+            Customer.worker = bWorker;
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
@@ -235,16 +239,30 @@ namespace Baza.DTO
 
             TotalCount = custCount;
             DoneCount = 0;
+            bool stop = false;
 
-            Parallel.For(0, custCount, new ParallelOptions { MaxDegreeOfParallelism = 3 }, index =>
+            t1_OnProgressUpdate?.Invoke();
+
+            Parallel.For(0, custCount, new ParallelOptions { MaxDegreeOfParallelism = 3 }, ( index, state) =>
             {
+
                 Customer newCustomer = new Customer()
                 {
                     custNo = listCust[index]
                 };
-
-                newCustomer.PredictAllItems();
+                if (worker.CancellationPending)
+                {
+                    stop = true;
+                    state.Stop();
+                }
+                if(!stop)
+                    newCustomer.PredictAllItems();
             } );
+
+            if (DoneCount == TotalCount)
+                OnProgressFinis?.Invoke(true);
+            else
+                OnProgressFinis?.Invoke(false);
         }
     }
 }

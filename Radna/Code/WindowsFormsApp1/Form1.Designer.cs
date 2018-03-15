@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.StartB = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -42,21 +42,24 @@
             this.percentage = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.count = new System.Windows.Forms.TextBox();
+            this.StopB = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.recency)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // StartB
             // 
-            this.button1.Location = new System.Drawing.Point(70, 183);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Go!";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.StartB.Location = new System.Drawing.Point(70, 163);
+            this.StartB.Name = "StartB";
+            this.StartB.Size = new System.Drawing.Size(75, 23);
+            this.StartB.TabIndex = 0;
+            this.StartB.Text = "Start!";
+            this.StartB.UseVisualStyleBackColor = true;
+            this.StartB.Click += new System.EventHandler(this.button1_Click);
             // 
             // backgroundWorker1
             // 
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             // 
             // label1
@@ -71,7 +74,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(67, 279);
+            this.label2.Location = new System.Drawing.Point(66, 279);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 13);
             this.label2.TabIndex = 2;
@@ -119,7 +122,6 @@
             this.label6.Size = new System.Drawing.Size(100, 13);
             this.label6.TabIndex = 7;
             this.label6.Text = "Customer Recency:";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // recency
             // 
@@ -127,6 +129,12 @@
             this.recency.Name = "recency";
             this.recency.Size = new System.Drawing.Size(120, 20);
             this.recency.TabIndex = 8;
+            this.recency.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            this.recency.ValueChanged += new System.EventHandler(this.recency_ValueChanged);
             // 
             // label7
             // 
@@ -143,6 +151,8 @@
             this.percentage.Name = "percentage";
             this.percentage.Size = new System.Drawing.Size(105, 20);
             this.percentage.TabIndex = 10;
+            this.percentage.Text = "10";
+            this.percentage.TextChanged += new System.EventHandler(this.percentage_TextChanged);
             // 
             // label8
             // 
@@ -159,12 +169,34 @@
             this.count.Name = "count";
             this.count.Size = new System.Drawing.Size(105, 20);
             this.count.TabIndex = 12;
+            this.count.Text = "30";
+            this.count.TextChanged += new System.EventHandler(this.count_TextChanged);
+            // 
+            // StopB
+            // 
+            this.StopB.Enabled = false;
+            this.StopB.Location = new System.Drawing.Point(277, 163);
+            this.StopB.Name = "StopB";
+            this.StopB.Size = new System.Drawing.Size(75, 23);
+            this.StopB.TabIndex = 13;
+            this.StopB.Text = "Stop!";
+            this.StopB.UseVisualStyleBackColor = true;
+            this.StopB.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(70, 208);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(282, 23);
+            this.progressBar1.TabIndex = 14;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(426, 325);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.StopB);
             this.Controls.Add(this.count);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.percentage);
@@ -177,7 +209,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.StartB);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -189,7 +221,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button StartB;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -203,6 +235,8 @@
         private System.Windows.Forms.TextBox percentage;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox count;
+        private System.Windows.Forms.Button StopB;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
