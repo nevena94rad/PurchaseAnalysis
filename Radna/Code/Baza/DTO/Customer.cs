@@ -204,6 +204,7 @@ namespace Baza.DTO
         public static async Task nextWeekPredictionsAsync(int date, Action t1_OnProgressUpdate, Action<string> t2_OnFinishUpdate, System.ComponentModel.BackgroundWorker bWorker)
         {
             string message = "";
+            bool stop = false;
             try
             {
                 Prediction.init();
@@ -244,7 +245,7 @@ namespace Baza.DTO
 
                 TotalCount = custCount;
                 DoneCount = 0;
-                bool stop = false;
+                totalWrites = 0;
 
                 t1_OnProgressUpdate?.Invoke();
 
@@ -259,7 +260,7 @@ namespace Baza.DTO
                     {
                         stop = true;
                         state.Stop();
-                        message = "The process has been canceled";
+                        message = "The process has been canceled!";
                     }
                     if (!stop)
                         newCustomer.PredictAllItems();
@@ -277,9 +278,14 @@ namespace Baza.DTO
                 Parameters.Update((int)Enum.ProcessingStatus.Status.SUCCESS, "");
                 OnProgressFinish?.Invoke(message);
             }
-            else
+            else if(!stop)
             {
                 Parameters.Update((int)Enum.ProcessingStatus.Status.ERROR, message);
+                OnProgressFinish?.Invoke(message);
+            }
+            else
+            {
+                Parameters.Update((int)Enum.ProcessingStatus.Status.SUSPENDED, "");
                 OnProgressFinish?.Invoke(message);
             }
         }

@@ -66,7 +66,7 @@ namespace Baza.DTO
             }
         }
 
-        public static void Update(int processingStatus, string procError)
+        public static void Update(int procStatus, string procError)
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "Parameters"];
@@ -80,7 +80,7 @@ namespace Baza.DTO
 
             DateTime processingEnd = DateTime.Now;
             string processingError = "";
-            if(processingStatus != (int)Enum.ProcessingStatus.Status.ERROR)
+            if(procStatus != (int)Enum.ProcessingStatus.Status.ERROR)
             {
                 processingError = "NO ERROR";
             }
@@ -95,7 +95,7 @@ namespace Baza.DTO
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.Clear();
                 command.Parameters.AddWithValue("@ProcessingEnd", processingEnd);
-                command.Parameters.AddWithValue("@ProcessingStatus", processingStatus.ToString());
+                command.Parameters.AddWithValue("@ProcessingStatus", ((Enum.ProcessingStatus.Status) procStatus).ToString());
                 command.Parameters.AddWithValue("@ProcessingError", processingError);
                 command.Parameters.AddWithValue("@ID", ID);
 
