@@ -54,7 +54,7 @@ namespace WindowsFormsApp1
                 label4.Text = "Last Write: " + DateTime.Now;
                 label5.Text = "Total Writes: " + Customer.totalWrites;
 
-                var percent = 20 + (int)(((double)Customer.DoneCount / Customer.TotalCount) * 100);
+                var percent = (int)(((double)Customer.DoneCount / Customer.TotalCount) * 100);
 
                 progressBar1.Value = percent;
                 progressBar1.Refresh();
@@ -73,8 +73,8 @@ namespace WindowsFormsApp1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            backgroundWorker1.CancelAsync();
             Parameters.Update((int)ProcessingStatus.Status.SUSPENDED, "");
+            backgroundWorker1.CancelAsync();
         }
 
         private void percentage_TextChanged(object sender, EventArgs e)

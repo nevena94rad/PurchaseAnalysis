@@ -203,7 +203,7 @@ namespace Baza.DTO
         }
         public static async Task nextWeekPredictionsAsync(int date, Action t1_OnProgressUpdate, Action<string> t2_OnFinishUpdate, System.ComponentModel.BackgroundWorker bWorker)
         {
-            string error = "";
+            string message = "";
             try
             {
                 Prediction.init();
@@ -259,6 +259,7 @@ namespace Baza.DTO
                     {
                         stop = true;
                         state.Stop();
+                        message = "The process has been canceled";
                     }
                     if (!stop)
                         newCustomer.PredictAllItems();
@@ -266,20 +267,20 @@ namespace Baza.DTO
             }
             catch(Exception ex)
             {
-                error = ex.Message;
+                message = ex.Message;
                 log.Error(ex.Message);
             }
 
             if (DoneCount == TotalCount)
             {
-                string message = "Predictions have successfully been made";
+                message = "Predictions have successfully been made";
                 Parameters.Update((int)Enum.ProcessingStatus.Status.SUCCESS, "");
                 OnProgressFinish?.Invoke(message);
             }
             else
             {
-                Parameters.Update((int)Enum.ProcessingStatus.Status.ERROR, error);
-                OnProgressFinish?.Invoke(error);
+                Parameters.Update((int)Enum.ProcessingStatus.Status.ERROR, message);
+                OnProgressFinish?.Invoke(message);
             }
         }
     }

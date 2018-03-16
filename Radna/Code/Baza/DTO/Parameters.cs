@@ -75,7 +75,7 @@ namespace Baza.DTO
             string ProcessingError = ConfigurationManager.AppSettings[name: "Parameters_ProcessingError"];
             string Id = ConfigurationManager.AppSettings[name: "Parameters_ID"];
 
-            string queryString = "UPDATE " + Table + " SET " + ProcessingEnd + "= @ProcessingEnd , " + ProcessingStatus + "= @ProcessingStatus , " + ProcessingError + "@ProcessingError "+
+            string queryString = "UPDATE " + Table + " SET " + ProcessingEnd + "= @ProcessingEnd , " + ProcessingStatus + "= @ProcessingStatus , " + ProcessingError + "= @ProcessingError "+
                 "WHERE " + Id + "= @Id;";
 
             DateTime processingEnd = DateTime.Now;
@@ -97,6 +97,7 @@ namespace Baza.DTO
                 command.Parameters.AddWithValue("@ProcessingEnd", processingEnd);
                 command.Parameters.AddWithValue("@ProcessingStatus", processingStatus.ToString());
                 command.Parameters.AddWithValue("@ProcessingError", processingError);
+                command.Parameters.AddWithValue("@ID", ID);
 
                 command.ExecuteNonQuery();
             }

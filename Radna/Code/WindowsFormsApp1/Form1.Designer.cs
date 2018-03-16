@@ -182,7 +182,7 @@
             this.StopB.Name = "StopB";
             this.StopB.Size = new System.Drawing.Size(75, 23);
             this.StopB.TabIndex = 13;
-            this.StopB.Text = "Stop!";
+            this.StopB.Text = "Cancel!";
             this.StopB.UseVisualStyleBackColor = true;
             this.StopB.Click += new System.EventHandler(this.button2_Click);
             // 
