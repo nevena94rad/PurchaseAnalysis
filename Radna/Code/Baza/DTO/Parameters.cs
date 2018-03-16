@@ -65,5 +65,41 @@ namespace Baza.DTO
                 ID = Convert.ToInt32(command.ExecuteScalar());
             }
         }
+
+        public static void Update(int processingStatus, string procError)
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "Parameters"];
+            string ProcessingEnd = ConfigurationManager.AppSettings[name: "Parameters_ProcessingEnd"];
+            string ProcessingStatus = ConfigurationManager.AppSettings[name: "Parameters_ProcessingStatus"];
+            string ProcessingError = ConfigurationManager.AppSettings[name: "Parameters_ProcessingError"];
+            string Id = ConfigurationManager.AppSettings[name: "Parameters_ID"];
+
+            string queryString = "UPDATE " + Table + " SET " + ProcessingEnd + "= @ProcessingEnd , " + ProcessingStatus + "= @ProcessingStatus , " + ProcessingError + "@ProcessingError "+
+                "WHERE " + Id + "= @Id;";
+
+            DateTime processingEnd = DateTime.Now;
+            string processingError = "";
+            if(processingStatus != (int)Enum.ProcessingStatus.Status.ERROR)
+            {
+                processingError = "NO ERROR";
+            }
+            else
+            {
+                processingError = procError;
+            }
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@ProcessingEnd", processingEnd);
+                command.Parameters.AddWithValue("@ProcessingStatus", processingStatus.ToString());
+                command.Parameters.AddWithValue("@ProcessingError", processingError);
+
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }

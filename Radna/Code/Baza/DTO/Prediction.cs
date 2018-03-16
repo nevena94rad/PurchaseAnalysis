@@ -105,7 +105,6 @@ namespace Baza.DTO
             {
                 try
                 {
-
                     log.Info(cust);
 
                     en.Evaluate("try(elog <- dc.ReadLines(\"" + p1 + "\", cust.idx = 1, date.idx = 2, sales.idx = 3))");

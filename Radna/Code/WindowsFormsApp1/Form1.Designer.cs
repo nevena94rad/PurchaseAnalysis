@@ -44,12 +44,15 @@
             this.count = new System.Windows.Forms.TextBox();
             this.StopB = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.recency)).BeginInit();
             this.SuspendLayout();
             // 
             // StartB
             // 
-            this.StartB.Location = new System.Drawing.Point(70, 163);
+            this.StartB.Location = new System.Drawing.Point(66, 301);
             this.StartB.Name = "StartB";
             this.StartB.Size = new System.Drawing.Size(75, 23);
             this.StartB.TabIndex = 0;
@@ -65,7 +68,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(67, 256);
+            this.label1.Location = new System.Drawing.Point(539, 301);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(56, 13);
             this.label1.TabIndex = 1;
@@ -74,7 +77,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(66, 279);
+            this.label2.Location = new System.Drawing.Point(538, 324);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 13);
             this.label2.TabIndex = 2;
@@ -83,7 +86,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(274, 256);
+            this.label3.Location = new System.Drawing.Point(538, 349);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 13);
             this.label3.TabIndex = 3;
@@ -92,7 +95,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(274, 279);
+            this.label4.Location = new System.Drawing.Point(538, 372);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 4;
@@ -101,7 +104,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(274, 303);
+            this.label5.Location = new System.Drawing.Point(538, 396);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(67, 13);
             this.label5.TabIndex = 5;
@@ -109,7 +112,7 @@
             // 
             // dateTimePicker1
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(70, 123);
+            this.dateTimePicker1.Location = new System.Drawing.Point(70, 241);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(202, 20);
             this.dateTimePicker1.TabIndex = 6;
@@ -139,7 +142,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(70, 46);
+            this.label7.Location = new System.Drawing.Point(70, 80);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(98, 13);
             this.label7.TabIndex = 9;
@@ -147,7 +150,7 @@
             // 
             // percentage
             // 
-            this.percentage.Location = new System.Drawing.Point(177, 43);
+            this.percentage.Location = new System.Drawing.Point(177, 77);
             this.percentage.Name = "percentage";
             this.percentage.Size = new System.Drawing.Size(105, 20);
             this.percentage.TabIndex = 10;
@@ -157,7 +160,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(70, 79);
+            this.label8.Location = new System.Drawing.Point(70, 152);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(71, 13);
             this.label8.TabIndex = 11;
@@ -165,7 +168,7 @@
             // 
             // count
             // 
-            this.count.Location = new System.Drawing.Point(177, 76);
+            this.count.Location = new System.Drawing.Point(177, 149);
             this.count.Name = "count";
             this.count.Size = new System.Drawing.Size(105, 20);
             this.count.TabIndex = 12;
@@ -175,7 +178,7 @@
             // StopB
             // 
             this.StopB.Enabled = false;
-            this.StopB.Location = new System.Drawing.Point(277, 163);
+            this.StopB.Location = new System.Drawing.Point(277, 301);
             this.StopB.Name = "StopB";
             this.StopB.Size = new System.Drawing.Size(75, 23);
             this.StopB.TabIndex = 13;
@@ -185,16 +188,47 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(70, 208);
+            this.progressBar1.Location = new System.Drawing.Point(70, 349);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(282, 23);
             this.progressBar1.TabIndex = 14;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(70, 36);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(389, 13);
+            this.label9.TabIndex = 15;
+            this.label9.Text = "(Number of latest months during which customer had to have at least 1 purchase)";
+            this.label9.Click += new System.EventHandler(this.label9_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(70, 100);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(174, 13);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "(Bottom limit of prediction accuracy)";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(70, 172);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(207, 13);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "(Top limit of prediction count per customer)";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(426, 325);
+            this.ClientSize = new System.Drawing.Size(679, 440);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.StopB);
             this.Controls.Add(this.count);
@@ -237,6 +271,9 @@
         private System.Windows.Forms.TextBox count;
         private System.Windows.Forms.Button StopB;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
     }
 }
 

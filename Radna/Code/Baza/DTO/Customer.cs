@@ -273,10 +273,12 @@ namespace Baza.DTO
             if (DoneCount == TotalCount)
             {
                 string message = "Predictions have successfully been made";
+                Parameters.Update((int)Enum.ProcessingStatus.Status.SUCCESS, "");
                 OnProgressFinish?.Invoke(message);
             }
             else
             {
+                Parameters.Update((int)Enum.ProcessingStatus.Status.ERROR, error);
                 OnProgressFinish?.Invoke(error);
             }
         }

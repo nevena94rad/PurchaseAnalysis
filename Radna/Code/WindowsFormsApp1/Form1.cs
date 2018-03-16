@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using Baza.Enum;
 
 namespace WindowsFormsApp1
 {
@@ -73,6 +74,7 @@ namespace WindowsFormsApp1
         private void button2_Click(object sender, EventArgs e)
         {
             backgroundWorker1.CancelAsync();
+            Parameters.Update((int)ProcessingStatus.Status.SUSPENDED, "");
         }
 
         private void percentage_TextChanged(object sender, EventArgs e)
@@ -114,6 +116,11 @@ namespace WindowsFormsApp1
             {
                 recent = (int) recency.Value;
             }
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
