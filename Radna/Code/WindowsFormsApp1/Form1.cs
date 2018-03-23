@@ -24,6 +24,7 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
+            dateTimePicker1.Value = Customer.GetLastTransactionDate();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -116,6 +117,11 @@ namespace WindowsFormsApp1
             {
                 recent = (int) recency.Value;
             }
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
