@@ -49,7 +49,7 @@ namespace WindowsFormsApp1
         {
             base.Invoke((Action)delegate
             {
-                label1.Text = "Done: "+Customer.DoneCount + "/" + Customer.TotalCount;
+                label1.Text = "Done: "+ Customer.DoneCount + "/" + Customer.TotalCount;
                 label2.Text = "Percentage: " + (((double)Customer.DoneCount / Customer.TotalCount) * 100) + "%";
                 label4.Text = "Last Write: " + DateTime.Now;
                 label5.Text = "Total Writes: " + Customer.totalWrites;
@@ -60,6 +60,7 @@ namespace WindowsFormsApp1
                 progressBar1.Refresh();
             });
         }
+
         private void t2_OnFinishUpdate(string message)
         {
             base.Invoke((Action)delegate
@@ -115,11 +116,6 @@ namespace WindowsFormsApp1
             {
                 recent = (int) recency.Value;
             }
-        }
-
-        private void label9_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

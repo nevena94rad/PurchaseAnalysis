@@ -202,7 +202,6 @@
             this.label9.Size = new System.Drawing.Size(389, 13);
             this.label9.TabIndex = 15;
             this.label9.Text = "(Number of latest months during which customer had to have at least 1 purchase)";
-            this.label9.Click += new System.EventHandler(this.label9_Click);
             // 
             // label10
             // 
@@ -255,7 +254,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.StartB);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.recency)).EndInit();
