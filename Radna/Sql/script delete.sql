@@ -8,3 +8,5 @@ delete from PurchasePeriods;
 GO
 delete from PurchasePrediction;
 GO
+delete from PLS_RecomendHist;
+GO
