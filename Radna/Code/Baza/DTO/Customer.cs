@@ -289,6 +289,32 @@ namespace Baza.DTO
                 OnProgressFinish?.Invoke(message);
             }
         }
+        public static DateTime GetLastTransactionDate()
+        {
+            int lastTransactionDate = 0;
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+
+            string queryString = "select max(" + PurchaseDate + ") from " + Table;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        lastTransactionDate = (int)reader[0];
+                    }
+                }
+            }
+
+            return DateManipulation.intToDateTime(lastTransactionDate);
+        }
     }
 }
 
