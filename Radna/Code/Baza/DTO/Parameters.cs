@@ -102,5 +102,21 @@ namespace Baza.DTO
                 command.ExecuteNonQuery();
             }
         }
+
+        public static List<int> ParametersIDs(DateTime processingDate)
+        {
+            List<int> ids = new List<int>();
+            int date = DateManipulation.DateTimeToint(processingDate);
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "Parameters"];
+            string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
+            string ID = ConfigurationManager.AppSettings[name: "Parameters_ID"];
+
+            string que = "select ID from Parameters where JSON_VALUE(PED.dbo.Parameters.ProcessingParameters,'$.processingDate') = 20170316";
+            string query = "select " + ID + " from " + Table +" where JSON_VALUE(" + ProcessingParameters + ",'$.processingDate') = @date";
+
+            return ids;
+        }
     }
 }

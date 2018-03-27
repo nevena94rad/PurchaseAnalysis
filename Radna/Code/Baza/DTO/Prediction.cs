@@ -147,5 +147,76 @@ namespace Baza.DTO
                 }
             }
         }
+
+        public static int NumberOfPredictionsOLD(DateTime startDate)
+        {
+            int retNum = 0;
+            DateTime endDate = startDate.AddDays(7);
+            int start = DateManipulation.DateTimeToint(startDate);
+            int end = DateManipulation.DateTimeToint(endDate);
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PLS_RecomendHist"];
+            string CustNo = ConfigurationManager.AppSettings[name: "PLS_RecomendHist_CustNo"];
+            string ItemNo = ConfigurationManager.AppSettings[name: "PLS_RecomendHist_ItemNo"];
+            string ProcessingDateInt = ConfigurationManager.AppSettings[name: "PLS_RecomendHist_ProcessingDateInt"];
+
+            string queryString = "select count(distinct " + CustNo + "," + ItemNo + ") from " + Table +
+                                   " where " + ProcessingDateInt + "> @start and " + ProcessingDateInt + "<= @end";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@start", start);
+                command.Parameters.AddWithValue("@end", end);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        retNum = (int)reader[0];
+                    }
+                }
+            }
+
+            return retNum;
+        }
+
+        public static int NumberOfPredictionsNEW(int ParametersID)
+        {
+            int retNum = 0;
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table1 = ConfigurationManager.AppSettings[name: "PurchasePrediction"];
+            string Table2 = ConfigurationManager.AppSettings[name: "CustomerModel"];
+            string CustNo = ConfigurationManager.AppSettings[name: "PurchasePrediction_CustNo"];
+            string ItemNo = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemNo"];
+            string ModelID_FK = ConfigurationManager.AppSettings[name: "PurchasePrediction_ModelID"];
+            string ModelID = ConfigurationManager.AppSettings[name: "CustomerModel_ID"];
+            string Parameters_ID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
+
+            string queryString = "select count(" + CustNo + "+" + ItemNo + ") from " + Table1 + " INNER JOIN " + Table2 + " on " + ModelID_FK + "=" + ModelID +
+                                   " where " + Parameters_ID + "= @ID";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@ID", ParametersID);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        retNum = (int)reader[0];
+                    }
+                }
+            }
+
+            return retNum;
+        }
     }
 }
