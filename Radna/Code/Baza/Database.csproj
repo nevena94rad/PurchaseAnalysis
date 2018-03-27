@@ -62,6 +62,8 @@
     <Compile Include="DTO\DateManipulation.cs" />
     <Compile Include="DTO\Parameters.cs" />
     <Compile Include="DTO\Prediction.cs" />
+    <Compile Include="DTO\Purchase.cs" />
+    <Compile Include="DTO\Statistics.cs" />
     <Compile Include="DTO\TempFile.cs" />
     <Compile Include="Enum\ProcessingStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -66,7 +66,6 @@ namespace Baza.DTO
                 }
             }
         }
-
         public List<Prediction> makeAllPredictions()
         {
             List<Prediction> returnList = new List<Prediction>();
@@ -105,7 +104,6 @@ namespace Baza.DTO
             }
             return returnList;
         }
-
         private int getPurchaseQuantity(string item, int date)
         {
             int sum = 0;
@@ -139,7 +137,6 @@ namespace Baza.DTO
 
             return sum;
         }
-
         public void PredictAllItems()
         {
             getAllItems();

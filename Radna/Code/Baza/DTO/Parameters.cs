@@ -32,7 +32,6 @@ namespace Baza.DTO
 
             InsertIntoDatabase();
         }
-
         public static void InsertIntoDatabase()
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -65,7 +64,6 @@ namespace Baza.DTO
                 ID = Convert.ToInt32(command.ExecuteScalar());
             }
         }
-
         public static void Update(int procStatus, string procError)
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -102,7 +100,6 @@ namespace Baza.DTO
                 command.ExecuteNonQuery();
             }
         }
-
         public static List<int> ParametersIDs(DateTime processingDate)
         {
             List<int> ids = new List<int>();
@@ -113,8 +110,23 @@ namespace Baza.DTO
             string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
             string ID = ConfigurationManager.AppSettings[name: "Parameters_ID"];
 
-            string que = "select ID from Parameters where JSON_VALUE(PED.dbo.Parameters.ProcessingParameters,'$.processingDate') = 20170316";
             string query = "select " + ID + " from " + Table +" where JSON_VALUE(" + ProcessingParameters + ",'$.processingDate') = @date";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@date", date);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ids.Add((int)reader[0]);
+                    }
+                }
+            }
 
             return ids;
         }
