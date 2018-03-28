@@ -130,5 +130,39 @@ namespace Baza.DTO
 
             return ids;
         }
+        public static Dictionary<string,string> GetParameters(int parametersId, out string status)
+        {
+            string jsonParameters = "";
+            status = "";
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "Parameters"];
+            string ID = ConfigurationManager.AppSettings[name: "Parameters_ID"];
+            string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
+            string ProcessingStatus = ConfigurationManager.AppSettings[name: "Parameters_ProcessingStatus"];
+
+            string queryString = "select " + ProcessingParameters + "," + ProcessingStatus + " from " + Table + " where " + ID + "=@ID";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@ID", parametersId);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        jsonParameters = (string)(reader[0]);
+                        status = (string)(reader[1]);
+                    }
+                }
+            }
+
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            parameters = JsonConvert.DeserializeObject<Dictionary<string,string>>(jsonParameters);
+            return parameters;
+        }
     }
 }

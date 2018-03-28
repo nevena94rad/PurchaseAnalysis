@@ -15,10 +15,10 @@ namespace Baza.DTO
 
 
         public int predictionCount { get { return predictedPurchases.Count(); } }
-        public double correctPredictionsPercentage { get { return 100 * (((double)correctPredictionsCount) / predictionCount > 0 ? predictionCount : -1); } }
+        public double correctPredictionsPercentage { get { return 100 * (((double)correctPredictionsCount) / (predictionCount > 0 ? predictionCount : -1)); } }
         public int falsePredictionCount { get { return predictionCount - correctPredictionsCount; } }
         public double falsePredictionPercentage { get { return 100 - correctPredictionsPercentage; } }
-        public double coveragePercentage { get { return occuredPurchases.Count > 0 ? (((double)correctPredictionsCount) / occuredPurchases.Count()) : -1; } }
+        public double coveragePercentage { get { return 100 * (occuredPurchases.Count > 0 ? (((double)correctPredictionsCount) / occuredPurchases.Count()) : -1); } }
 
         public int correctPredictionsCount { get; protected set; }
         public int startingDate { get; protected set; }
@@ -35,7 +35,8 @@ namespace Baza.DTO
         }
         protected void setCorrectPredictionCount()
         {
-            correctPredictionsCount = predictedPurchases.Intersect(occuredPurchases).Count();
+            PurchaseComperer comperer = new PurchaseComperer();
+            correctPredictionsCount = predictedPurchases.Intersect(occuredPurchases, comperer).ToList().Count;
         }
         protected void getOccuredPurchases()
         {
@@ -48,7 +49,7 @@ namespace Baza.DTO
             string History_Date = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
 
             string query = "select distinct " + History_ItemNumber + ", " + History_CustNumber + " from " + HistoryTable +
-                            "where " + History_Date + ">=@startingDate and " + History_Date + "<=endDate";
+                            " where " + History_Date + ">=@startingDate and " + History_Date + "<=@endDate order by CustNo";
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -97,9 +98,9 @@ namespace Baza.DTO
             string Model_ParameterID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
 
             string query = "select " + Prediction_ItemNumber + ", " + Prediction_CustNumber + " from " + PredictionTable +
-                           "where " + Prediction_ModelID + " in ( " +
+                           " where " + Prediction_ModelID + " in ( " +
                                 "select " + Model_ID + " from " + ModelTable +
-                                "where " + Model_ParameterID + " =@parametarID )";
+                                " where " + Model_ParameterID + " =@parametarID )";
                            
 
             using (var connection = new SqlConnection(connectionString))
@@ -137,7 +138,7 @@ namespace Baza.DTO
             string Recomend_Date = ConfigurationManager.AppSettings[name: "PLS_RecomendHist_ProcessingDateInt"];
 
             string query = "select distinct " + Recomend_ItemNumber + ", " + Recomend_CustNumber + " from " + RecomendTable +
-                            "where " + Recomend_Date + ">=@startingDate and " + Recomend_Date + "<=endDate";
+                            " where " + Recomend_Date + ">=@startingDate and " + Recomend_Date + "<=@endDate order by CustNo";
 
             using (var connection = new SqlConnection(connectionString))
             {

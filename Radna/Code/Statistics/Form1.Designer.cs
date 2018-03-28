@@ -54,9 +54,11 @@
             this.OLD_NoP = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.parametersIDs = new System.Windows.Forms.ComboBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
+            this.custRecency = new System.Windows.Forms.Label();
+            this.percentageCutOff = new System.Windows.Forms.Label();
+            this.countCutOff = new System.Windows.Forms.Label();
+            this.status = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -92,7 +94,7 @@
             this.groupBox2.Controls.Add(this.groupBox6);
             this.groupBox2.Controls.Add(this.NEW_NoP);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.groupBox2.Location = new System.Drawing.Point(330, 222);
+            this.groupBox2.Location = new System.Drawing.Point(332, 205);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(294, 387);
             this.groupBox2.TabIndex = 3;
@@ -203,7 +205,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(67, 156);
+            this.button1.Location = new System.Drawing.Point(67, 144);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(515, 23);
             this.button1.TabIndex = 4;
@@ -218,7 +220,7 @@
             this.groupBox1.Controls.Add(this.groupBox7);
             this.groupBox1.Controls.Add(this.OLD_NoP);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.groupBox1.Location = new System.Drawing.Point(12, 222);
+            this.groupBox1.Location = new System.Drawing.Point(12, 205);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(294, 387);
             this.groupBox1.TabIndex = 5;
@@ -334,42 +336,64 @@
             this.parametersIDs.Name = "parametersIDs";
             this.parametersIDs.Size = new System.Drawing.Size(101, 21);
             this.parametersIDs.TabIndex = 7;
+            this.parametersIDs.SelectedIndexChanged += new System.EventHandler(this.parametersIDs_SelectedIndexChanged);
             // 
-            // label16
+            // custRecency
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(412, 43);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(100, 13);
-            this.label16.TabIndex = 8;
-            this.label16.Text = "Customer Recency:";
+            this.custRecency.AutoSize = true;
+            this.custRecency.Location = new System.Drawing.Point(414, 22);
+            this.custRecency.Name = "custRecency";
+            this.custRecency.Size = new System.Drawing.Size(100, 13);
+            this.custRecency.TabIndex = 8;
+            this.custRecency.Text = "Customer Recency:";
             // 
-            // label17
+            // percentageCutOff
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(412, 71);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(98, 13);
-            this.label17.TabIndex = 10;
-            this.label17.Text = "Percentage CutOff:";
+            this.percentageCutOff.AutoSize = true;
+            this.percentageCutOff.Location = new System.Drawing.Point(414, 50);
+            this.percentageCutOff.Name = "percentageCutOff";
+            this.percentageCutOff.Size = new System.Drawing.Size(98, 13);
+            this.percentageCutOff.TabIndex = 10;
+            this.percentageCutOff.Text = "Percentage CutOff:";
             // 
-            // label18
+            // countCutOff
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(412, 102);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(71, 13);
-            this.label18.TabIndex = 12;
-            this.label18.Text = "Count CutOff:";
+            this.countCutOff.AutoSize = true;
+            this.countCutOff.Location = new System.Drawing.Point(414, 81);
+            this.countCutOff.Name = "countCutOff";
+            this.countCutOff.Size = new System.Drawing.Size(71, 13);
+            this.countCutOff.TabIndex = 12;
+            this.countCutOff.Text = "Count CutOff:";
+            // 
+            // status
+            // 
+            this.status.AutoSize = true;
+            this.status.Location = new System.Drawing.Point(414, 112);
+            this.status.Name = "status";
+            this.status.Size = new System.Drawing.Size(40, 13);
+            this.status.TabIndex = 13;
+            this.status.Text = "Status:";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(228, 612);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(184, 23);
+            this.button2.TabIndex = 14;
+            this.button2.Text = "Compare";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(648, 621);
-            this.Controls.Add(this.label18);
-            this.Controls.Add(this.label17);
-            this.Controls.Add(this.label16);
+            this.ClientSize = new System.Drawing.Size(648, 647);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.status);
+            this.Controls.Add(this.countCutOff);
+            this.Controls.Add(this.percentageCutOff);
+            this.Controls.Add(this.custRecency);
             this.Controls.Add(this.parametersIDs);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.groupBox1);
@@ -428,9 +452,11 @@
         private System.Windows.Forms.Label OLD_NoP;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox parametersIDs;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label custRecency;
+        private System.Windows.Forms.Label percentageCutOff;
+        private System.Windows.Forms.Label countCutOff;
+        private System.Windows.Forms.Label status;
+        private System.Windows.Forms.Button button2;
     }
 }
 

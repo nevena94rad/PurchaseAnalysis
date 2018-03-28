@@ -30,8 +30,8 @@ namespace Statistics
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int parametrsID = Int32.Parse(parametersIDs.SelectedText);
-            int date = DateManipulation.DateTimeToint(dateTimePicker1.Value);
+            int parametrsID = (int)(parametersIDs.SelectedItem);
+            int date = DateManipulation.DateTimeToint(dateTimePicker1.Value.AddDays(1));
 
             Baza.DTO.Statistics os = new OLDStatistics(date);
             Baza.DTO.Statistics ns = new NEWStatistics(parametrsID, date);
@@ -55,13 +55,54 @@ namespace Statistics
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             DateTime processingDate = this.dateTimePicker1.Value;
-            List<int> parametersIDs = Parameters.ParametersIDs(processingDate.AddDays(-1));
+            ClearForm();
+            List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
             foreach (int param in parametersIDs)
             {
                 this.parametersIDs.Items.Add(param);
             }
         }
 
-        
+        private void ClearForm()
+        {
+            this.parametersIDs.Text = "";
+            this.parametersIDs.Items.Clear();
+            this.percentageCutOff.Text = "Percentage CutOff:";
+            this.countCutOff.Text = "Count CutOff:";
+            this.custRecency.Text = "Customer Recency:";
+            this.button1.Enabled = false;
+            this.button2.Enabled = false;
+        }
+
+        private void parametersIDs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int parametersID = (int)this.parametersIDs.SelectedItem;
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            string status = "";
+            parameters = Parameters.GetParameters(parametersID, out status);
+
+            this.custRecency.Text = "Customer Recency:  " + parameters["customerRecency"];
+            this.percentageCutOff.Text = "Percentage CutOff:  " + parameters["predictionPercentageCutOff"];
+            this.countCutOff.Text = "Count CutOff:  " + parameters["predictionCountCutOff"];
+            this.status.Text = "Status:  " + status;
+
+            if (status == Baza.Enum.ProcessingStatus.Status.ERROR.ToString() || status == Baza.Enum.ProcessingStatus.Status.SUSPENDED.ToString())
+            {
+                this.button1.Enabled = false;
+                this.button2.Enabled = false;
+            }
+            else
+            {
+                this.button1.Enabled = true;
+                this.button2.Enabled = true;
+            }
+        }
+
+        Form2 form2 = new Form2();
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            form2.ShowDialog();
+        }
     }
 }
