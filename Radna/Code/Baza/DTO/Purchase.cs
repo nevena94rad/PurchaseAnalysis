@@ -10,11 +10,18 @@ namespace Baza.DTO
     {
         public string ItemNo { get; set; }
         public string CustNo { get; set; }
+        public DateTime? PurchaseDate { get; set; } = null;
+        public int? PurchaseQuantity { get; set; } = null;
 
         public Purchase(string itemNo, string custNo)
         {
             ItemNo = itemNo;
             CustNo = custNo;
+        }
+        public Purchase(string itemNo, string custNo, DateTime purchaseDate, int purchaseQuantity) : this(itemNo, custNo)
+        {
+            PurchaseDate = purchaseDate;
+            PurchaseQuantity = purchaseQuantity;
         }
     }
     public class PurchaseComperer : IEqualityComparer<Purchase>

@@ -22,6 +22,7 @@ namespace Baza.DTO
 
         public int correctPredictionsCount { get; protected set; }
         public int startingDate { get; protected set; }
+        
 
         protected Statistics(int date)
         {
@@ -68,6 +69,47 @@ namespace Baza.DTO
                 }
             }
 
+        }
+
+        public static List<Purchase> getListOfPurchases(string custNo, string itemNo)
+        {
+            List<Purchase> returnList = new List<Purchase>();
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+
+            string HistoryTable = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+
+            string History_CustNumber = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string History_ItemNumber = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+            string History_Date = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+            string History_Quantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+
+            string query = "select " + History_ItemNumber + ", " + History_CustNumber +
+                            ", " + History_Date + ", " + History_Quantity + " from " + HistoryTable +
+                            " where " + History_ItemNumber + "=@itemNo and " +
+                            History_CustNumber + "=@custNo order by " + History_Date;
+
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@itemNo", itemNo);
+                command.Parameters.AddWithValue("@custNo", custNo);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        returnList.Add(new Purchase((string)reader[0], (string)reader[1],DateManipulation.intToDateTime((int)reader[2]), (int)reader[3]));
+                    }
+                }
+            }
+
+
+            return returnList;
         }
 
         protected abstract void getPredictedPurchases();

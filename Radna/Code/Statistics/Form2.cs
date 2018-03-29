@@ -7,19 +7,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Baza.DTO;
+
 
 namespace Statistics
 {
     public partial class Form2 : Form
     {
+        public Baza.DTO.Statistics os = null;
+        public Baza.DTO.Statistics ns = null;
+
         public Form2()
         {
             InitializeComponent();
         }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        
+        public void setStatistics(Baza.DTO.Statistics os, Baza.DTO.Statistics ns)
         {
-
+            this.os = os;
+            this.ns = ns;
         }
+
+
+        
     }
 }

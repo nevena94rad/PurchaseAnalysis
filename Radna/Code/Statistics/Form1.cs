@@ -13,6 +13,10 @@ namespace Statistics
 {
     public partial class Form1 : Form
     {
+        public Form2 form2 = new Form2();
+        public Baza.DTO.Statistics os = null;
+        public Baza.DTO.Statistics ns = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -33,8 +37,8 @@ namespace Statistics
             int parametrsID = (int)(parametersIDs.SelectedItem);
             int date = DateManipulation.DateTimeToint(dateTimePicker1.Value.AddDays(1));
 
-            Baza.DTO.Statistics os = new OLDStatistics(date);
-            Baza.DTO.Statistics ns = new NEWStatistics(parametrsID, date);
+            os = new OLDStatistics(date);
+            ns = new NEWStatistics(parametrsID, date);
 
             OLD_NoP.Text = "Number of predictions: " + os.predictionCount;
             OLD_CPtp.Text = "Total number: " + os.correctPredictionsCount;
@@ -98,11 +102,14 @@ namespace Statistics
             }
         }
 
-        Form2 form2 = new Form2();
 
         private void button2_Click(object sender, EventArgs e)
         {
-            form2.ShowDialog();
+            if (os != null && ns != null)
+            {
+                form2.setStatistics(os, ns);
+                form2.ShowDialog();
+            }
         }
     }
 }
