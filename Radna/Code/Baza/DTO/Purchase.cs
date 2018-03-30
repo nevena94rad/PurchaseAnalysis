@@ -12,6 +12,9 @@ namespace Baza.DTO
         public string CustNo { get; set; }
         public DateTime? PurchaseDate { get; set; } = null;
         public int? PurchaseQuantity { get; set; } = null;
+        public string displayCustomerItem { get { return CustNo +" " + ItemNo; } } 
+        public string displayWhole { get { return CustNo + " " + ItemNo + " " + PurchaseDate + " " + PurchaseQuantity; } }
+     
 
         public Purchase(string itemNo, string custNo)
         {

@@ -155,7 +155,11 @@ namespace Baza.DTO
                     if (reader.Read())
                     {
                         jsonParameters = (string)(reader[0]);
-                        status = (string)(reader[1]);
+
+                        if (reader[0] != null)
+                            status = (string)(reader[1]);
+                        else
+                            status = null;
                     }
                 }
             }

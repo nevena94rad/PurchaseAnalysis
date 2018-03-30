@@ -33,7 +33,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.newPredictions = new System.Windows.Forms.ListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.listOfPurchases = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -56,6 +56,7 @@
             this.oldPredictions.Name = "oldPredictions";
             this.oldPredictions.Size = new System.Drawing.Size(187, 355);
             this.oldPredictions.TabIndex = 0;
+            this.oldPredictions.SelectedIndexChanged += new System.EventHandler(this.OldSelected);
             // 
             // groupBox2
             // 
@@ -74,10 +75,11 @@
             this.newPredictions.Name = "newPredictions";
             this.newPredictions.Size = new System.Drawing.Size(187, 355);
             this.newPredictions.TabIndex = 1;
+            this.newPredictions.SelectedIndexChanged += new System.EventHandler(this.newSelected);
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.listBox1);
+            this.groupBox3.Controls.Add(this.listOfPurchases);
             this.groupBox3.Location = new System.Drawing.Point(535, 12);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(228, 426);
@@ -85,13 +87,13 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "List of Purchases";
             // 
-            // listBox1
+            // listOfPurchases
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(21, 36);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(187, 355);
-            this.listBox1.TabIndex = 1;
+            this.listOfPurchases.FormattingEnabled = true;
+            this.listOfPurchases.Location = new System.Drawing.Point(21, 36);
+            this.listOfPurchases.Name = "listOfPurchases";
+            this.listOfPurchases.Size = new System.Drawing.Size(187, 355);
+            this.listOfPurchases.TabIndex = 1;
             // 
             // Form2
             // 
@@ -103,6 +105,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "Form2";
             this.Text = "Form2";
+            this.Shown += new System.EventHandler(this.onShow);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -117,6 +120,6 @@
         private System.Windows.Forms.ListBox oldPredictions;
         private System.Windows.Forms.ListBox newPredictions;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox listOfPurchases;
     }
 }

@@ -10,10 +10,10 @@ namespace Baza.DTO
 {
     public abstract class Statistics
     {
-        protected List<Purchase> predictedPurchases = new List<Purchase>();
-        protected List<Purchase> occuredPurchases = new List<Purchase>();
+        public List<Purchase> predictedPurchases = new List<Purchase>();
+        public List<Purchase> occuredPurchases = new List<Purchase>();
 
-
+        protected bool allPurchases { get; set; }
         public int predictionCount { get { return predictedPurchases.Count(); } }
         public double correctPredictionsPercentage { get { return 100 * (((double)correctPredictionsCount) / (predictionCount > 0 ? predictionCount : -1)); } }
         public int falsePredictionCount { get { return predictionCount - correctPredictionsCount; } }
@@ -24,9 +24,10 @@ namespace Baza.DTO
         public int startingDate { get; protected set; }
         
 
-        protected Statistics(int date)
+        protected Statistics(int date, bool allPurchases)
         {
             startingDate = date;
+            this.allPurchases = allPurchases;
         }
         protected void getStatistics()
         {
@@ -49,8 +50,15 @@ namespace Baza.DTO
             string History_ItemNumber = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
             string History_Date = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
 
-            string query = "select distinct " + History_ItemNumber + ", " + History_CustNumber + " from " + HistoryTable +
+            string query = "";
+
+            if (allPurchases)
+                query = "select distinct " + History_ItemNumber + ", " + History_CustNumber + " from " + HistoryTable +
                             " where " + History_Date + ">=@startingDate and " + History_Date + "<=@endDate order by CustNo";
+            else
+                query = "select distinct " + History_ItemNumber + ", " + History_CustNumber + " from " + HistoryTable +
+                        " where " + History_Date + "<=@endDate group by " + History_ItemNumber + ", " + History_CustNumber +
+                        "having count(*)>2 and max(" + History_Date + ") >=@startingDate"; 
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -119,10 +127,12 @@ namespace Baza.DTO
     public class NEWStatistics : Statistics
     {
         protected int parametarID;
+        protected double cutOffPercentage;
         
-        public NEWStatistics(int parametarID, int date) : base(date)
+        public NEWStatistics(int parametarID, int date, bool allPurchases, double cutOffPercentage) : base(date, allPurchases)
         {
             this.parametarID = parametarID;
+            this.cutOffPercentage = cutOffPercentage;
             getStatistics();
         }
         protected override void getPredictedPurchases()
@@ -135,6 +145,8 @@ namespace Baza.DTO
             string Prediction_CustNumber = ConfigurationManager.AppSettings[name: "PurchasePrediction_CustomerID"];
             string Prediction_ItemNumber = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemID"];
             string Prediction_ModelID = ConfigurationManager.AppSettings[name: "PurchasePrediction_ModelID"];
+            string Prediction_PredictedValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
+
 
             string Model_ID = ConfigurationManager.AppSettings[name: "CustomerModel_ID"];
             string Model_ParameterID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
@@ -142,7 +154,8 @@ namespace Baza.DTO
             string query = "select " + Prediction_ItemNumber + ", " + Prediction_CustNumber + " from " + PredictionTable +
                            " where " + Prediction_ModelID + " in ( " +
                                 "select " + Model_ID + " from " + ModelTable +
-                                " where " + Model_ParameterID + " =@parametarID )";
+                                " where " + Model_ParameterID + " =@parametarID )" + 
+                           " and " + Prediction_PredictedValue + " >=" + cutOffPercentage;
                            
 
             using (var connection = new SqlConnection(connectionString))
@@ -165,7 +178,7 @@ namespace Baza.DTO
     }
     public class OLDStatistics : Statistics
     {
-        public OLDStatistics(int date) : base(date)
+        public OLDStatistics(int date, bool allPurchases) : base(date, allPurchases)
         {
             getStatistics();
         }

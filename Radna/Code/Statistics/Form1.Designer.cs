@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -59,6 +58,10 @@
             this.countCutOff = new System.Windows.Forms.Label();
             this.status = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.FirstAndSecondPurchase = new System.Windows.Forms.CheckBox();
+            this.avableDates = new System.Windows.Forms.ComboBox();
+            this.cutOffPercentage = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -69,19 +72,11 @@
             this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(67, 43);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(294, 20);
-            this.dateTimePicker1.TabIndex = 0;
-            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(64, 18);
+            this.label1.Location = new System.Drawing.Point(31, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(297, 17);
             this.label1.TabIndex = 1;
@@ -205,7 +200,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(67, 144);
+            this.button1.Location = new System.Drawing.Point(67, 166);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(515, 23);
             this.button1.TabIndex = 4;
@@ -323,7 +318,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label13.Location = new System.Drawing.Point(64, 81);
+            this.label13.Location = new System.Drawing.Point(31, 82);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(85, 17);
             this.label13.TabIndex = 6;
@@ -332,7 +327,7 @@
             // parametersIDs
             // 
             this.parametersIDs.FormattingEnabled = true;
-            this.parametersIDs.Location = new System.Drawing.Point(159, 81);
+            this.parametersIDs.Location = new System.Drawing.Point(126, 82);
             this.parametersIDs.Name = "parametersIDs";
             this.parametersIDs.Size = new System.Drawing.Size(101, 21);
             this.parametersIDs.TabIndex = 7;
@@ -341,7 +336,7 @@
             // custRecency
             // 
             this.custRecency.AutoSize = true;
-            this.custRecency.Location = new System.Drawing.Point(414, 22);
+            this.custRecency.Location = new System.Drawing.Point(421, 27);
             this.custRecency.Name = "custRecency";
             this.custRecency.Size = new System.Drawing.Size(100, 13);
             this.custRecency.TabIndex = 8;
@@ -350,7 +345,7 @@
             // percentageCutOff
             // 
             this.percentageCutOff.AutoSize = true;
-            this.percentageCutOff.Location = new System.Drawing.Point(414, 50);
+            this.percentageCutOff.Location = new System.Drawing.Point(421, 55);
             this.percentageCutOff.Name = "percentageCutOff";
             this.percentageCutOff.Size = new System.Drawing.Size(98, 13);
             this.percentageCutOff.TabIndex = 10;
@@ -359,7 +354,7 @@
             // countCutOff
             // 
             this.countCutOff.AutoSize = true;
-            this.countCutOff.Location = new System.Drawing.Point(414, 81);
+            this.countCutOff.Location = new System.Drawing.Point(421, 86);
             this.countCutOff.Name = "countCutOff";
             this.countCutOff.Size = new System.Drawing.Size(71, 13);
             this.countCutOff.TabIndex = 12;
@@ -368,7 +363,7 @@
             // status
             // 
             this.status.AutoSize = true;
-            this.status.Location = new System.Drawing.Point(414, 112);
+            this.status.Location = new System.Drawing.Point(421, 117);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(40, 13);
             this.status.TabIndex = 13;
@@ -384,11 +379,51 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // FirstAndSecondPurchase
+            // 
+            this.FirstAndSecondPurchase.AutoSize = true;
+            this.FirstAndSecondPurchase.Location = new System.Drawing.Point(249, 83);
+            this.FirstAndSecondPurchase.Name = "FirstAndSecondPurchase";
+            this.FirstAndSecondPurchase.Size = new System.Drawing.Size(144, 17);
+            this.FirstAndSecondPurchase.TabIndex = 16;
+            this.FirstAndSecondPurchase.Text = "Include I and II purchase";
+            this.FirstAndSecondPurchase.UseVisualStyleBackColor = true;
+            // 
+            // avableDates
+            // 
+            this.avableDates.FormattingEnabled = true;
+            this.avableDates.Location = new System.Drawing.Point(34, 47);
+            this.avableDates.Name = "avableDates";
+            this.avableDates.Size = new System.Drawing.Size(350, 21);
+            this.avableDates.TabIndex = 17;
+            // 
+            // cutOffPercentage
+            // 
+            this.cutOffPercentage.FormattingEnabled = true;
+            this.cutOffPercentage.Location = new System.Drawing.Point(249, 121);
+            this.cutOffPercentage.Name = "cutOffPercentage";
+            this.cutOffPercentage.Size = new System.Drawing.Size(135, 21);
+            this.cutOffPercentage.TabIndex = 18;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label3.Location = new System.Drawing.Point(31, 121);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(186, 17);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Select a cut off percentage: ";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(648, 647);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.cutOffPercentage);
+            this.Controls.Add(this.avableDates);
+            this.Controls.Add(this.FirstAndSecondPurchase);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.status);
             this.Controls.Add(this.countCutOff);
@@ -400,7 +435,6 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.dateTimePicker1);
             this.Name = "Form1";
             this.Text = "Form1";
             this.groupBox2.ResumeLayout(false);
@@ -425,8 +459,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox8;
@@ -457,6 +489,10 @@
         private System.Windows.Forms.Label countCutOff;
         private System.Windows.Forms.Label status;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.CheckBox FirstAndSecondPurchase;
+        private System.Windows.Forms.ComboBox avableDates;
+        private System.Windows.Forms.ComboBox cutOffPercentage;
+        private System.Windows.Forms.Label label3;
     }
 }
 

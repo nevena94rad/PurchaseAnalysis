@@ -20,6 +20,17 @@ namespace Statistics
         public Form1()
         {
             InitializeComponent();
+
+            cutOffPercentage.Items.Add(0);
+            cutOffPercentage.Items.Add(0.01);
+            cutOffPercentage.Items.Add(0.1);
+            cutOffPercentage.Items.Add(1);
+            cutOffPercentage.Items.Add(5);
+            cutOffPercentage.Items.Add(10);
+            cutOffPercentage.Items.Add(25);
+            cutOffPercentage.Items.Add(50);
+
+            cutOffPercentage.SelectedItem = 0.01;
         }
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
@@ -35,10 +46,10 @@ namespace Statistics
         private void button1_Click(object sender, EventArgs e)
         {
             int parametrsID = (int)(parametersIDs.SelectedItem);
-            int date = DateManipulation.DateTimeToint(dateTimePicker1.Value.AddDays(1));
+            int date = DateManipulation.DateTimeToint(((DateTime)avableDates.SelectedItem).AddDays(1));
 
-            os = new OLDStatistics(date);
-            ns = new NEWStatistics(parametrsID, date);
+            os = new OLDStatistics(date, FirstAndSecondPurchase.Checked);
+            ns = new NEWStatistics(parametrsID, date, FirstAndSecondPurchase.Checked, (double) cutOffPercentage.SelectedValue);
 
             OLD_NoP.Text = "Number of predictions: " + os.predictionCount;
             OLD_CPtp.Text = "Total number: " + os.correctPredictionsCount;
@@ -58,7 +69,7 @@ namespace Statistics
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            DateTime processingDate = this.dateTimePicker1.Value;
+            DateTime processingDate = ((DateTime)avableDates.SelectedItem);
             ClearForm();
             List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
             foreach (int param in parametersIDs)
