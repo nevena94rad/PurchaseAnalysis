@@ -13,7 +13,7 @@ namespace Baza.DTO
         public DateTime? PurchaseDate { get; set; } = null;
         public int? PurchaseQuantity { get; set; } = null;
         public string displayCustomerItem { get { return CustNo +" " + ItemNo; } } 
-        public string displayWhole { get { return CustNo + " " + ItemNo + " " + PurchaseDate + " " + PurchaseQuantity; } }
+        public string displayWhole { get { return ((DateTime) PurchaseDate).ToShortDateString() + " " + PurchaseQuantity; } }
      
 
         public Purchase(string itemNo, string custNo)
@@ -34,7 +34,7 @@ namespace Baza.DTO
             if (x.ItemNo == y.ItemNo && x.CustNo == y.CustNo)
                 return true;
             else
-                return true;
+                return false;
         }
 
         public int GetHashCode(Purchase obj)

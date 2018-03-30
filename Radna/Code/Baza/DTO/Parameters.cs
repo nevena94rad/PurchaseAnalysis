@@ -168,5 +168,32 @@ namespace Baza.DTO
             parameters = JsonConvert.DeserializeObject<Dictionary<string,string>>(jsonParameters);
             return parameters;
         }
+        public static List<DateTime> GetProcessingDates()
+        {
+            List<DateTime> dates = new List<DateTime>();
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "Parameters"];
+            string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
+
+            string query = "select distinct JSON_VALUE(" + ProcessingParameters + " ,'$.processingDate') from " + Table;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(query, connection);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        dates.Add(DateManipulation.intToDateTime(Int32.Parse(reader[0].ToString())));
+                    }
+                }
+            }
+
+            return dates;
+        }
     }
 }
