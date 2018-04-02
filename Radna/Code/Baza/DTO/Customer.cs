@@ -209,7 +209,7 @@ namespace Baza.DTO
                 OnProgressFinish = t2_OnFinishUpdate;
                 List<string> allCustomers = new List<string>();
                 Customer.worker = bWorker;
-
+                //getAllCustomers begin
                 var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
                 string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
                 string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
@@ -236,7 +236,7 @@ namespace Baza.DTO
                         }
                     }
                 }
-
+                //getAllCustomers end
                 int custCount = allCustomers.Count();
                 var listCust = allCustomers.ToList();
 
@@ -286,6 +286,8 @@ namespace Baza.DTO
                 OnProgressFinish?.Invoke(message);
             }
         }
+        
+        //novo
         public static DateTime GetLastTransactionDate()
         {
             int lastTransactionDate = 0;
@@ -311,6 +313,76 @@ namespace Baza.DTO
             }
 
             return DateManipulation.intToDateTime(lastTransactionDate);
+        }
+        public static List<string> GetAllCustomers(int date)
+        {
+            List<string> allCustomers = new List<string>();
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+
+            string queryString = "select distinct(" + CustomerID + ") from " + Table + " where " + PurchaseDate + "< @date and " +
+                PurchaseDate + "> @dateMin";
+
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@date", date);
+                command.Parameters.AddWithValue("@dateMin",
+                    DateManipulation.DateTimeToint(DateManipulation.intToDateTime(date).AddMonths(-Parameters.customerRecency)));
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        allCustomers.Add(reader[0].ToString());
+                    }
+                }
+            }
+
+            return allCustomers;
+        }
+        public static List<string> GetAllItems()
+        {
+            List<string> itemNos = new List<string>();
+
+            DateTime processingDateDateFormat = DateManipulation.intToDateTime(Parameters.processingDate);
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+
+            string Table = ConfigurationManager.AppSettings[name: "PurchasePeriods"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePeriods_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchasePeriods_ItemID"];
+            string Period = ConfigurationManager.AppSettings[name: "PurchasePeriods_Period"];
+            string PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
+
+            string queryString = "select distinct(" + ItemID + "),max(" + PeriodEnd + ") from " + Table +
+                " where " + CustomerID + "= @custNo" + " and " + PeriodEnd + "<@bDate" +
+                " group by " + ItemID + " having count(*)>1 and max(" + PeriodEnd + ")>@bDateMinus6Months " +
+                " and min(" + Period + ") * 0.5< DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) + 7" +
+                " and max(" + Period + ") * 1.5 > DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate)";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@custNo", custNo);
+                command.Parameters.AddWithValue("@bDate", processingDateDateFormat.ToShortDateString());
+                command.Parameters.AddWithValue("@bDateMinus6Months", processingDateDateFormat.AddMonths(-6).ToShortDateString());
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        itemNos.Add(((String)reader[0]).Replace(" ", String.Empty));
+                    }
+                }
+            }
         }
     }
 }

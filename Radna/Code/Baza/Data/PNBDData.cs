@@ -8,6 +8,6 @@ namespace Baza.Data
 {
     public class PNBDData
     {
-        ////////sta sve treba da ima
+        public List<string> AllCustomers { get; set; }
     }
 }
