@@ -33,12 +33,12 @@ namespace Statistics
             cutOffPercentage.SelectedItem = 0.01;
 
             this.availableDates.DataSource = Parameters.GetProcessingDates();
-            DateTime processingDate = ((DateTime)availableDates.SelectedItem);
-            List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
-            foreach (int param in parametersIDs)
-            {
-                this.parametersIDs.Items.Add(param);
-            }
+            //DateTime processingDate = ((DateTime)availableDates.SelectedItem);
+            //List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
+            //foreach (int param in parametersIDs)
+            //{
+            //    this.parametersIDs.Items.Add(param);
+            //}
         }
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
@@ -77,13 +77,7 @@ namespace Statistics
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            DateTime processingDate = ((DateTime)availableDates.SelectedItem);
-            ClearForm();
-            List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
-            foreach (int param in parametersIDs)
-            {
-                this.parametersIDs.Items.Add(param);
-            }
+            
         }
 
         private void ClearForm()
@@ -93,6 +87,8 @@ namespace Statistics
             this.percentageCutOff.Text = "Percentage CutOff:";
             this.countCutOff.Text = "Count CutOff:";
             this.custRecency.Text = "Customer Recency:";
+            this.status.Text = "Status:";
+            this.status.ForeColor = Color.Black;
             this.button1.Enabled = false;
             this.button2.Enabled = false;
         }
@@ -113,11 +109,13 @@ namespace Statistics
             {
                 this.button1.Enabled = false;
                 this.button2.Enabled = false;
+                this.status.ForeColor = Color.Red;
             }
             else
             {
                 this.button1.Enabled = true;
                 this.button2.Enabled = true;
+                this.status.ForeColor = Color.Green;
             }
         }
 
@@ -132,6 +130,17 @@ namespace Statistics
         }
 
         private void avableDates_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DateTime processingDate = ((DateTime)availableDates.SelectedItem);
+            ClearForm();
+            List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
+            foreach (int param in parametersIDs)
+            {
+                this.parametersIDs.Items.Add(param);
+            }
+        }
+
+        private void status_Click(object sender, EventArgs e)
         {
 
         }

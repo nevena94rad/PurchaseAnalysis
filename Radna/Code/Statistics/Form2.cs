@@ -16,6 +16,7 @@ namespace Statistics
     {
         public Baza.DTO.Statistics os = null;
         public Baza.DTO.Statistics ns = null;
+        private bool ignoreSelectedItemsChange;
 
         public Form2()
         {
@@ -24,7 +25,9 @@ namespace Statistics
             oldPredictions.DisplayMember = "displayCustomerItem";
             oldPredictions.ValueMember = "displayCustomerItem";
             newPredictions.DisplayMember = "displayCustomerItem";
-            newPredictions.DisplayMember = "displayCustomerItem";
+            newPredictions.ValueMember = "displayCustomerItem";
+            intersection.DisplayMember = "displayCustomerItem";
+            intersection.ValueMember = "displayCustomerItem";
             listOfPurchases.DisplayMember = "displayWhole";
 
         }
@@ -45,21 +48,49 @@ namespace Statistics
 
                 List<Purchase> oldMnew = oldCorrect.Where(x => !newCorrect.Contains(x, comparer)).OrderBy(x => x.CustNo).ThenBy(x => x.ItemNo).ToList();
                 List<Purchase> newMold = newCorrect.Where(x => !oldCorrect.Contains(x, comparer)).OrderBy(x => x.CustNo).ThenBy(x => x.ItemNo).ToList();
+                List<Purchase> intersect = oldCorrect.Where(x => newCorrect.Contains(x,comparer)).OrderBy(x => x.CustNo).ThenBy(x => x.ItemNo).ToList();
+                ignoreSelectedItemsChange = true;
                 oldPredictions.DataSource = oldMnew;
                 newPredictions.DataSource = newMold;
+                intersection.DataSource = intersect;
+                newCount.Text = "Count:  " + newMold.Count.ToString();
+                oldCount.Text = "Count:  " + oldMnew.Count.ToString();
+                intersectionCount.Text = "Count:  " + intersect.Count.ToString();
+                ignoreSelectedItemsChange = false;
             }
         }
 
         private void OldSelected(object sender, EventArgs e)
         {
-            Purchase selected = (Purchase) oldPredictions.SelectedItem;
-            listOfPurchases.DataSource = Baza.DTO.Statistics.getListOfPurchases(selected.CustNo, selected.ItemNo);
+            if (!ignoreSelectedItemsChange)
+            {
+                Purchase selected = (Purchase)oldPredictions.SelectedItem;
+                List<Purchase> purchaseList = Baza.DTO.Statistics.getListOfPurchases(selected.CustNo, selected.ItemNo);
+                listOfPurchases.DataSource = purchaseList;
+                purchasesCount.Text = "Count:  " + purchaseList.Count.ToString();
+            }
         }
 
         private void newSelected(object sender, EventArgs e)
         {
-            Purchase selected = (Purchase)newPredictions.SelectedItem;
-            listOfPurchases.DataSource = Baza.DTO.Statistics.getListOfPurchases(selected.CustNo, selected.ItemNo);
+            if (!ignoreSelectedItemsChange)
+            {
+                Purchase selected = (Purchase)newPredictions.SelectedItem;
+                List<Purchase> purchaseList = Baza.DTO.Statistics.getListOfPurchases(selected.CustNo, selected.ItemNo);
+                listOfPurchases.DataSource = purchaseList;
+                purchasesCount.Text = "Count:  " + purchaseList.Count.ToString();
+            }
+        }
+
+        private void intersection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!ignoreSelectedItemsChange)
+            {
+                Purchase selected = (Purchase)intersection.SelectedItem;
+                List<Purchase> purchaseList = Baza.DTO.Statistics.getListOfPurchases(selected.CustNo, selected.ItemNo);
+                listOfPurchases.DataSource = purchaseList;
+                purchasesCount.Text = "Count:  " + purchaseList.Count.ToString();
+            }
         }
     }
 }

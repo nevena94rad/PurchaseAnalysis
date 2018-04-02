@@ -171,29 +171,35 @@ namespace Baza.DTO
         public static List<DateTime> GetProcessingDates()
         {
             List<DateTime> dates = new List<DateTime>();
-
-            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "Parameters"];
-            string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
-
-            string query = "select distinct JSON_VALUE(" + ProcessingParameters + " ,'$.processingDate') from " + Table;
-
-            using (var connection = new SqlConnection(connectionString))
+            try
             {
-                connection.Open();
+                var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+                string Table = ConfigurationManager.AppSettings[name: "Parameters"];
+                string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
 
-                var command = new SqlCommand(query, connection);
+                string query = "select distinct JSON_VALUE(" + ProcessingParameters + " ,'$.processingDate') from " + Table;
 
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SqlConnection(connectionString))
                 {
-                    while (reader.Read())
+                    connection.Open();
+
+                    var command = new SqlCommand(query, connection);
+
+                    using (var reader = command.ExecuteReader())
                     {
-                        dates.Add(DateManipulation.intToDateTime(Int32.Parse(reader[0].ToString())));
+                        while (reader.Read())
+                        {
+                            dates.Add(DateManipulation.intToDateTime(Int32.Parse(reader[0].ToString())));
+                        }
                     }
                 }
-            }
 
-            return dates;
+                return dates;
+            }
+            catch(Exception ex)
+            {
+                return dates;
+            }
         }
     }
 }
