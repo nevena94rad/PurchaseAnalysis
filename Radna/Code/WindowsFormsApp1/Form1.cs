@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using Baza.Enum;
+using Baza.Algorithm;
+using Baza.Calculators;
+using Baza.Prepare;
 
 namespace WindowsFormsApp1
 {
@@ -43,19 +46,20 @@ namespace WindowsFormsApp1
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            Customer.nextWeekPredictionsAsync(DateManipulation.DateTimeToint(dateTimePicker1.Value), t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1);
+            PredictionMaker.calculator = new PNBDCalculator(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1, new SimplePrepare());
+            PredictionMaker.startProccess(DateManipulation.DateTimeToint(dateTimePicker1.Value));
         }
 
         private void t1_OnProgressUpdate()
         {
             base.Invoke((Action)delegate
             {
-                label1.Text = "Done: "+ Customer.DoneCount + "/" + Customer.TotalCount;
-                label2.Text = "Percentage: " + (((double)Customer.DoneCount / Customer.TotalCount) * 100) + "%";
+                label1.Text = "Done: "+ PredictionMaker.DoneCount + "/" + PredictionMaker.TotalCount;
+                label2.Text = "Percentage: " + (((double)PredictionMaker.DoneCount / PredictionMaker.TotalCount) * 100) + "%";
                 label4.Text = "Last Write: " + DateTime.Now;
-                label5.Text = "Total Writes: " + Customer.totalWrites;
+                label5.Text = "Total Writes: " + PredictionMaker.totalWrites;
 
-                var percent = (int)(((double)Customer.DoneCount / Customer.TotalCount) * 100);
+                var percent = (int)(((double)PredictionMaker.DoneCount / PredictionMaker.TotalCount) * 100);
 
                 progressBar1.Value = percent;
                 progressBar1.Refresh();

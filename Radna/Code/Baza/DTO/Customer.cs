@@ -82,7 +82,7 @@ namespace Baza.DTO
                     if (end != -1)
                     {
                         var predicted = Prediction.makePredictionBTYD(custNo, i.ToString());
-                        var qty = getPurchaseQuantity(itemNos[i], end);
+                        var qty = getPurchaseQuantity(custNo, itemNos[i], end);
 
                         if (predicted >= qty && predicted < 100 * qty)
                         {
@@ -315,8 +315,7 @@ namespace Baza.DTO
 
             return allCustomers;
         }
-
-        //PROVERITI zasto bDateMinus6Months???
+        
         public static List<string> GetAllItems(string custNo)
         {
             List<string> itemNos = new List<string>();
@@ -342,7 +341,7 @@ namespace Baza.DTO
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.AddWithValue("@custNo", custNo);
                 command.Parameters.AddWithValue("@bDate", processingDateDateFormat.ToShortDateString());
-                command.Parameters.AddWithValue("@bDateMinus6Months", processingDateDateFormat.AddMonths(-6).ToShortDateString());
+                command.Parameters.AddWithValue("@bDateMinus6Months", processingDateDateFormat.AddMonths(-Parameters.customerRecency).ToShortDateString());
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -398,7 +397,7 @@ namespace Baza.DTO
             return lastPurchases;
         }
 
-        public static int getPurchaseQuantity(string item, int date)
+        public static int getPurchaseQuantity(string custNo,string item, int date)
         {
             int sum = 0;
 

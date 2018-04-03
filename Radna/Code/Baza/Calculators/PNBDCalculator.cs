@@ -6,49 +6,75 @@ using System.Text;
 using System.Threading.Tasks;
 using Baza.DTO;
 using RDotNet;
+using System.IO;
+using Baza.R;
+using Baza.Prepare;
 
 namespace Baza.Calculators
 {
-    public class PNBDCalculator
+    public class PNBDCalculator : Calculator
     {
         protected PNBDData data = null;
         public static REngine en = REngine.GetInstance();
         public static Object thisLock = new Object();
-        ///////ovde ide sve za pravljenje predikcije pomocu parenta
+        public PNBDPrepare preparer = null;
 
-        /// <summary>
-        /// pozove se prepareData i to se smesti u ovaj data, onda se sa tim radi
-        /// </summary>
-        public void makePrediction(int date)
+        public PNBDCalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker, PNBDPrepare preparer) : base(OnProgressUpdate,OnProgressFinish,worker)
         {
-            initEngine();
-
-            data = new PNBDData();
-            data = Prepare.SimplePrepare.PNBDprepare(date);
+            this.preparer = preparer;
+        }
+        public override void makePrediction(int date)
+        {
+            REngineHelper.initEngine();
+            
+            data = preparer.PNBDprepare(date);
             int custCount = data.AllCustomers.Count;
+            TotalCount = custCount;
+            DoneCount = 0;
+            bool stop = false;
 
-            Parallel.For(0, custCount, new ParallelOptions { MaxDegreeOfParallelism = 3 }, (index, state) =>
+            UpdateProgress();
+            Parallel.For(0, custCount, new ParallelOptions { MaxDegreeOfParallelism = 1 }, (index, state) =>
             {
-
-                predictAllItems(data.AllCustomers[index]);
+                
+                if (worker.CancellationPending)
+                {
+                    stop = true;
+                    state.Stop();
+                    message = "The process has been canceled!";
+                }
+                if (!stop)
+                    predictAllItems(data.AllCustomers[index]);
             });
-        }
-        public void initEngine()
+
+            if (DoneCount == TotalCount)
+            {
+                message = "Predictions have successfully been made";
+                Parameters.Update((int)Enum.ProcessingStatus.Status.SUCCESS, "");
+                Finish();
+                log.Info("success");
+            }
+            else if (!stop)
+            {
+                Parameters.Update((int)Enum.ProcessingStatus.Status.ERROR, message);
+                Finish();
+                log.Error("fail");
+            }
+            else
+            {
+                Parameters.Update((int)Enum.ProcessingStatus.Status.SUSPENDED, "");
+                Finish();
+                log.Info("suspended");
+            }
+        }      
+        
+        public void predictAllItems(PNBDCustomerData customer)
         {
-            en.Initialize();
-            string dir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/");
-            string filePath = dir + "R/Functions.r";
-            en.Evaluate("source('" + filePath + "')");
-        }
-        public void predictAllItems(string custNo)
-        {
-            data.AllItems = Customer.GetAllItems(custNo);
-            data.LastPurchases = Customer.GetLastPurchases(custNo);
 
             List<Prediction> allCustomerPredictions = new List<Prediction>();
             lock (thisLock)
             {
-                allCustomerPredictions = makeAllPredictions(custNo);
+                allCustomerPredictions = makeAllPredictions(customer);
             }
 
             allCustomerPredictions = allCustomerPredictions.OrderByDescending(x => x.predictedConsumption).ToList();
@@ -68,51 +94,76 @@ namespace Baza.Calculators
                 count++;
             }
 
-            Prediction.InsertPredictions(custNo, sortedPredictions, data.modelID);
+            Prediction.InsertPredictions(customer.Number, sortedPredictions, customer.modelID);
+
+            lock (thisLock)
+            {
+                totalWrites += sortedPredictions.Count();
+
+                DoneCount++;
+
+                UpdateProgress();
+            }
 
         }
-        public List<Prediction> makeAllPredictions(string custNo)
+        public List<Prediction> makeAllPredictions(PNBDCustomerData customer)
         {
             List<Prediction> returnList = new List<Prediction>();
 
-            if (data.AllItems.Count() != 0)
-                data.modelID = doCustomer(custNo, data.AllItems);
+            if (customer.NoPurchases != 0)
+                doCustomer(customer);
 
-            if (data.modelID > 0)
+            if (customer.modelID > 0)
             {
-                for (var i = 0; i < data.AllItems.Count(); i++)
+                for (var i = 0; i < customer.itemPurchased.Count(); i++)
                 {
-                    var end = data.LastPurchases[i];
+                    var end = customer.itemPurchased[i].LastPurchase;
 
                     if (end != -1)
                     {
-                        var predicted = Prediction.makePredictionBTYD(custNo, i.ToString());
-                        var qty = Customer.getPurchaseQuantity(data.AllItems[i], end);
+                        var predicted = REngineHelper.PNBDgetItemPredictionData(customer.itemPurchased[i].Number);
+                        var qty = Customer.getPurchaseQuantity(customer.Number, customer.itemPurchased[i].Number, end);
 
                         if (predicted >= qty && predicted < 100 * qty)
                         {
                             var percentage = 50 + 45 * Math.Pow((1 - qty / predicted), 10);
-                            returnList.Add(new Prediction() { itemNo = data.AllItems[i], predictedConsumption = percentage });
+                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage });
                         }
                         else if (predicted > 100 * qty)
                         {
                             var percentage = 95;
-                            returnList.Add(new Prediction() { itemNo = data.AllItems[i], predictedConsumption = percentage });
+                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage });
                         }
                         else if (predicted < qty)
                         {
                             var percentage = 50 * Math.Pow((predicted / qty), 10);
-                            returnList.Add(new Prediction() { itemNo = data.AllItems[i], predictedConsumption = percentage });
+                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage });
                         }
                     }
                 }
             }
             return returnList;
         }
-
-        public int doCustomer(string custNo, List<string> items)
+        public void doCustomer(PNBDCustomerData customer)
         {
+            var file1 = TempFile.TempFileHelper.CreateTmpFile();
+            using (var streamWriter = new StreamWriter(new FileStream(file1, FileMode.Open, FileAccess.Write)))
+            {
+                foreach (var item in customer.itemPurchased)
+                {
+                    foreach (var purchase in item.purchases)
+                        streamWriter.Write(item.Number + "," + purchase.purchaseDate + "," + purchase.purcaseQuantity + "\r\n");
+                }
+            }
+            var file = file1.Replace('\\', '/');
+            //string rCodeFilePath = ConfigurationManager.AppSettings[name: "ExecuteScript"];
+            string dir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/");
+            string rCodeFilePath = dir + "R/Script.r";
+            int modelID = REngineHelper.PNBDExecuteRScript(rCodeFilePath, file, Parameters.processingDate.ToString(), customer.Number, Parameters.processingDate);
+            TempFile.TempFileHelper.DeleteTmpFile(file1);
 
+            customer.modelID = modelID;
         }
+        
     }
 }
