@@ -104,39 +104,7 @@ namespace Baza.DTO
             }
             return returnList;
         }
-        private int getPurchaseQuantity(string item, int date)
-        {
-            int sum = 0;
-
-            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
-            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
-            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
-            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
-            string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
-
-            string queryString = "select sum(" + PurchaseQuantity + ") from " + Table +
-                " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "=@definedDate";
-
-            using (var connection = new SqlConnection(connectionString))
-            {
-                var command = new SqlCommand(queryString, connection);
-                command.Parameters.AddWithValue("@custNo", custNo);
-                command.Parameters.AddWithValue("@itemNo", item);
-                command.Parameters.AddWithValue("@definedDate", date);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        sum = (int)reader[0];
-                    }
-                }
-            }
-
-            return sum;
-        }
+        
         public void PredictAllItems()
         {
             getAllItems();
@@ -347,7 +315,9 @@ namespace Baza.DTO
 
             return allCustomers;
         }
-        public static List<string> GetAllItems()
+
+        //PROVERITI zasto bDateMinus6Months???
+        public static List<string> GetAllItems(string custNo)
         {
             List<string> itemNos = new List<string>();
 
@@ -361,7 +331,7 @@ namespace Baza.DTO
             string Period = ConfigurationManager.AppSettings[name: "PurchasePeriods_Period"];
             string PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
 
-            string queryString = "select distinct(" + ItemID + "),max(" + PeriodEnd + ") from " + Table +
+            string queryString = "select distinct(" + ItemID + ") from " + Table +
                 " where " + CustomerID + "= @custNo" + " and " + PeriodEnd + "<@bDate" +
                 " group by " + ItemID + " having count(*)>1 and max(" + PeriodEnd + ")>@bDateMinus6Months " +
                 " and min(" + Period + ") * 0.5< DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) + 7" +
@@ -383,6 +353,83 @@ namespace Baza.DTO
                     }
                 }
             }
+
+            return itemNos;
+        }
+
+        //PROVERITI zasto bDateMinus6Months???
+        public static List<int> GetLastPurchases(string custNo)
+        {
+            List<int> lastPurchases = new List<int>();
+
+            DateTime processingDateDateFormat = DateManipulation.intToDateTime(Parameters.processingDate);
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+
+            string Table = ConfigurationManager.AppSettings[name: "PurchasePeriods"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePeriods_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchasePeriods_ItemID"];
+            string Period = ConfigurationManager.AppSettings[name: "PurchasePeriods_Period"];
+            string PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
+
+            string queryString = "select max(" + PeriodEnd + ") from " + Table +
+                " where " + CustomerID + "= @custNo" + " and " + PeriodEnd + "<@bDate" +
+                " group by " + ItemID + " having count(*)>1 and max(" + PeriodEnd + ")>@bDateMinus6Months " +
+                " and min(" + Period + ") * 0.5< DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) + 7" +
+                " and max(" + Period + ") * 1.5 > DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate)";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@custNo", custNo);
+                command.Parameters.AddWithValue("@bDate", processingDateDateFormat.ToShortDateString());
+                command.Parameters.AddWithValue("@bDateMinus6Months", processingDateDateFormat.AddMonths(-6).ToShortDateString());
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lastPurchases.Add(DateManipulation.DateTimeToint((DateTime)reader[0]));
+                    }
+                }
+            }
+
+            return lastPurchases;
+        }
+
+        public static int getPurchaseQuantity(string item, int date)
+        {
+            int sum = 0;
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+            string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+            string queryString = "select sum(" + PurchaseQuantity + ") from " + Table +
+                " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "=@definedDate";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@custNo", custNo);
+                command.Parameters.AddWithValue("@itemNo", item);
+                command.Parameters.AddWithValue("@definedDate", date);
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        sum = (int)reader[0];
+                    }
+                }
+            }
+
+            return sum;
         }
     }
 }

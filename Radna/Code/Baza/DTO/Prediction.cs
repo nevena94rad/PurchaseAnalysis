@@ -146,5 +146,37 @@ namespace Baza.DTO
                 }
             }
         }
+
+        //novo
+        public static void InsertPredictions(string custNo, List<Prediction> predictions, int modelID)
+        {
+            int predictionCount = predictions.Count();
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string Table = ConfigurationManager.AppSettings[name: "PurchasePrediction"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePrediction_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemID"];
+            string ProcessingValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
+            string Model = ConfigurationManager.AppSettings[name: "PurchasePrediction_ModelID"];
+
+            string queryString = "insert into " + Table + "(" + CustomerID + "," + ItemID + "," + ProcessingValue + "," + Model +
+                ") values (@CustNo, @ItemNo, @ProcessingValue, @Model)";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                for (int i = 0; i < predictionCount; i++)
+                {
+                    var command = new SqlCommand(queryString, connection);
+                    command.Parameters.AddWithValue("@CustNo", custNo);
+                    command.Parameters.AddWithValue("@ItemNo", predictions[i].itemNo);
+                    command.Parameters.AddWithValue("@ProcessingValue", predictions[i].predictedConsumption);
+                    command.Parameters.AddWithValue("@Model", modelID);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
