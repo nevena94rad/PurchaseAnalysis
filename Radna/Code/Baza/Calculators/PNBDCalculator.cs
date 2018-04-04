@@ -111,6 +111,7 @@ namespace Baza.Calculators
             }
 
         }
+
         public List<Prediction> makeAllPredictions(PNBDCustomerData customer)
         {
             List<Prediction> returnList = new List<Prediction>();
@@ -149,6 +150,7 @@ namespace Baza.Calculators
             }
             return returnList;
         }
+
         public void doCustomer(PNBDCustomerData customer)
         {
             var file1 = TempFile.TempFileHelper.CreateTmpFile();

@@ -59,8 +59,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithm\PredictionMaker.cs" />
+    <Compile Include="Calculators\ARIMACalculator.cs" />
     <Compile Include="Calculators\Calculator.cs" />
     <Compile Include="Calculators\PNBDCalculator.cs" />
+    <Compile Include="Data\ARIMAConsumptionData.cs" />
+    <Compile Include="Data\ARIMACustomerData.cs" />
+    <Compile Include="Data\ARIMAData.cs" />
+    <Compile Include="Data\ARIMAItemData.cs" />
+    <Compile Include="Data\ARIMAQuantityData.cs" />
     <Compile Include="Data\PNBDCustomerData.cs" />
     <Compile Include="Data\PNBDData.cs" />
     <Compile Include="Data\PNBDItemData.cs" />
@@ -73,6 +79,7 @@
     <Compile Include="DTO\Statistics.cs" />
     <Compile Include="DTO\TempFile.cs" />
     <Compile Include="Enum\ProcessingStatus.cs" />
+    <Compile Include="Prepare\ARIMAPrepare.cs" />
     <Compile Include="Prepare\PNBDPrepare.cs" />
     <Compile Include="Prepare\SimplePrepare.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
