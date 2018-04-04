@@ -24,6 +24,10 @@ namespace Baza.Data
                     items = preparer.PNBDreadAllItems(Number);
                 return items;
             }
+            set
+            {
+                items = value;
+            }
         } 
         public int NoPurchases { get { return itemPurchased.Sum(x => x.purchases.Count()); } }
     }
