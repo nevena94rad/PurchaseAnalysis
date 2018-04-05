@@ -46,7 +46,7 @@ namespace WindowsFormsApp1
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            PredictionMaker.calculator = new PNBDCalculator(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1, new SimplePrepare());
+            PredictionMaker.calculator = new ARIMACalculator(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1, new SimplePrepare());
             PredictionMaker.startProccess(DateManipulation.DateTimeToint(dateTimePicker1.Value));
         }
 

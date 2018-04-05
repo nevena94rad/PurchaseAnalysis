@@ -21,7 +21,7 @@ namespace Baza.R
         {
             en.Initialize();
             string dir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/");
-            string filePath = dir + "R/Functions.r";
+            string filePath = dir + "R/PNBD/Functions.r";
             en.Evaluate("source('" + filePath + "')");
         }
 

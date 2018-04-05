@@ -165,7 +165,7 @@ namespace Baza.Calculators
             var file = file1.Replace('\\', '/');
             //string rCodeFilePath = ConfigurationManager.AppSettings[name: "ExecuteScript"];
             string dir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/");
-            string rCodeFilePath = dir + "R/Script.r";
+            string rCodeFilePath = dir + "R/PNBD/Script.r";
             int modelID = REngineHelper.PNBDExecuteRScript(rCodeFilePath, file, Parameters.processingDate.ToString(), customer.Number, Parameters.processingDate);
             TempFile.TempFileHelper.DeleteTmpFile(file1);
 

@@ -1,9 +1,12 @@
 ﻿using Baza.Data;
 using Baza.DTO;
 using Baza.Prepare;
+using Baza.R;
 using RDotNet;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +47,7 @@ namespace Baza.Calculators
                 if (!stop)
                 {
                     predictAllItems(data.AllCustomers[index]);
-                    data.AllCustomers[index].itemPurchased = new List<PNBDItemData>();
+                    data.AllCustomers[index].itemPurchased = new List<ARIMAItemData>();
                 }
             });
 
@@ -67,6 +70,133 @@ namespace Baza.Calculators
                 Finish();
                 log.Info("suspended");
             }
+        }
+        public void predictAllItems(ARIMACustomerData customer)
+        {
+            
+            List<Prediction> allCustomerPredictions = makeAllPredictions(customer);
+
+
+            int predictionCount = allCustomerPredictions.Count();
+
+            allCustomerPredictions = allCustomerPredictions.OrderByDescending(x => x.predictedConsumption).ToList();
+            List<Prediction> sortedPredictions = new List<Prediction>();
+            int count = 0;
+            foreach (Prediction pr in allCustomerPredictions)
+            {
+                if (pr.predictedConsumption >= Parameters.predictionPercentageCutOff)
+                {
+                    sortedPredictions.Add(pr);
+                    count++;
+                }
+            }
+            while (count <= Parameters.predictionCountCutOff && count < allCustomerPredictions.Count)
+            {
+                sortedPredictions.Add(allCustomerPredictions[count]);
+                count++;
+            }
+
+            InsertPredictions(customer.Number, sortedPredictions);
+
+            lock (thisLock)
+            {
+                totalWrites += sortedPredictions.Count();
+
+                DoneCount++;
+
+                UpdateProgress();
+            }
+
+        }
+
+        private void InsertPredictions(string customer, List<Prediction> sortedPredictions)
+        {
+            int predictionCount = sortedPredictions.Count();
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+
+            string queryString = "insert into ARIMA " + "( CustNo, ItemNo, consumption)" +
+                " values (@CustNo, @ItemNo, @ProcessingValue)";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                for (int i = 0; i < predictionCount; i++)
+                {
+                    var command = new SqlCommand(queryString, connection);
+                    command.Parameters.AddWithValue("@CustNo", customer);
+                    command.Parameters.AddWithValue("@ItemNo", sortedPredictions[i].itemNo);
+                    command.Parameters.AddWithValue("@ProcessingValue", sortedPredictions[i].predictedConsumption);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        private List<Prediction> makeAllPredictions(ARIMACustomerData customer)
+        {
+            List<Prediction> returnList = new List<Prediction>();
+
+            foreach(var item in customer.itemPurchased)
+            {
+                Prediction itemPrediction = makeItemPrediction(item, customer.Number);
+                if (itemPrediction.predictedConsumption > 0)
+                    returnList.Add(itemPrediction);
+            }
+
+            return returnList;
+        }
+        private Prediction makeItemPrediction(ARIMAItemData item, string customer)
+        {
+            Prediction retPredict = new Prediction();
+
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = dir + "R\\ARIMA\\Script.r";
+
+            
+            string param1 = "";
+            int j = 0;
+            for (j = 0; j < item.customerConsumption.Count - 1; j++)
+            {
+                param1 = param1 + item.customerConsumption[j].Value + " ";
+            }
+            param1 = param1 + item.customerConsumption[j].Value;
+            string param2 = item.globalConsumption.Count().ToString();
+            DateTime start = DateManipulation.intToDateTime(item.StartDate);
+            string param3 = start.Year.ToString();
+            string param4 = start.DayOfYear.ToString();
+            string param5 = item.customerConsumption.Count.ToString();
+
+
+            //LogRecord rec = new LogRecord() { p1 = param1, p2 = param2, p3 = param3, p4 = param4, p5 = param5, customer = customer, item = item, nextPurchase = nextPurchase, lastPurchase = lastInvQty };
+            double predictConsumption = RConsoleHelper.ExecuteRScript(filePath, param1, param2, param3, param4, param5);
+            predictConsumption += getScaledItemDate(item.globalConsumption.Select(x => x.Value).OrderBy(x => x).ToList(), item.customerConsumption.Average(x => x.Value), item.globalConsumption.Count() - item.customerConsumption.Count());
+            //double predictConsumption2 = ExecuteRScriptAlternativWay(filePath2,param0, param2,param3, param4, param5);
+            //LogQueue.Add(rec);
+            //added++;
+            retPredict.CustNo = customer;
+            retPredict.itemNo = item.Number;
+            int lastPurchase = Customer.getPurchaseQuantity(customer, item.Number, item.EndDate);
+            retPredict.predictedConsumption = lastPurchase > 0 ? (predictConsumption / lastPurchase) : -1;
+            
+           
+            return retPredict;
+        }
+
+        private static double getScaledItemDate(List<double> consumption, double customerAverage, int customerCount)
+        {
+            double returnValue = 0;
+            double average = 0;
+            int count = consumption.Count();
+
+            for (int i = 0; i < count - customerCount; ++i)
+                average += consumption[i];
+            average = average / (count - customerCount);
+
+            for (int i = (count - customerCount); i < count; ++i)
+                returnValue += consumption[i] / average;
+
+            return returnValue * customerAverage / 2;
         }
     }
 }

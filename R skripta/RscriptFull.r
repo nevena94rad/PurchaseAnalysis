@@ -9,7 +9,7 @@ sum <- as.numeric(args[5]);
 
 #return (Qty[1])
 
-custItemCons <- ts(Qty, start=c(year1,day1),frequency = 365.25)      
+##custItemCons <- ts(Qty, start=c(year1,day1),frequency = 365.25)      
 #vremenskiItem<-ts(Consumption,start=c(year1,day1),frequency = 365.25)  
 
 #itemMean <- head(Consumption,sum)
@@ -17,13 +17,14 @@ custItemCons <- ts(Qty, start=c(year1,day1),frequency = 365.25)
 
 #L1 <- (vremenskiItem/itemMean) * mean(custItemCons)
 
-fit<-auto.arima(custItemCons, stepwise=FALSE, approximation=FALSE, lambda=0)                #model za customerItemConsumption
-model<-as.character(fit)                                                                   #iskoriscen model
-prognoza<-forecast(fit,h=(ConsumptionLength-sum + 7))                                     #prognoziran customerItemConsumption
+##fit<-auto.arima(custItemCons, stepwise=FALSE, approximation=FALSE, lambda=0)                #model za customerItemConsumption
+##model<-as.character(fit)                                                                   #iskoriscen model
+##prognoza<-forecast(fit,h=(ConsumptionLength-sum + 7))                                     #prognoziran customerItemConsumption
 
-ItemCust<-c(custItemCons,head(prognoza[["mean"]], -7))
+##ItemCust<-c(custItemCons,head(prognoza[["mean"]], -7))
 
 #rezultat<-(L1+ItemCust)/2
 
 #print(sum(tail(rezultat,-sum))+sum(tail(prognoza[["mean"]],7)));
-print(sum(tail(ItemCust,-sum))/2 + sum(tail(prognoza[["mean"]],7)));
+##print(sum(tail(ItemCust,-sum))/2 + sum(tail(prognoza[["mean"]],7)));
+print(length(Qty));

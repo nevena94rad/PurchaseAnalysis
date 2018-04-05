@@ -81,10 +81,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="R\Functions.r">
+    <None Include="R\ARIMA\Script.r">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="R\Script.r">
+    <None Include="R\PNBD\Functions.r">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="R\PNBD\Script.r">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

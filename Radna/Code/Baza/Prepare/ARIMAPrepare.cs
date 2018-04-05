@@ -14,6 +14,9 @@ namespace Baza.Prepare
         List<ARIMAItemData> ARIMAreadAllItems(string custNo);
         int ARIMAgetStartDate(string custNo, string itemNo);
         int ARIMAgetEndDate(string custNo, string itemNo);
-        List<ARIMAQuantityData> ARIMAgetQuantity(string custNo, string itemNo, int start, int end);
+        List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo, string itemNo, int start, int end);
+        List<ARIMAConsumptionData> ARIMAgetGlobalConsumption(string itemNo, int start, int end);
+        List<ARIMAConsumptionData> TransformQuantityData(List<ARIMAConsumptionData> quantity);
+
     }
 }

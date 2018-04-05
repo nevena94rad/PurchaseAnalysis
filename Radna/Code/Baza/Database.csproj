@@ -88,6 +88,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="R\RConsoleHelper.cs" />
     <Compile Include="R\REngineHelper.cs" />
     <Compile Include="Settings.cs" />
   </ItemGroup>

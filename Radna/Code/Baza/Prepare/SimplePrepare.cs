@@ -29,7 +29,6 @@ namespace Baza.Prepare
 
             return returnData;
         }
-
         public List<string> PNBDreadAllCustomers()
         {
             List<string> allCustomers = new List<string>();
@@ -63,7 +62,6 @@ namespace Baza.Prepare
 
             return allCustomers;
         }
-
         public List<PNBDItemData> PNBDreadAllItems(string custNo)
         {
             List<PNBDItemData> returnList = new List<PNBDItemData>();
@@ -115,6 +113,8 @@ namespace Baza.Prepare
             return returnList;
         }
 
+
+
         public ARIMAData ARIMAprepare(int date)
         {
             ARIMAData data = new ARIMAData();
@@ -128,7 +128,6 @@ namespace Baza.Prepare
 
             return data;
         }
-
         public List<string> ARIMAreadAllCustomers()
         {
             List<string> allCustomers = new List<string>();
@@ -147,9 +146,9 @@ namespace Baza.Prepare
                 connection.Open();
 
                 var command = new SqlCommand(queryString, connection);
-                command.Parameters.AddWithValue("@date", PNBDData.date);
+                command.Parameters.AddWithValue("@date", ARIMAData.date);
                 command.Parameters.AddWithValue("@dateMin",
-                    DateManipulation.DateTimeToint(DateManipulation.intToDateTime(PNBDData.date).AddMonths(-Parameters.customerRecency)));
+                    DateManipulation.DateTimeToint(DateManipulation.intToDateTime(ARIMAData.date).AddMonths(-Parameters.customerRecency)));
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -162,7 +161,6 @@ namespace Baza.Prepare
 
             return allCustomers;
         }
-
         public List<ARIMAItemData> ARIMAreadAllItems(string custNo)
         {
             List<ARIMAItemData> returnData = new List<ARIMAItemData>();
@@ -174,14 +172,13 @@ namespace Baza.Prepare
                 ARIMAItemData itemData = new ARIMAItemData() { Number = item };
                 itemData.StartDate = ARIMAgetStartDate(custNo, item);
                 itemData.EndDate = ARIMAgetEndDate(custNo, item);
-                itemData.consumption = ARIMAgetConsumption(item,itemData.StartDate);
-                itemData.quantity = ARIMAgetQuantity(custNo, item, itemData.StartDate, itemData.EndDate);
+                itemData.globalConsumption = ARIMAgetGlobalConsumption(item,itemData.StartDate, itemData.EndDate);
+                itemData.customerConsumption = ARIMAgetCustomerConsumption(custNo, item, itemData.StartDate, itemData.EndDate);
                 returnData.Add(itemData);
             }
 
             return returnData;
         }
-
         public int ARIMAgetStartDate(string custNo,string itemNo)
         {
             int start = -1; 
@@ -218,7 +215,6 @@ namespace Baza.Prepare
             }
             return start;
         }
-
         public int ARIMAgetEndDate(string custNo, string itemNo)
         {
             int end = -1;
@@ -255,13 +251,12 @@ namespace Baza.Prepare
             }
             return end;
         }
-
-        public List<ARIMAConsumptionData> ARIMAgetConsumption(string itemNo,int start)
+        public List<ARIMAConsumptionData> ARIMAgetGlobalConsumption(string itemNo,int start, int end)
         {
             List<ARIMAConsumptionData> Consumptions = new List<ARIMAConsumptionData>();
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "ItemConsumptions"];
+            string Table = ConfigurationManager.AppSettings[name: "ItemConsumption"];
             string ItemID = ConfigurationManager.AppSettings[name: "ItemConsumption_ItemID"];
             string Date = ConfigurationManager.AppSettings[name: "ItemConsumption_Date"];
             string Consumption = ConfigurationManager.AppSettings[name: "ItemConsumption_Consumption"];
@@ -283,17 +278,16 @@ namespace Baza.Prepare
                 {
                     while (reader.Read())
                     {
-                        Consumptions.Add(new ARIMAConsumptionData { Date = (int)reader[0], Value = (int)reader[1] });
+                        Consumptions.Add(new ARIMAConsumptionData { Date = (int)reader[1], Value = (int)(double)reader[0] });
                     }
                 }
             }
 
             return Consumptions;
         }
-
-        public List<ARIMAQuantityData> ARIMAgetQuantity(string custNo,string itemNo, int start, int end)
+        public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end)
         {
-            List<ARIMAQuantityData> quantity = new List<ARIMAQuantityData>();
+            List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
@@ -320,20 +314,50 @@ namespace Baza.Prepare
                 {
                     while (reader.Read())
                     {
-                        quantity.Add(new ARIMAQuantityData { Date = (int)reader[0], Value = (int)reader[1] });
+                        quantity.Add(new ARIMAConsumptionData { Date = (int)reader[0], Value = (int)reader[1] });
                     }
                 }
             }
 
-            List<ARIMAQuantityData> quantityList = (from purchases in quantity
+            List<ARIMAConsumptionData> quantityList = (from purchases in quantity
                                                 group purchases by purchases.Date into purchaseByDate
-                                                select new ARIMAQuantityData { Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.Value) }).OrderBy(x => x.Date).ToList();
+                                                select new ARIMAConsumptionData { Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.Value) }).OrderBy(x => x.Date).ToList();
 
-            quantity.RemoveAll(x => x.Value == 0);
+            quantityList.RemoveAll(x => x.Value == 0);
 
-            List<ARIMAQuantityData> returnList = new List<ARIMAQuantityData>();
-            returnList = ARIMAQuantityData.TransformQuantityData(quantity);
+            List<ARIMAConsumptionData> returnList = new List<ARIMAConsumptionData>();
+            returnList = TransformQuantityData(quantityList);
             return returnList;
         }
+        public List<ARIMAConsumptionData> TransformQuantityData(List<ARIMAConsumptionData> quantity)
+        {
+            List<ARIMAConsumptionData> returnList = new List<ARIMAConsumptionData>();
+            DateTime current = DateManipulation.intToDateTime(quantity[0].Date);
+            DateTime? next = DateManipulation.intToDateTime(quantity[1].Date);
+            int daysBetween = ((DateTime)next - current).Days;
+            int i = 0;
+            int count = quantity.Count();
+
+            while (next != null)
+            {
+                returnList.Add(new ARIMAConsumptionData() { Value = quantity[i].Value / daysBetween, Date = DateManipulation.DateTimeToint(current) });
+                current = current.AddDays(1);
+                if (current == next)
+                {
+                    ++i;
+                    if (i + 1 < count)
+                    {
+                        next = DateManipulation.intToDateTime(quantity[i + 1].Date);
+                        daysBetween = ((DateTime)next - current).Days;
+                    }
+                    else
+                        next = null;
+                }
+            }
+
+            return returnList;
+        }
+
+       
     }
 }
