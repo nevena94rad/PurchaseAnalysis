@@ -151,9 +151,11 @@ namespace Baza.Calculators
             Prediction retPredict = new Prediction();
 
             string dir = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = dir + "R\\ARIMA\\Script.r";
+            //string filePath = dir + @"R\ARIMA\RscriptFull.r";
+            //string filePath = @"C:\Users\C3P_Dev13\Documents\GitHub\PurchaseAnalysis\RscriptFull.r";
+            string filePath = @"C:\Users\C3P_Dev13\Documents\GitHub\PurchaseAnalysis\Radna\Code\WindowsFormsApp1\R\ARIMA\RscriptFull.r";
+            int sum = (DateManipulation.intToDateTime(item.EndDate) - DateManipulation.intToDateTime(item.StartDate)).Days;
 
-            
             string param1 = "";
             int j = 0;
             for (j = 0; j < item.customerConsumption.Count - 1; j++)
@@ -165,15 +167,13 @@ namespace Baza.Calculators
             DateTime start = DateManipulation.intToDateTime(item.StartDate);
             string param3 = start.Year.ToString();
             string param4 = start.DayOfYear.ToString();
-            string param5 = item.customerConsumption.Count.ToString();
+            string param5 = sum.ToString();
 
 
-            //LogRecord rec = new LogRecord() { p1 = param1, p2 = param2, p3 = param3, p4 = param4, p5 = param5, customer = customer, item = item, nextPurchase = nextPurchase, lastPurchase = lastInvQty };
             double predictConsumption = RConsoleHelper.ExecuteRScript(filePath, param1, param2, param3, param4, param5);
             predictConsumption += getScaledItemDate(item.globalConsumption.Select(x => x.Value).OrderBy(x => x).ToList(), item.customerConsumption.Average(x => x.Value), item.globalConsumption.Count() - item.customerConsumption.Count());
-            //double predictConsumption2 = ExecuteRScriptAlternativWay(filePath2,param0, param2,param3, param4, param5);
-            //LogQueue.Add(rec);
-            //added++;
+            
+
             retPredict.CustNo = customer;
             retPredict.itemNo = item.Number;
             int lastPurchase = Customer.getPurchaseQuantity(customer, item.Number, item.EndDate);

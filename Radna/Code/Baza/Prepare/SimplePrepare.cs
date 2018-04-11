@@ -112,6 +112,7 @@ namespace Baza.Prepare
 
             return returnList;
         }
+        public static string ScriptPath = null;
 
 
 
@@ -358,6 +359,9 @@ namespace Baza.Prepare
             return returnList;
         }
 
-       
+        public string GetScriptPath()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
