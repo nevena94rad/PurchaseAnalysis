@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Baza.DTO.TempFile;
 
 namespace Baza.R
 {
@@ -23,25 +24,27 @@ namespace Baza.R
         private static double RunFromCmd(string filePath, params string[] args)
         {
             double ret = 0;
-            // Not required. But our R scripts use allmost all CPU resources if run multiple instances
 
             string result = string.Empty;
             string file1 = string.Empty;
-            //string file2 = string.Empty;
-
+            string file2 = string.Empty;
             try
             {
-                file1 = TempFile.TempFileHelper.CreateTmpFile();
+                file1 = TempFileHelper.CreateTmpFile();
                 using (var streamWriter = new StreamWriter(new FileStream(file1, FileMode.Open, FileAccess.Write)))
                 {
                     streamWriter.Write(args[0]);
                 }
-                //file2 = TempFileHelper.CreateTmpFile();
-                //using (var streamWriter = new StreamWriter(new FileStream(file2, FileMode.Open, FileAccess.Write)))
-                //{
-                //    streamWriter.Write(args[1]);
-                //}
-                // Get path to R
+                file2 = TempFileHelper.CreateTmpFile();
+                using (var streamWriter = new StreamWriter(new FileStream(file2, FileMode.Open, FileAccess.Write)))
+                {
+                    using (var streamReader = new StreamReader(new FileStream(filePath, FileMode.Open)))
+                    {
+                        streamWriter.Write(streamReader.ReadToEnd());
+                    }
+                    
+                }
+
                 var rCore = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\R-core") ??
                             Registry.CurrentUser.OpenSubKey(@"SOFTWARE\R-core");
                 var is64Bit = Environment.Is64BitProcess;
@@ -52,10 +55,10 @@ namespace Baza.R
                     var binPath = Path.Combine(installPath, "bin");
                     binPath = Path.Combine(binPath, is64Bit ? "x64" : "i386");
                     binPath = Path.Combine(binPath, "Rscript");
-                   string strCmdLine = @"/c """"" + binPath + @""" """ + filePath + @""" """ + file1 + @"""""";
+                    string strCmdLine = @"/c """"" + binPath + @""" " + file2;
                     if (args.Any())
                     {
-                        strCmdLine += " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4];
+                        strCmdLine += " " + file1 + @""" " + args[1] + " " + args[2] + " " + args[3] + " " + args[4];
                     }
                     var info = new ProcessStartInfo("cmd", strCmdLine);
                     info.RedirectStandardInput = false;
@@ -68,7 +71,7 @@ namespace Baza.R
                         proc.Start();
                         result = proc.StandardOutput.ReadToEnd();
                     }
-                    ret = Convert.ToDouble(result.Split(' ')[0]);
+                    ret = Convert.ToDouble(result.Split(' ')[1]);
                 }
                 else
                 {
@@ -84,12 +87,8 @@ namespace Baza.R
             {
                 if (!string.IsNullOrWhiteSpace(file1))
                 {
-                    TempFile.TempFileHelper.DeleteTmpFile(file1, false);
+                    TempFileHelper.DeleteTmpFile(file1, false);
                 }
-                //if (!string.IsNullOrWhiteSpace(file2))
-                //{
-                //    TempFileHelper.DeleteTmpFile(file2, false);
-                //}
             }
         }
     }

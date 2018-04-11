@@ -156,7 +156,7 @@ namespace Baza.DTO
                     {
                         jsonParameters = (string)(reader[0]);
 
-                        if (reader[0] != null)
+                        if (reader[1] != null)
                             status = (string)(reader[1]);
                         else
                             status = null;

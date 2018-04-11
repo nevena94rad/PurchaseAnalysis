@@ -1,12 +1,12 @@
-library("forecast")
+#library("forecast")
 
-args <- commandArgs(trailingOnly = TRUE)
-Qty <- as.numeric(read.table(args[1]))
-ConsumptionLength <- as.numeric(args[2])
-year1 <- as.numeric(args[3]);
-day1 <- as.numeric(args[4]);
-sum <- as.numeric(args[5]);
-
+#args <- commandArgs(trailingOnly = TRUE)
+#Qty <- as.numeric(read.table(args[1]))
+#ConsumptionLength <- as.numeric(args[2])
+#year1 <- as.numeric(args[3]);
+#day1 <- as.numeric(args[4]);
+#sum <- as.numeric(args[5]);
+print(1);
 #return (Qty[1])
 
 ##custItemCons <- ts(Qty, start=c(year1,day1),frequency = 365.25)      
@@ -27,4 +27,4 @@ sum <- as.numeric(args[5]);
 
 #print(sum(tail(rezultat,-sum))+sum(tail(prognoza[["mean"]],7)));
 ##print(sum(tail(ItemCust,-sum))/2 + sum(tail(prognoza[["mean"]],7)));
-print(length(Qty));
+#print(length(Qty));
