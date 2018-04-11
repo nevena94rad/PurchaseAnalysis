@@ -58,7 +58,7 @@ namespace Baza.DTO
             else
                 query = "select distinct " + History_ItemNumber + ", " + History_CustNumber + " from " + HistoryTable +
                         " where " + History_Date + "<=@endDate group by " + History_ItemNumber + ", " + History_CustNumber +
-                        "having count(*)>2 and max(" + History_Date + ") >=@startingDate"; 
+                        " having count(*)>2 and max(" + History_Date + ") >=@startingDate"; 
 
             using (var connection = new SqlConnection(connectionString))
             {

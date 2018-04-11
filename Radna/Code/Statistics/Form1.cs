@@ -31,6 +31,14 @@ namespace Statistics
             cutOffPercentage.Items.Add(50);
 
             cutOffPercentage.SelectedItem = 0.01;
+
+            this.availableDates.DataSource = Parameters.GetProcessingDates();
+            //DateTime processingDate = ((DateTime)availableDates.SelectedItem);
+            //List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
+            //foreach (int param in parametersIDs)
+            //{
+            //    this.parametersIDs.Items.Add(param);
+            //}
         }
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
@@ -46,10 +54,10 @@ namespace Statistics
         private void button1_Click(object sender, EventArgs e)
         {
             int parametrsID = (int)(parametersIDs.SelectedItem);
-            int date = DateManipulation.DateTimeToint(((DateTime)avableDates.SelectedItem).AddDays(1));
+            int date = DateManipulation.DateTimeToint(((DateTime)availableDates.SelectedItem).AddDays(1));
 
             os = new OLDStatistics(date, FirstAndSecondPurchase.Checked);
-            ns = new NEWStatistics(parametrsID, date, FirstAndSecondPurchase.Checked, (double) cutOffPercentage.SelectedValue);
+            ns = new NEWStatistics(parametrsID, date, FirstAndSecondPurchase.Checked, (double) cutOffPercentage.SelectedItem);
 
             OLD_NoP.Text = "Number of predictions: " + os.predictionCount;
             OLD_CPtp.Text = "Total number: " + os.correctPredictionsCount;
@@ -69,13 +77,7 @@ namespace Statistics
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            DateTime processingDate = ((DateTime)avableDates.SelectedItem);
-            ClearForm();
-            List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
-            foreach (int param in parametersIDs)
-            {
-                this.parametersIDs.Items.Add(param);
-            }
+            
         }
 
         private void ClearForm()
@@ -85,6 +87,8 @@ namespace Statistics
             this.percentageCutOff.Text = "Percentage CutOff:";
             this.countCutOff.Text = "Count CutOff:";
             this.custRecency.Text = "Customer Recency:";
+            this.status.Text = "Status:";
+            this.status.ForeColor = Color.Black;
             this.button1.Enabled = false;
             this.button2.Enabled = false;
         }
@@ -105,11 +109,13 @@ namespace Statistics
             {
                 this.button1.Enabled = false;
                 this.button2.Enabled = false;
+                this.status.ForeColor = Color.Red;
             }
             else
             {
                 this.button1.Enabled = true;
                 this.button2.Enabled = true;
+                this.status.ForeColor = Color.Green;
             }
         }
 
@@ -121,6 +127,22 @@ namespace Statistics
                 form2.setStatistics(os, ns);
                 form2.ShowDialog();
             }
+        }
+
+        private void avableDates_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DateTime processingDate = ((DateTime)availableDates.SelectedItem);
+            ClearForm();
+            List<int> parametersIDs = Parameters.ParametersIDs(processingDate);
+            foreach (int param in parametersIDs)
+            {
+                this.parametersIDs.Items.Add(param);
+            }
+        }
+
+        private void status_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

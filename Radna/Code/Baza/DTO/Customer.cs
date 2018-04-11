@@ -125,7 +125,7 @@ namespace Baza.DTO
                     count++;
                 }
             }
-            while (count <= Parameters.predictionCountCutOff && count < allCustomerPredictions.Count)
+            while (count < Parameters.predictionCountCutOff && count < allCustomerPredictions.Count)
             {
                 sortedPredictions.Add(allCustomerPredictions[count]);
                 count++;

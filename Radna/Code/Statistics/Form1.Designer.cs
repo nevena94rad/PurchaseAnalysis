@@ -59,7 +59,7 @@
             this.status = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.FirstAndSecondPurchase = new System.Windows.Forms.CheckBox();
-            this.avableDates = new System.Windows.Forms.ComboBox();
+            this.availableDates = new System.Windows.Forms.ComboBox();
             this.cutOffPercentage = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
@@ -368,6 +368,7 @@
             this.status.Size = new System.Drawing.Size(40, 13);
             this.status.TabIndex = 13;
             this.status.Text = "Status:";
+            this.status.Click += new System.EventHandler(this.status_Click);
             // 
             // button2
             // 
@@ -389,13 +390,14 @@
             this.FirstAndSecondPurchase.Text = "Include I and II purchase";
             this.FirstAndSecondPurchase.UseVisualStyleBackColor = true;
             // 
-            // avableDates
+            // availableDates
             // 
-            this.avableDates.FormattingEnabled = true;
-            this.avableDates.Location = new System.Drawing.Point(34, 47);
-            this.avableDates.Name = "avableDates";
-            this.avableDates.Size = new System.Drawing.Size(350, 21);
-            this.avableDates.TabIndex = 17;
+            this.availableDates.FormattingEnabled = true;
+            this.availableDates.Location = new System.Drawing.Point(34, 47);
+            this.availableDates.Name = "availableDates";
+            this.availableDates.Size = new System.Drawing.Size(350, 21);
+            this.availableDates.TabIndex = 17;
+            this.availableDates.SelectedIndexChanged += new System.EventHandler(this.avableDates_SelectedIndexChanged);
             // 
             // cutOffPercentage
             // 
@@ -422,7 +424,7 @@
             this.ClientSize = new System.Drawing.Size(648, 647);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cutOffPercentage);
-            this.Controls.Add(this.avableDates);
+            this.Controls.Add(this.availableDates);
             this.Controls.Add(this.FirstAndSecondPurchase);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.status);
@@ -490,7 +492,7 @@
         private System.Windows.Forms.Label status;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox FirstAndSecondPurchase;
-        private System.Windows.Forms.ComboBox avableDates;
+        private System.Windows.Forms.ComboBox availableDates;
         private System.Windows.Forms.ComboBox cutOffPercentage;
         private System.Windows.Forms.Label label3;
     }

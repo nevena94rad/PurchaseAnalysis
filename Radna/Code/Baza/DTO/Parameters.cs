@@ -32,6 +32,7 @@ namespace Baza.DTO
 
             InsertIntoDatabase();
         }
+
         public static void InsertIntoDatabase()
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -64,6 +65,7 @@ namespace Baza.DTO
                 ID = Convert.ToInt32(command.ExecuteScalar());
             }
         }
+
         public static void Update(int procStatus, string procError)
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -100,6 +102,7 @@ namespace Baza.DTO
                 command.ExecuteNonQuery();
             }
         }
+
         public static List<int> ParametersIDs(DateTime processingDate)
         {
             List<int> ids = new List<int>();
@@ -130,6 +133,7 @@ namespace Baza.DTO
 
             return ids;
         }
+
         public static Dictionary<string,string> GetParameters(int parametersId, out string status)
         {
             string jsonParameters = "";
@@ -156,7 +160,7 @@ namespace Baza.DTO
                     {
                         jsonParameters = (string)(reader[0]);
 
-                        if (reader[0] != null)
+                        if (reader[1] != null)
                             status = (string)(reader[1]);
                         else
                             status = null;
@@ -167,6 +171,40 @@ namespace Baza.DTO
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters = JsonConvert.DeserializeObject<Dictionary<string,string>>(jsonParameters);
             return parameters;
+        }
+
+        public static List<DateTime> GetProcessingDates()
+        {
+            List<DateTime> dates = new List<DateTime>();
+            try
+            {
+                var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+                string Table = ConfigurationManager.AppSettings[name: "Parameters"];
+                string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
+
+                string query = "select distinct JSON_VALUE(" + ProcessingParameters + " ,'$.processingDate') from " + Table;
+
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    var command = new SqlCommand(query, connection);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dates.Add(DateManipulation.intToDateTime(Int32.Parse(reader[0].ToString())));
+                        }
+                    }
+                }
+
+                return dates;
+            }
+            catch(Exception ex)
+            {
+                return dates;
+            }
         }
     }
 }
