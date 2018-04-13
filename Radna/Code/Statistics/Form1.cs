@@ -101,10 +101,18 @@ namespace Statistics
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             string status = "";
             parameters = Parameters.GetParameters(parametersID, out status);
-
+            
             this.custRecency.Text = "Customer Recency:  " + parameters["customerRecency"];
             this.percentageCutOff.Text = "Percentage CutOff:  " + parameters["predictionPercentageCutOff"];
             this.countCutOff.Text = "Count CutOff:  " + parameters["predictionCountCutOff"];
+            if(parameters["calculator"] != null && parameters["calculator"] != "")
+                this.model.Text = "Model:   " + parameters["calculator"];
+            else
+                this.model.Text = "Model:   Not specified";
+            if(parameters["preparer"] != null && parameters["preparer"] != "")
+                this.preparer.Text = "Preparer:   " + parameters["preparer"];
+            else
+                this.preparer.Text = "Preparer:   Not specified";
             this.status.Text = "Status:  " + status;
 
             if (status == Baza.Enum.ProcessingStatus.Status.ERROR.ToString() || status == Baza.Enum.ProcessingStatus.Status.SUSPENDED.ToString())

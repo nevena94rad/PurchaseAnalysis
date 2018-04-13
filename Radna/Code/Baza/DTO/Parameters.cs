@@ -151,6 +151,8 @@ namespace Baza.DTO
             string ID = ConfigurationManager.AppSettings[name: "Parameters_ID"];
             string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
             string ProcessingStatus = ConfigurationManager.AppSettings[name: "Parameters_ProcessingStatus"];
+            string ProcessingCalculator = ConfigurationManager.AppSettings[name: "Parameters_ProcessingCalculator"];
+            string ProcessingPreparer = ConfigurationManager.AppSettings[name: "Parameters_ProcessingPreparer"];
 
             string queryString = "select " + ProcessingParameters + "," + ProcessingStatus + " from " + Table + " where " + ID + "=@ID";
 
@@ -185,6 +187,35 @@ namespace Baza.DTO
 
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters = JsonConvert.DeserializeObject<Dictionary<string,string>>(jsonParameters);
+
+            string queryString2 = "select " + ProcessingCalculator + ", " + ProcessingPreparer + " from " + Table + " where " + ID + "=@ID";
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString2, connection);
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@ID", parametersId);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+
+                        try
+                        {
+                            if (reader[0] != null)
+                                parameters.Add("calculator", (string)reader[0]);
+                            if (reader[1] != null)
+                                parameters.Add("preparer", (string)reader[1]);
+                        }
+                        catch (Exception e)
+                        {
+                            log.Error("Read pre model era");
+                        }
+                    }
+                }
+            }
             return parameters;
         }
 

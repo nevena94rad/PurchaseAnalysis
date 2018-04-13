@@ -62,6 +62,8 @@
             this.availableDates = new System.Windows.Forms.ComboBox();
             this.cutOffPercentage = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.model = new System.Windows.Forms.Label();
+            this.preparer = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -76,7 +78,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(31, 19);
+            this.label1.Location = new System.Drawing.Point(20, 11);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(297, 17);
             this.label1.TabIndex = 1;
@@ -200,7 +202,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(67, 166);
+            this.button1.Location = new System.Drawing.Point(67, 176);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(515, 23);
             this.button1.TabIndex = 4;
@@ -318,7 +320,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label13.Location = new System.Drawing.Point(31, 82);
+            this.label13.Location = new System.Drawing.Point(22, 86);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(85, 17);
             this.label13.TabIndex = 6;
@@ -327,7 +329,7 @@
             // parametersIDs
             // 
             this.parametersIDs.FormattingEnabled = true;
-            this.parametersIDs.Location = new System.Drawing.Point(126, 82);
+            this.parametersIDs.Location = new System.Drawing.Point(117, 86);
             this.parametersIDs.Name = "parametersIDs";
             this.parametersIDs.Size = new System.Drawing.Size(101, 21);
             this.parametersIDs.TabIndex = 7;
@@ -336,7 +338,7 @@
             // custRecency
             // 
             this.custRecency.AutoSize = true;
-            this.custRecency.Location = new System.Drawing.Point(421, 27);
+            this.custRecency.Location = new System.Drawing.Point(405, 16);
             this.custRecency.Name = "custRecency";
             this.custRecency.Size = new System.Drawing.Size(100, 13);
             this.custRecency.TabIndex = 8;
@@ -345,7 +347,7 @@
             // percentageCutOff
             // 
             this.percentageCutOff.AutoSize = true;
-            this.percentageCutOff.Location = new System.Drawing.Point(421, 55);
+            this.percentageCutOff.Location = new System.Drawing.Point(405, 89);
             this.percentageCutOff.Name = "percentageCutOff";
             this.percentageCutOff.Size = new System.Drawing.Size(98, 13);
             this.percentageCutOff.TabIndex = 10;
@@ -354,7 +356,7 @@
             // countCutOff
             // 
             this.countCutOff.AutoSize = true;
-            this.countCutOff.Location = new System.Drawing.Point(421, 86);
+            this.countCutOff.Location = new System.Drawing.Point(405, 113);
             this.countCutOff.Name = "countCutOff";
             this.countCutOff.Size = new System.Drawing.Size(71, 13);
             this.countCutOff.TabIndex = 12;
@@ -363,7 +365,7 @@
             // status
             // 
             this.status.AutoSize = true;
-            this.status.Location = new System.Drawing.Point(421, 117);
+            this.status.Location = new System.Drawing.Point(405, 139);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(40, 13);
             this.status.TabIndex = 13;
@@ -383,7 +385,7 @@
             // FirstAndSecondPurchase
             // 
             this.FirstAndSecondPurchase.AutoSize = true;
-            this.FirstAndSecondPurchase.Location = new System.Drawing.Point(249, 83);
+            this.FirstAndSecondPurchase.Location = new System.Drawing.Point(240, 87);
             this.FirstAndSecondPurchase.Name = "FirstAndSecondPurchase";
             this.FirstAndSecondPurchase.Size = new System.Drawing.Size(144, 17);
             this.FirstAndSecondPurchase.TabIndex = 16;
@@ -393,7 +395,7 @@
             // availableDates
             // 
             this.availableDates.FormattingEnabled = true;
-            this.availableDates.Location = new System.Drawing.Point(34, 47);
+            this.availableDates.Location = new System.Drawing.Point(25, 45);
             this.availableDates.Name = "availableDates";
             this.availableDates.Size = new System.Drawing.Size(350, 21);
             this.availableDates.TabIndex = 17;
@@ -402,7 +404,7 @@
             // cutOffPercentage
             // 
             this.cutOffPercentage.FormattingEnabled = true;
-            this.cutOffPercentage.Location = new System.Drawing.Point(249, 121);
+            this.cutOffPercentage.Location = new System.Drawing.Point(240, 133);
             this.cutOffPercentage.Name = "cutOffPercentage";
             this.cutOffPercentage.Size = new System.Drawing.Size(135, 21);
             this.cutOffPercentage.TabIndex = 18;
@@ -411,17 +413,37 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(31, 121);
+            this.label3.Location = new System.Drawing.Point(22, 133);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(186, 17);
             this.label3.TabIndex = 20;
             this.label3.Text = "Select a cut off percentage: ";
             // 
+            // model
+            // 
+            this.model.AutoSize = true;
+            this.model.Location = new System.Drawing.Point(405, 40);
+            this.model.Name = "model";
+            this.model.Size = new System.Drawing.Size(39, 13);
+            this.model.TabIndex = 21;
+            this.model.Text = "Model:";
+            // 
+            // preparer
+            // 
+            this.preparer.AutoSize = true;
+            this.preparer.Location = new System.Drawing.Point(405, 66);
+            this.preparer.Name = "preparer";
+            this.preparer.Size = new System.Drawing.Size(50, 13);
+            this.preparer.TabIndex = 22;
+            this.preparer.Text = "Preparer:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(648, 647);
+            this.ClientSize = new System.Drawing.Size(660, 647);
+            this.Controls.Add(this.preparer);
+            this.Controls.Add(this.model);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cutOffPercentage);
             this.Controls.Add(this.availableDates);
@@ -495,6 +517,8 @@
         private System.Windows.Forms.ComboBox availableDates;
         private System.Windows.Forms.ComboBox cutOffPercentage;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label model;
+        private System.Windows.Forms.Label preparer;
     }
 }
 
