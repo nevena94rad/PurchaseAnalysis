@@ -21,14 +21,16 @@ namespace Statistics
         {
             InitializeComponent();
 
-            cutOffPercentage.Items.Add(0);
+            cutOffPercentage.Items.Add(0.0);
             cutOffPercentage.Items.Add(0.01);
             cutOffPercentage.Items.Add(0.1);
-            cutOffPercentage.Items.Add(1);
-            cutOffPercentage.Items.Add(5);
-            cutOffPercentage.Items.Add(10);
-            cutOffPercentage.Items.Add(25);
-            cutOffPercentage.Items.Add(50);
+            cutOffPercentage.Items.Add(1.0);
+            cutOffPercentage.Items.Add(5.0);
+            cutOffPercentage.Items.Add(10.0);
+            cutOffPercentage.Items.Add(25.0);
+            cutOffPercentage.Items.Add(50.0);
+            cutOffPercentage.Items.Add(70.0);
+            cutOffPercentage.Items.Add(90.0);
 
             cutOffPercentage.SelectedItem = 0.01;
 
@@ -144,5 +146,7 @@ namespace Statistics
         {
 
         }
+
+        
     }
 }

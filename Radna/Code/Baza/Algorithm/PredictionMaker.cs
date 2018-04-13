@@ -21,5 +21,14 @@ namespace Baza.Algorithm
                 calculator.makePrediction(date);
         }
         
+        public static List<Calculator> getAllCalculators(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
+        {
+            List<Calculator> returnList = new List<Calculator>();
+
+            returnList.Add(new ARIMACalculator(OnProgressUpdate, OnProgressFinish, worker));
+            returnList.Add(new PNBDCalculator(OnProgressUpdate, OnProgressFinish, worker));
+
+            return returnList;
+        }
     }
 }

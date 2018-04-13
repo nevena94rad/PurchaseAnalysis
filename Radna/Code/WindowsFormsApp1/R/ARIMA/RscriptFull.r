@@ -17,3 +17,5 @@ prognoza <- forecast(fit, h = (ConsumptionLength - sum + 7))
 ItemCust <- c(custItemCons, head(prognoza[["mean"]], -7))
 
 print(sum(tail(ItemCust, - sum)) / 2 + sum(tail(prognoza[["mean"]], 7)));
+
+print(model)

@@ -140,7 +140,7 @@ namespace Baza.DTO
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
 
             string PredictionTable = ConfigurationManager.AppSettings[name: "PurchasePrediction"];
-            string ModelTable = ConfigurationManager.AppSettings[name: "CustomerModel"];
+            string ModelTable = ConfigurationManager.AppSettings[name: "Model"];
 
             string Prediction_CustNumber = ConfigurationManager.AppSettings[name: "PurchasePrediction_CustomerID"];
             string Prediction_ItemNumber = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemID"];
@@ -148,8 +148,8 @@ namespace Baza.DTO
             string Prediction_PredictedValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
 
 
-            string Model_ID = ConfigurationManager.AppSettings[name: "CustomerModel_ID"];
-            string Model_ParameterID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
+            string Model_ID = ConfigurationManager.AppSettings[name: "Model_ID"];
+            string Model_ParameterID = ConfigurationManager.AppSettings[name: "Model_Parameters_ID"];
 
             string query = "select " + Prediction_ItemNumber + ", " + Prediction_CustNumber + " from " + PredictionTable +
                            " where " + Prediction_ModelID + " in ( " +

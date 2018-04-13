@@ -21,10 +21,17 @@ namespace Baza.Calculators
         public static Object thisLock = new Object();
         public PNBDPrepare preparer = null;
 
-        public PNBDCalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker, PNBDPrepare preparer) : base(OnProgressUpdate,OnProgressFinish,worker)
+        public PNBDCalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker) :base(OnProgressUpdate, OnProgressFinish, worker)
         {
-            this.preparer = preparer;
+            displeyText = "PNBD";
+            allAvailablePreparers = PrepareCreator.CreatePNDBPrepare.getAll();
         }
+
+        public override void setPreparer(PrepareDispley preparer)
+        {
+            this.preparer = (PNBDPrepare) preparer;
+        }
+
         public override void makePrediction(int date)
         {
             REngineHelper.initEngine();

@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 using Newtonsoft.Json;
 
 namespace Baza.DTO
@@ -17,7 +18,9 @@ namespace Baza.DTO
         public static int processingDate;
         public static int ID;
 
-        public static void LoadParameters(int date, int recency, string percentage, string count)
+        private static ILog log = LogManager.GetLogger(typeof(Parameters));
+
+        public static void LoadParameters(int date, int recency, string percentage, string count, string calculator, string preparer)
         {
             if (recency > 0)
                 customerRecency = recency;
@@ -30,17 +33,20 @@ namespace Baza.DTO
 
             processingDate = date;
 
-            InsertIntoDatabase();
+            InsertIntoDatabase(calculator, preparer);
         }
 
-        public static void InsertIntoDatabase()
+        public static void InsertIntoDatabase(string calculator, string preparer)
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "Parameters"];
             string ProcessingStart = ConfigurationManager.AppSettings[name: "Parameters_ProcessingStart"];
             string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
+            string ProcessingCalculator = ConfigurationManager.AppSettings[name: "Parameters_ProcessingCalculator"];
+            string ProcessingPreparer = ConfigurationManager.AppSettings[name: "Parameters_ProcessingPreparer"];
 
-            string queryString = "insert into " + Table + "(" + ProcessingStart + "," + ProcessingParameters + ") OUTPUT INSERTED.ID values (@ProcessingStart, @Parameters) ";
+            string queryString = "insert into " + Table + "(" + ProcessingStart + "," + ProcessingParameters + ", " + ProcessingCalculator + ", " + ProcessingPreparer +
+                ") OUTPUT INSERTED.ID values (@ProcessingStart , @Parameters , @Calculator , @Preparer) ";
             queryString += @"SELECT SCOPE_IDENTITY();";
 
             DateTime processingStart = DateTime.Now;
@@ -61,6 +67,8 @@ namespace Baza.DTO
                 command.Parameters.Clear();
                 command.Parameters.AddWithValue("@ProcessingStart", processingStart);
                 command.Parameters.AddWithValue("@Parameters", jsonParameters);
+                command.Parameters.AddWithValue("@Calculator", calculator);
+                command.Parameters.AddWithValue("@Preparer", preparer);
 
                 ID = Convert.ToInt32(command.ExecuteScalar());
             }
@@ -160,10 +168,17 @@ namespace Baza.DTO
                     {
                         jsonParameters = (string)(reader[0]);
 
-                        if (reader[1] != null)
-                            status = (string)(reader[1]);
-                        else
-                            status = null;
+                        try
+                        {
+                            if (reader[1] != null)
+                                status = (string)(reader[1]);
+                            else
+                                status = null;
+                        }
+                        catch(Exception e)
+                        {
+                            log.Error("Read non compleate run");
+                        }
                     }
                 }
             }

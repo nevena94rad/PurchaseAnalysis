@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 using Baza.DTO;
 using System.Configuration;
 using System.Data.SqlClient;
+using static Baza.DTO.TempFile;
+using System.IO;
 
 namespace Baza.Prepare
 {
     public class SimplePrepare : PNBDPrepare ,ARIMAPrepare
     {
+        public static string ScriptPath = null;
+
+        public string displeyName { get { return "Simple Prepare"; } }
+
         /// <summary>
         /// Ucitava i obradjuje podatke
         /// </summary>
@@ -112,10 +118,8 @@ namespace Baza.Prepare
 
             return returnList;
         }
-        public static string ScriptPath = null;
 
-
-
+        
         public ARIMAData ARIMAprepare(int date)
         {
             ARIMAData data = new ARIMAData();
@@ -279,7 +283,7 @@ namespace Baza.Prepare
                 {
                     while (reader.Read())
                     {
-                        Consumptions.Add(new ARIMAConsumptionData { Date = (int)reader[1], Value = (int)(double)reader[0] });
+                        Consumptions.Add(new ARIMAConsumptionData { Date = (int)reader[1], Value = (double)reader[0] });
                     }
                 }
             }
@@ -289,6 +293,7 @@ namespace Baza.Prepare
         public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end)
         {
             List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
+            int endMinus2Years = DateManipulation.DateTimeToint(DateManipulation.intToDateTime(end).AddYears(-2));
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
@@ -309,7 +314,7 @@ namespace Baza.Prepare
                 command.Parameters.AddWithValue("@ItemID", itemNo);
                 command.Parameters.AddWithValue("@CustID", custNo);
                 command.Parameters.AddWithValue("@end", end);
-                command.Parameters.AddWithValue("@begin", start);
+                command.Parameters.AddWithValue("@begin", start > endMinus2Years ? start : endMinus2Years);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -361,7 +366,22 @@ namespace Baza.Prepare
 
         public string GetScriptPath()
         {
-            throw new NotImplementedException();
+            if (ScriptPath != null)
+                return ScriptPath;
+
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = dir + @"R\ARIMA\RscriptFull.r";
+            ScriptPath = TempFileHelper.CreateTmpFile();
+            using (var streamWriter = new StreamWriter(new FileStream(ScriptPath, FileMode.Open, FileAccess.Write)))
+            {
+                using (var streamReader = new StreamReader(new FileStream(filePath, FileMode.Open)))
+                {
+                    streamWriter.Write(streamReader.ReadToEnd());
+                }
+
+            }
+
+            return ScriptPath;
         }
     }
 }

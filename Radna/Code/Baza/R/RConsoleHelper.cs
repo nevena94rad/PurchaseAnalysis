@@ -1,4 +1,5 @@
 ﻿using Baza.DTO;
+using log4net;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -13,18 +14,21 @@ namespace Baza.R
 {
     public static class RConsoleHelper
     {
-        public static double ExecuteRScript(string rCodeFilePath, string p1, string p2, string p3, string p4, string p5)
+
+        private static ILog log = LogManager.GetLogger(typeof(RConsoleHelper));
+
+        public static double ExecuteRScript(string rCodeFilePath, string p1, string p2, string p3, string p4, string p5, out string model)
         {
 
             string[] args_r = { p1, p2, p3, p4, p5 };
-            double result = RunFromCmd(rCodeFilePath, args_r);
+            double result = RunFromCmd(rCodeFilePath, out model, args_r);
             return result;
         }
 
-        private static double RunFromCmd(string filePath, params string[] args)
+        private static double RunFromCmd(string filePath,out string model, params string[] args)
         {
             double ret = 0;
-
+            model = "";
             string result = string.Empty;
             string file1 = string.Empty;
             string file2 = string.Empty;
@@ -35,15 +39,7 @@ namespace Baza.R
                 {
                     streamWriter.Write(args[0]);
                 }
-                file2 = TempFileHelper.CreateTmpFile();
-                using (var streamWriter = new StreamWriter(new FileStream(file2, FileMode.Open, FileAccess.Write)))
-                {
-                    using (var streamReader = new StreamReader(new FileStream(filePath, FileMode.Open)))
-                    {
-                        streamWriter.Write(streamReader.ReadToEnd());
-                    }
-                    
-                }
+                
 
                 var rCore = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\R-core") ??
                             Registry.CurrentUser.OpenSubKey(@"SOFTWARE\R-core");
@@ -55,7 +51,7 @@ namespace Baza.R
                     var binPath = Path.Combine(installPath, "bin");
                     binPath = Path.Combine(binPath, is64Bit ? "x64" : "i386");
                     binPath = Path.Combine(binPath, "Rscript");
-                    string strCmdLine = @"/c """"" + binPath + @""" " + file2;
+                    string strCmdLine = @"/c """"" + binPath + @""" " + filePath;
                     if (args.Any())
                     {
                         strCmdLine += " " + file1 + @""" " + args[1] + " " + args[2] + " " + args[3] + " " + args[4];
@@ -71,7 +67,9 @@ namespace Baza.R
                         proc.Start();
                         result = proc.StandardOutput.ReadToEnd();
                     }
-                    ret = Convert.ToDouble(result.Split(' ')[1]);
+                    var split = result.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                    ret = Convert.ToDouble(split[0].Remove(0,4));
+                    model = split[1].Remove(0, 4);
                 }
                 else
                 {
@@ -81,7 +79,8 @@ namespace Baza.R
             }
             catch (Exception ex)
             {
-                throw new Exception("R failed to compute. Output: " + result, ex);
+                log.Warn(ex.Message + " Arguments: " + args);
+                return -1;
             }
             finally
             {

@@ -1,4 +1,5 @@
 ﻿using Baza.Algorithm;
+using Baza.Prepare;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,17 @@ namespace Baza.Calculators
         protected static int DoneCount = 0;
         public static int totalWrites = 0;
         public static string message = "";
+        public string displeyText { get; set; }
+
+        public List<PrepareDispley> allAvailablePreparers = null;
         
-        public Calculator ( System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
+        public Calculator (System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
         {
             Calculator.OnProgressUpdate = OnProgressUpdate;
             Calculator.OnProgressFinish = OnProgressFinish;
             Calculator.worker = worker;
         }
+        
         //// upise u parent total count i done count i uradi on progressupdate 
         protected void UpdateProgress()
         {
@@ -41,7 +46,7 @@ namespace Baza.Calculators
             OnProgressFinish?.Invoke(message);
         }
         public abstract void makePrediction(int date);
-        
+        public abstract void setPreparer(PrepareDispley preparer);
 
     }
 }

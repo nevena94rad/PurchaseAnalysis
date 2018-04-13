@@ -13,7 +13,7 @@ namespace Baza.DTO
         public DateTime? PurchaseDate { get; set; } = null;
         public int? PurchaseQuantity { get; set; } = null;
         public string displayCustomerItem { get { return CustNo +" " + ItemNo; } } 
-        public string displayWhole { get { return ((DateTime) PurchaseDate).ToShortDateString() + " " + PurchaseQuantity; } }
+        public string displayWhole { get { return ((DateTime) PurchaseDate).ToString("dd/MM/yyyy") + "\t" + PurchaseQuantity; } }
      
 
         public Purchase(string itemNo, string custNo)

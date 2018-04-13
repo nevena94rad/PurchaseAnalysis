@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Baza.Prepare
 {
-    public interface ARIMAPrepare
+    public interface ARIMAPrepare : PrepareDispley
     {
         ARIMAData ARIMAprepare(int date);
         List<string> ARIMAreadAllCustomers();

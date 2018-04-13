@@ -46,13 +46,12 @@ namespace Baza.R
                     var model = "r= " + param[0].AsNumeric().First() + " alpha= " + param[1].AsNumeric().First();
                     model += " s= " + param[2].AsNumeric().First() + " beta= " + param[3].AsNumeric().First();
                     var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-                    string Table = ConfigurationManager.AppSettings[name: "CustomerModel"];
-                    string CustomerID = ConfigurationManager.AppSettings[name: "CustomerModel_CustomerID"];
-                    string Model = ConfigurationManager.AppSettings[name: "CustomerModel_Model"];
-                    string Parameters_ID = ConfigurationManager.AppSettings[name: "CustomerModel_Parameters_ID"];
+                    string Table = ConfigurationManager.AppSettings[name: "Model"];
+                    string Model = ConfigurationManager.AppSettings[name: "Model_Model"];
+                    string Parameters_ID = ConfigurationManager.AppSettings[name: "Model_Parameters_ID"];
 
-                    string queryString = "insert into " + Table + " (" + CustomerID + "," + Model + "," + Parameters_ID + "" +
-                    ") OUTPUT INSERTED.ID values (@CustNo, @Model, @Parameters_ID) ";
+                    string queryString = "insert into " + Table + " (" + Model + "," + Parameters_ID + "" +
+                    ") OUTPUT INSERTED.ID values (@Model, @Parameters_ID) ";
                     queryString += @"SELECT SCOPE_IDENTITY();";
 
                     using (var connection = new SqlConnection(connectionString))
@@ -61,7 +60,6 @@ namespace Baza.R
 
                         var command = new SqlCommand(queryString, connection);
                         command.Parameters.Clear();
-                        command.Parameters.AddWithValue("@custNo", cust);
                         command.Parameters.AddWithValue("@Model", model);
                         command.Parameters.AddWithValue("@Parameters_ID", Parameters.ID);
 

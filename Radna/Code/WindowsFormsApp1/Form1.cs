@@ -23,30 +23,48 @@ namespace WindowsFormsApp1
         public double percent = 10;
         public int recent = 6;
         public int maxCount = 30;
-        
+        Calculator selectedCalculator;
+        PrepareDispley selectedPreparer;
+        public bool exit = false;
+
+
         public Form1()
         {
             InitializeComponent();
             dateTimePicker1.Value = Customer.GetLastTransactionDate();
+            calculator.DisplayMember = "displeyText";
+            calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1); 
+            setPreparer();
+            
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        public void setPreparer()
         {
+            preparer.DataSource = null;
+            preparer.Items.Clear();
+            preparer.DisplayMember = "displeyName";
+            Calculator selected = (Calculator) calculator.SelectedItem;
+            preparer.DataSource = selected.allAvailablePreparers;
         }
         
         private void button1_Click(object sender, EventArgs e)
         {
-            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text);
+            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, "ARIMA", "Simple");
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;
 
+            selectedCalculator = (Calculator)calculator.SelectedItem;
+            selectedPreparer = (PrepareDispley)preparer.SelectedItem;
             backgroundWorker1.RunWorkerAsync();
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            PredictionMaker.calculator = new ARIMACalculator(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1, new SimplePrepare());
+
+            PredictionMaker.calculator = selectedCalculator;
+            selectedCalculator.setPreparer(selectedPreparer);
+
             PredictionMaker.startProccess(DateManipulation.DateTimeToint(dateTimePicker1.Value));
         }
 
@@ -74,6 +92,9 @@ namespace WindowsFormsApp1
 
                 StartB.Enabled = true;
                 StopB.Enabled = false;
+
+                if (exit)
+                    base.Close();
             });
         }
 
@@ -123,9 +144,19 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        private void calculator_SelectedIndexChanged(object sender, EventArgs e)
         {
+            setPreparer();
+        }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (exit == false)
+            {
+                backgroundWorker1.CancelAsync();
+                exit = true;
+                e.Cancel = true;
+            }
         }
     }
 }
