@@ -1,0 +1,4 @@
+1. Obrisati staru bazu ukoliko postoji
+2. Kreirati bazu koriscenjem skripte script.sql (nalazi se u Sql folderu)
+3. Uneti podatke u tabele PLS_RecomendHist, PurchaseHistory i PurchasePeriods iz fajlova PLS_RecomendHist.txt, Tigers_Invoices.txt i PurchasePeriods.txt, respektivno (primer unosa BULK Insert fajl)
+4. Izvrsiti skriptu Calculate_Item_Consumption.sql (nalazi se u Sql folderu), za popunjavanje ItemConsumption tabele

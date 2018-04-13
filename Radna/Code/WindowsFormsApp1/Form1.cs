@@ -24,7 +24,7 @@ namespace WindowsFormsApp1
         public int recent = 6;
         public int maxCount = 30;
         Calculator selectedCalculator;
-        PrepareDispley selectedPreparer;
+        PrepareDisplay selectedPreparer;
         public bool exit = false;
 
 
@@ -32,7 +32,7 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             dateTimePicker1.Value = Customer.GetLastTransactionDate();
-            calculator.DisplayMember = "displeyText";
+            calculator.DisplayMember = "displayText";
             calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1); 
             setPreparer();
             
@@ -42,7 +42,7 @@ namespace WindowsFormsApp1
         {
             preparer.DataSource = null;
             preparer.Items.Clear();
-            preparer.DisplayMember = "displeyName";
+            preparer.DisplayMember = "displayName";
             Calculator selected = (Calculator) calculator.SelectedItem;
             preparer.DataSource = selected.allAvailablePreparers;
         }
@@ -55,7 +55,7 @@ namespace WindowsFormsApp1
             StartB.Enabled = false;
 
             selectedCalculator = (Calculator)calculator.SelectedItem;
-            selectedPreparer = (PrepareDispley)preparer.SelectedItem;
+            selectedPreparer = (PrepareDisplay)preparer.SelectedItem;
             backgroundWorker1.RunWorkerAsync();
         }
 
