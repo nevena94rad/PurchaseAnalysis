@@ -256,7 +256,7 @@ namespace Baza.Prepare
             }
             return end;
         }
-        public List<ARIMAConsumptionData> ARIMAgetGlobalConsumption(string itemNo,int start, int end)
+        public List<ARIMAConsumptionData> ARIMAgetGlobalConsumption(string itemNo, int start, int end)
         {
             List<ARIMAConsumptionData> Consumptions = new List<ARIMAConsumptionData>();
 
@@ -287,6 +287,19 @@ namespace Baza.Prepare
                     }
                 }
             }
+            DateTime stopedAsDate = DateManipulation.intToDateTime(Consumptions[Consumptions.Count - 1].Date).AddDays(1);
+            int stopedAsInt = DateManipulation.DateTimeToint(stopedAsDate);
+            
+            double avg = Consumptions.Average(x => x.Value);
+
+            while (stopedAsInt < Parameters.processingDate)
+            {
+                Consumptions.Add(new ARIMAConsumptionData { Date = stopedAsInt, Value = avg });
+
+                stopedAsDate = stopedAsDate.AddDays(1);
+                stopedAsInt = DateManipulation.DateTimeToint(stopedAsDate);
+            }
+
 
             return Consumptions;
         }

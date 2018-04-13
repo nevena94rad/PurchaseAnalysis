@@ -1,7 +1,7 @@
 DECLARE @StartDT INT
 SET @StartDT =  '20150500'
 
-WHILE @StartDT < '20171200'
+WHILE @StartDT < '20171212'
 BEGIN
 	INSERT INTO PED.dbo.ItemConsumption (ItemNo, Date, Consumption)
 	SELECT a.ItemNo,@StartDT,(cast (SUM(InvQty) as float)/SUM(PurchasePeriod)) as prosPotrosnja FROM
