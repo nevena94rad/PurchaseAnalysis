@@ -22,11 +22,11 @@ namespace Baza.Calculators
 
         public ARIMACalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker) : base(OnProgressUpdate, OnProgressFinish, worker)
         {
-            displeyText = "ARIMA";
+            displayText = "ARIMA";
             allAvailablePreparers = PrepareCreator.CreateARIMAPrepare.getAll();
         }
 
-        public override void setPreparer(PrepareDispley preparer)
+        public override void setPreparer(PrepareDisplay preparer)
         {
             this.preparer = (ARIMAPrepare) preparer;
         }

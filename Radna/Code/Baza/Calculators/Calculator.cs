@@ -20,9 +20,9 @@ namespace Baza.Calculators
         protected static int DoneCount = 0;
         public static int totalWrites = 0;
         public static string message = "";
-        public string displeyText { get; set; }
+        public string displayText { get; set; }
 
-        public List<PrepareDispley> allAvailablePreparers = null;
+        public List<PrepareDisplay> allAvailablePreparers = null;
         
         public Calculator (System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
         {
@@ -46,7 +46,7 @@ namespace Baza.Calculators
             OnProgressFinish?.Invoke(message);
         }
         public abstract void makePrediction(int date);
-        public abstract void setPreparer(PrepareDispley preparer);
+        public abstract void setPreparer(PrepareDisplay preparer);
 
     }
 }

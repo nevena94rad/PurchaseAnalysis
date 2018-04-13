@@ -16,7 +16,7 @@ namespace Baza.Prepare
     {
         public static string ScriptPath = null;
 
-        public string displeyName { get { return "Simple Prepare"; } }
+        public string displayName { get { return "Simple Prepare"; } }
 
         /// <summary>
         /// Ucitava i obradjuje podatke

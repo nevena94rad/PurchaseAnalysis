@@ -11,9 +11,9 @@ namespace Baza.PrepareCreator
     {
         public static readonly List<PNBDPrepare> allAvailablePreparers = new List<PNBDPrepare> { new SimplePrepare() };
         
-        public static List<PrepareDispley> getAll()
+        public static List<PrepareDisplay> getAll()
         {
-            List<PrepareDispley> returnList = new List<PrepareDispley>();
+            List<PrepareDisplay> returnList = new List<PrepareDisplay>();
 
             foreach (var pr in allAvailablePreparers)
                 returnList.Add(pr);

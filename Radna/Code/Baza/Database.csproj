@@ -83,7 +83,7 @@
     <Compile Include="PrepareCreator\CreatePNDBPrepare.cs" />
     <Compile Include="Prepare\ARIMAPrepare.cs" />
     <Compile Include="Prepare\PNBDPrepare.cs" />
-    <Compile Include="Prepare\PrepareDispley.cs" />
+    <Compile Include="Prepare\PrepareDisplay.cs" />
     <Compile Include="Prepare\SimplePrepare.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

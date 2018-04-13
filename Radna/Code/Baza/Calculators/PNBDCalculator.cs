@@ -23,11 +23,11 @@ namespace Baza.Calculators
 
         public PNBDCalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker) :base(OnProgressUpdate, OnProgressFinish, worker)
         {
-            displeyText = "PNBD";
+            displayText = "PNBD";
             allAvailablePreparers = PrepareCreator.CreatePNDBPrepare.getAll();
         }
 
-        public override void setPreparer(PrepareDispley preparer)
+        public override void setPreparer(PrepareDisplay preparer)
         {
             this.preparer = (PNBDPrepare) preparer;
         }
