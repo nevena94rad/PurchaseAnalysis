@@ -47,7 +47,7 @@ namespace WindowsFormsApp1
         
         private void button1_Click(object sender, EventArgs e)
         {
-            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, "ARIMA", "Simple");
+            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, ((Calculator)calculator.SelectedValue).displayText, ((PrepareDisplay)preparer.SelectedValue).displayName);
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;
