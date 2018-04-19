@@ -328,6 +328,7 @@
             // 
             // parametersIDs
             // 
+            this.parametersIDs.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.parametersIDs.FormattingEnabled = true;
             this.parametersIDs.Location = new System.Drawing.Point(117, 86);
             this.parametersIDs.Name = "parametersIDs";
@@ -393,6 +394,7 @@
             // 
             // availableDates
             // 
+            this.availableDates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.availableDates.FormattingEnabled = true;
             this.availableDates.Location = new System.Drawing.Point(25, 45);
             this.availableDates.Name = "availableDates";
@@ -402,6 +404,7 @@
             // 
             // cutOffPercentage
             // 
+            this.cutOffPercentage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cutOffPercentage.FormattingEnabled = true;
             this.cutOffPercentage.Location = new System.Drawing.Point(240, 133);
             this.cutOffPercentage.Name = "cutOffPercentage";
