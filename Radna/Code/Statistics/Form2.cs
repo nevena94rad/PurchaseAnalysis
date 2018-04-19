@@ -29,7 +29,6 @@ namespace Statistics
             intersection.DisplayMember = "displayCustomerItem";
             intersection.ValueMember = "displayCustomerItem";
             listOfPurchases.DisplayMember = "displayWhole";
-
         }
 
         public void setStatistics(Baza.DTO.Statistics os, Baza.DTO.Statistics ns)
@@ -45,8 +44,7 @@ namespace Statistics
                 PurchaseComperer comparer = new PurchaseComperer();
                 List<Purchase> oldCorrect = os.predictedPurchases.Intersect(os.occuredPurchases, comparer).ToList();
                 List<Purchase> newCorrect = ns.predictedPurchases.Intersect(ns.occuredPurchases, comparer).ToList();
-
-
+                
                 List<Purchase> oldMnew = oldCorrect.Where(x => !newCorrect.Contains(x, comparer)).OrderBy(x => x.CustNo).ThenBy(x => x.ItemNo).ToList();
                 List<Purchase> newMold = newCorrect.Where(x => !oldCorrect.Contains(x, comparer)).OrderBy(x => x.CustNo).ThenBy(x => x.ItemNo).ToList();
                 List<Purchase> intersect = oldCorrect.Where(x => newCorrect.Contains(x,comparer)).OrderBy(x => x.CustNo).ThenBy(x => x.ItemNo).ToList();

@@ -42,17 +42,7 @@ namespace Statistics
             //    this.parametersIDs.Items.Add(param);
             //}
         }
-
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
+        
         private void button1_Click(object sender, EventArgs e)
         {
             int parametrsID = (int)(parametersIDs.SelectedItem);
@@ -74,7 +64,6 @@ namespace Statistics
             NEW_FPtp.Text = "Total number: " + ns.falsePredictionCount;
             NEW_FPp.Text = "Percentage: " + ns.falsePredictionPercentage;
             NEW_Cp.Text = "Percentage: " + ns.coveragePercentage;
-
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -128,8 +117,7 @@ namespace Statistics
                 this.status.ForeColor = Color.Green;
             }
         }
-
-
+        
         private void button2_Click(object sender, EventArgs e)
         {
             if (os != null && ns != null)
@@ -149,12 +137,5 @@ namespace Statistics
                 this.parametersIDs.Items.Add(param);
             }
         }
-
-        private void status_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        
     }
 }

@@ -23,23 +23,25 @@ namespace Baza.DTO
         public int correctPredictionsCount { get; protected set; }
         public int startingDate { get; protected set; }
         
-
         protected Statistics(int date, bool allPurchases)
         {
             startingDate = date;
             this.allPurchases = allPurchases;
         }
+
         protected void getStatistics()
         {
             getPredictedPurchases();
             getOccuredPurchases();
             setCorrectPredictionCount();     
         }
+
         protected void setCorrectPredictionCount()
         {
             PurchaseComperer comperer = new PurchaseComperer();
             correctPredictionsCount = predictedPurchases.Intersect(occuredPurchases, comperer).ToList().Count;
         }
+
         protected void getOccuredPurchases()
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -76,7 +78,6 @@ namespace Baza.DTO
                     }
                 }
             }
-
         }
 
         public static List<Purchase> getListOfPurchases(string custNo, string itemNo)
@@ -91,8 +92,7 @@ namespace Baza.DTO
             string History_ItemNumber = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
             string History_Date = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
             string History_Quantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
-
-
+            
             string query = "select " + History_ItemNumber + ", " + History_CustNumber +
                             ", " + History_Date + ", " + History_Quantity + " from " + HistoryTable +
                             " where " + History_ItemNumber + "=@itemNo and " +
@@ -115,13 +115,11 @@ namespace Baza.DTO
                     }
                 }
             }
-
-
+            
             return returnList;
         }
 
         protected abstract void getPredictedPurchases();
-        
     }
 
     public class NEWStatistics : Statistics
@@ -135,6 +133,7 @@ namespace Baza.DTO
             this.cutOffPercentage = cutOffPercentage;
             getStatistics();
         }
+
         protected override void getPredictedPurchases()
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
@@ -146,8 +145,7 @@ namespace Baza.DTO
             string Prediction_ItemNumber = ConfigurationManager.AppSettings[name: "PurchasePrediction_ItemID"];
             string Prediction_ModelID = ConfigurationManager.AppSettings[name: "PurchasePrediction_ModelID"];
             string Prediction_PredictedValue = ConfigurationManager.AppSettings[name: "PurchasePrediction_ProcessingValue"];
-
-
+            
             string Model_ID = ConfigurationManager.AppSettings[name: "Model_ID"];
             string Model_ParameterID = ConfigurationManager.AppSettings[name: "Model_Parameters_ID"];
 
@@ -174,14 +172,15 @@ namespace Baza.DTO
                 }
             }
         }
-        
     }
+
     public class OLDStatistics : Statistics
     {
         public OLDStatistics(int date, bool allPurchases) : base(date, allPurchases)
         {
             getStatistics();
         }
+
         protected override void getPredictedPurchases()
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;

@@ -370,7 +370,6 @@
             this.status.Size = new System.Drawing.Size(40, 13);
             this.status.TabIndex = 13;
             this.status.Text = "Status:";
-            this.status.Click += new System.EventHandler(this.status_Click);
             // 
             // button2
             // 

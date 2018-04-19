@@ -88,6 +88,7 @@ namespace Baza.DTO
 
             return modelID;
         }
+
         public static double makePredictionBTYD(string cust, string item)
         {
             en.Evaluate("try(x <- cal.cbs[\""+item+"\", \"x\"])");
@@ -95,9 +96,9 @@ namespace Baza.DTO
             en.Evaluate("try(T.cal <- cal.cbs[\"" + item + "\", \"T.cal\"])");
             return en.Evaluate("try(pnbd.ConditionalExpectedTransactions(params, T.star = 1, x, t.x, T.cal))").AsNumeric().First();
         }
+
         public static int ExecuteRScriptAlternativeWay(string rCodeFilePath, string p1, string p2, string cust, List<string> it, int date)
         {
-            
             var args_r = new string[2] { p1, p2 };
             var execution = "source('" + rCodeFilePath + "')";
 
