@@ -26,8 +26,7 @@ namespace WindowsFormsApp1
         Calculator selectedCalculator;
         PrepareDisplay selectedPreparer;
         public bool exit = false;
-
-
+        
         public Form1()
         {
             InitializeComponent();
@@ -35,7 +34,6 @@ namespace WindowsFormsApp1
             calculator.DisplayMember = "displayText";
             calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1); 
             setPreparer();
-            
         }
 
         public void setPreparer()
@@ -61,10 +59,8 @@ namespace WindowsFormsApp1
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-
             PredictionMaker.calculator = selectedCalculator;
             selectedCalculator.setPreparer(selectedPreparer);
-
             PredictionMaker.startProccess(DateManipulation.DateTimeToint(dateTimePicker1.Value));
         }
 

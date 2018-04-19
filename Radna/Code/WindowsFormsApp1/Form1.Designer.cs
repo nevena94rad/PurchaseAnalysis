@@ -259,6 +259,7 @@
             // 
             // calculator
             // 
+            this.calculator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.calculator.FormattingEnabled = true;
             this.calculator.Location = new System.Drawing.Point(73, 303);
             this.calculator.Name = "calculator";
@@ -268,6 +269,7 @@
             // 
             // preparer
             // 
+            this.preparer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.preparer.FormattingEnabled = true;
             this.preparer.Location = new System.Drawing.Point(221, 303);
             this.preparer.Name = "preparer";
