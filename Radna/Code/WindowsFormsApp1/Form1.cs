@@ -30,7 +30,8 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
-            dateTimePicker1.Value = Customer.GetLastTransactionDate();
+            DateTime lastTransactionDate = Customer.GetLastTransactionDate();
+            dateTimePicker1.Value = lastTransactionDate.AddDays(-7);
             calculator.DisplayMember = "displayText";
             calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1); 
             setPreparer();
