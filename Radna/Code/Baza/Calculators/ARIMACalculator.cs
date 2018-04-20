@@ -2,6 +2,7 @@
 using Baza.DTO;
 using Baza.Prepare;
 using Baza.R;
+using log4net;
 using RDotNet;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Baza.Calculators
         public static REngine en = REngine.GetInstance();
         public static Object thisLock = new Object();
         public ARIMAPrepare preparer = null;
+        private static ILog log = LogManager.GetLogger(typeof(ARIMACalculator));
 
         public ARIMACalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker) : base(OnProgressUpdate, OnProgressFinish, worker)
         {
@@ -52,7 +54,14 @@ namespace Baza.Calculators
                 }
                 if (!stop)
                 {
-                    predictAllItems(data.AllCustomers[index]);
+                    try
+                    {
+                        predictAllItems(data.AllCustomers[index]);
+                    }
+                    catch(Exception ex)
+                    {
+                        
+                    }
                     data.AllCustomers[index].itemPurchased = new List<ARIMAItemData>();
                 }
             });
@@ -194,7 +203,17 @@ namespace Baza.Calculators
         private Prediction makeItemPrediction(ARIMAItemData item, string customer)
         {
             Prediction retPredict = new Prediction();
-
+            ARIMAItemData gc = new ARIMAItemData();
+            lock (ARIMAData.thisLock)
+            {
+               gc = ARIMAData.AllItemData.Find(x => x.Number == item.Number);
+            }
+            ARIMAItemData globalConsumption = new ARIMAItemData() { Number = item.Number, StartDate = item.StartDate, EndDate = gc.EndDate, customerConsumption = new List<ARIMAConsumptionData>() };
+            foreach(var el in gc.customerConsumption)
+            {
+                if (el.Date >= globalConsumption.StartDate)
+                    globalConsumption.customerConsumption.Add(el);
+            }
 
             string filePath = preparer.GetScriptPath();
             int sum = (DateManipulation.intToDateTime(item.EndDate) - DateManipulation.intToDateTime(item.StartDate)).Days;
@@ -206,7 +225,7 @@ namespace Baza.Calculators
                 param1 = param1 + item.customerConsumption[j].Value + " ";
             }
             param1 = param1 + item.customerConsumption[j].Value;
-            string param2 = item.globalConsumption.Count().ToString();
+            string param2 = globalConsumption.customerConsumption.Count().ToString();
             DateTime start = DateManipulation.intToDateTime(item.StartDate);
             string param3 = start.Year.ToString();
             string param4 = start.DayOfYear.ToString();
@@ -214,7 +233,7 @@ namespace Baza.Calculators
 
             string model;
             double predictConsumption = RConsoleHelper.ExecuteRScript(filePath, param1, param2, param3, param4, param5, out model);
-            predictConsumption += getScaledItemDate(item.globalConsumption.Select(x => x.Value).OrderBy(x => x).ToList(), item.customerConsumption.Average(x => x.Value), item.globalConsumption.Count() - item.customerConsumption.Count());
+            predictConsumption += getScaledItemDate(globalConsumption.customerConsumption.Select(x => x.Value).OrderBy(x => x).ToList(), item.customerConsumption.Average(x => x.Value), globalConsumption.customerConsumption.Count() - item.customerConsumption.Count());
             
 
             retPredict.CustNo = customer;

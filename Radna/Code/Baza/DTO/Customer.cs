@@ -331,7 +331,7 @@ namespace Baza.DTO
             string PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
 
             string queryString = "select distinct(" + ItemID + ") from " + Table +
-                " where " + CustomerID + "= @custNo" + " and " + PeriodEnd + "<@bDate" +
+                " where " + CustomerID + "= @custNo" + " and " + PeriodEnd + "<@bDate and " + PeriodEnd + ">@cDate"  +
                 " group by " + ItemID + " having count(*)>1 and max(" + PeriodEnd + ")>@bDateMinusNMonths " +
                 " and min(" + Period + ") * 0.5< DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) + 7" +
                 " and max(" + Period + ") * 1.5 > DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate)";
@@ -341,6 +341,7 @@ namespace Baza.DTO
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.AddWithValue("@custNo", custNo);
                 command.Parameters.AddWithValue("@bDate", processingDateDateFormat.ToShortDateString());
+                command.Parameters.AddWithValue("@cDate", processingDateDateFormat.AddYears(-2).ToShortDateString());
                 command.Parameters.AddWithValue("@bDateMinusNMonths", processingDateDateFormat.AddMonths(-Parameters.customerRecency).ToShortDateString());
                 connection.Open();
 

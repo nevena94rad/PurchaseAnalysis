@@ -144,7 +144,7 @@ namespace Baza.Prepare
 
             string queryString = "select distinct(" + CustomerID + ") from " + Table + " where " + PurchaseDate + "< @date and " +
                 PurchaseDate + "> @dateMin";
-
+           
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -177,7 +177,15 @@ namespace Baza.Prepare
                 ARIMAItemData itemData = new ARIMAItemData() { Number = item };
                 itemData.StartDate = ARIMAgetStartDate(custNo, item);
                 itemData.EndDate = ARIMAgetEndDate(custNo, item);
-                itemData.globalConsumption = ARIMAgetGlobalConsumption(item,itemData.StartDate, itemData.EndDate);
+                lock (ARIMAData.thisLock)
+                {
+                    if (ARIMAData.AllItemData.Find(x => x.Number == item) == null)
+                    {
+                        int endDate = Parameters.processingDate;
+                        int startDate = DateManipulation.DateTimeToint(DateManipulation.intToDateTime(Parameters.processingDate).AddYears(-2));
+                        ARIMAData.AllItemData.Add(new ARIMAItemData() { Number = item, customerConsumption = ARIMAgetGlobalConsumption(item, startDate, endDate), EndDate = endDate, StartDate = startDate });
+                    }
+                }
                 itemData.customerConsumption = ARIMAgetCustomerConsumption(custNo, item, itemData.StartDate, itemData.EndDate);
                 returnData.Add(itemData);
             }
