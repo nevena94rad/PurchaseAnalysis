@@ -30,7 +30,8 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
-            dateTimePicker1.Value = Customer.GetLastTransactionDate();
+            DateTime lastTransactionDate = Customer.GetLastTransactionDate();
+            dateTimePicker1.Value = lastTransactionDate.AddDays(-7);
             calculator.DisplayMember = "displayText";
             calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1); 
             setPreparer();
@@ -47,7 +48,7 @@ namespace WindowsFormsApp1
         
         private void button1_Click(object sender, EventArgs e)
         {
-            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, "ARIMA", "Simple");
+            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, ((Calculator)calculator.SelectedValue).displayText, ((PrepareDisplay)preparer.SelectedValue).displayName);
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;

@@ -45,25 +45,38 @@ namespace Statistics
         
         private void button1_Click(object sender, EventArgs e)
         {
-            int parametrsID = (int)(parametersIDs.SelectedItem);
-            int date = DateManipulation.DateTimeToint(((DateTime)availableDates.SelectedItem).AddDays(1));
+            try
+            {
+                this.Enabled = false;
+                Cursor.Current = Cursors.WaitCursor;
 
-            os = new OLDStatistics(date, FirstAndSecondPurchase.Checked);
-            ns = new NEWStatistics(parametrsID, date, FirstAndSecondPurchase.Checked, (double) cutOffPercentage.SelectedItem);
+                int parametrsID = (int)(parametersIDs.SelectedItem);
+                int date = DateManipulation.DateTimeToint(((DateTime)availableDates.SelectedItem).AddDays(1));
 
-            OLD_NoP.Text = "Number of predictions: " + os.predictionCount;
-            OLD_CPtp.Text = "Total number: " + os.correctPredictionsCount;
-            OLD_CPp.Text = "Percentage: " + os.correctPredictionsPercentage;
-            OLD_FPtp.Text = "Total number: " + os.falsePredictionCount;
-            OLD_FPp.Text = "Percentage: " + os.falsePredictionPercentage;
-            OLD_Cp.Text = "Percentage: " + os.coveragePercentage;
+                os = new OLDStatistics(date, FirstAndSecondPurchase.Checked);
+                ns = new NEWStatistics(parametrsID, date, FirstAndSecondPurchase.Checked, (double)cutOffPercentage.SelectedItem);
 
-            NEW_NoP.Text = "Number of predictions: " + ns.predictionCount;
-            NEW_CPtp.Text = "Total number: " + ns.correctPredictionsCount;
-            NEW_CPp.Text = "Percentage: " + ns.correctPredictionsPercentage;
-            NEW_FPtp.Text = "Total number: " + ns.falsePredictionCount;
-            NEW_FPp.Text = "Percentage: " + ns.falsePredictionPercentage;
-            NEW_Cp.Text = "Percentage: " + ns.coveragePercentage;
+                OLD_NoP.Text = "Number of predictions: " + os.predictionCount;
+                OLD_CPtp.Text = "Total number: " + os.correctPredictionsCount;
+                OLD_CPp.Text = "Percentage: " + os.correctPredictionsPercentage;
+                OLD_FPtp.Text = "Total number: " + os.falsePredictionCount;
+                OLD_FPp.Text = "Percentage: " + os.falsePredictionPercentage;
+                OLD_Cp.Text = "Percentage: " + os.coveragePercentage;
+
+                NEW_NoP.Text = "Number of predictions: " + ns.predictionCount;
+                NEW_CPtp.Text = "Total number: " + ns.correctPredictionsCount;
+                NEW_CPp.Text = "Percentage: " + ns.correctPredictionsPercentage;
+                NEW_FPtp.Text = "Total number: " + ns.falsePredictionCount;
+                NEW_FPp.Text = "Percentage: " + ns.falsePredictionPercentage;
+                NEW_Cp.Text = "Percentage: " + ns.coveragePercentage;
+
+                this.UseWaitCursor = false;
+            }
+            finally
+            {
+                this.Enabled = true;
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
