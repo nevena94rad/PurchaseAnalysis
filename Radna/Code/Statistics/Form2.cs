@@ -56,6 +56,15 @@ namespace Statistics
                 oldCount.Text = "Count:  " + oldMnew.Count.ToString();
                 intersectionCount.Text = "Count:  " + intersect.Count.ToString();
                 ignoreSelectedItemsChange = false;
+
+                //draw common compares chart
+                chart1.Series["New version"].Points.AddXY("Correct predictions", ns.correctPredictionsPercentage);
+                chart1.Series["Old version"].Points.AddXY("Correct predictions", os.correctPredictionsPercentage);
+                chart1.Series["New version"].Points.AddXY("False predictions",ns.falsePredictionPercentage);
+                chart1.Series["Old version"].Points.AddXY("False predictions", os.falsePredictionPercentage);
+                chart1.Series["New version"].Points.AddXY("Coverage",ns.coveragePercentage);
+                chart1.Series["Old version"].Points.AddXY("Coverage",os.coveragePercentage);
+                
             }
         }
 
@@ -90,6 +99,11 @@ namespace Statistics
                 listOfPurchases.DataSource = purchaseList;
                 purchasesCount.Text = "Count:  " + purchaseList.Count.ToString();
             }
+        }
+
+        private void chart1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

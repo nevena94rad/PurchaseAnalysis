@@ -60,7 +60,7 @@ namespace Baza.Calculators
                     }
                     catch(Exception ex)
                     {
-                        
+                        log.Error(ex.Message);
                     }
                     data.AllCustomers[index].itemPurchased = new List<ARIMAItemData>();
                 }

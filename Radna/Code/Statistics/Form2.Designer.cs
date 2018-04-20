@@ -28,22 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.oldCount = new System.Windows.Forms.Label();
             this.oldPredictions = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.newCount = new System.Windows.Forms.Label();
             this.newPredictions = new System.Windows.Forms.ListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.purchasesCount = new System.Windows.Forms.Label();
             this.listOfPurchases = new System.Windows.Forms.ListBox();
             this.intersectPredictions = new System.Windows.Forms.GroupBox();
-            this.intersection = new System.Windows.Forms.ListBox();
-            this.oldCount = new System.Windows.Forms.Label();
-            this.newCount = new System.Windows.Forms.Label();
             this.intersectionCount = new System.Windows.Forms.Label();
-            this.purchasesCount = new System.Windows.Forms.Label();
+            this.intersection = new System.Windows.Forms.ListBox();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.intersectPredictions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -52,78 +59,10 @@
             this.groupBox1.Controls.Add(this.oldPredictions);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(228, 426);
+            this.groupBox1.Size = new System.Drawing.Size(228, 303);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "OLD VERSION, correct predictions";
-            // 
-            // oldPredictions
-            // 
-            this.oldPredictions.FormattingEnabled = true;
-            this.oldPredictions.Location = new System.Drawing.Point(19, 56);
-            this.oldPredictions.Name = "oldPredictions";
-            this.oldPredictions.Size = new System.Drawing.Size(187, 355);
-            this.oldPredictions.TabIndex = 0;
-            this.oldPredictions.SelectedIndexChanged += new System.EventHandler(this.OldSelected);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.newCount);
-            this.groupBox2.Controls.Add(this.newPredictions);
-            this.groupBox2.Location = new System.Drawing.Point(275, 12);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(228, 426);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "NEW VERSION, correct predictions";
-            // 
-            // newPredictions
-            // 
-            this.newPredictions.FormattingEnabled = true;
-            this.newPredictions.Location = new System.Drawing.Point(21, 56);
-            this.newPredictions.Name = "newPredictions";
-            this.newPredictions.Size = new System.Drawing.Size(187, 355);
-            this.newPredictions.TabIndex = 1;
-            this.newPredictions.SelectedIndexChanged += new System.EventHandler(this.newSelected);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.purchasesCount);
-            this.groupBox3.Controls.Add(this.listOfPurchases);
-            this.groupBox3.Location = new System.Drawing.Point(806, 12);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(228, 426);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "List of Purchases";
-            // 
-            // listOfPurchases
-            // 
-            this.listOfPurchases.FormattingEnabled = true;
-            this.listOfPurchases.Location = new System.Drawing.Point(22, 56);
-            this.listOfPurchases.Name = "listOfPurchases";
-            this.listOfPurchases.Size = new System.Drawing.Size(187, 355);
-            this.listOfPurchases.TabIndex = 1;
-            // 
-            // intersectPredictions
-            // 
-            this.intersectPredictions.Controls.Add(this.intersectionCount);
-            this.intersectPredictions.Controls.Add(this.intersection);
-            this.intersectPredictions.Location = new System.Drawing.Point(539, 12);
-            this.intersectPredictions.Name = "intersectPredictions";
-            this.intersectPredictions.Size = new System.Drawing.Size(228, 426);
-            this.intersectPredictions.TabIndex = 3;
-            this.intersectPredictions.TabStop = false;
-            this.intersectPredictions.Text = "INTERSECTION, correct predictions";
-            // 
-            // intersection
-            // 
-            this.intersection.FormattingEnabled = true;
-            this.intersection.Location = new System.Drawing.Point(22, 56);
-            this.intersection.Name = "intersection";
-            this.intersection.Size = new System.Drawing.Size(187, 355);
-            this.intersection.TabIndex = 1;
-            this.intersection.SelectedIndexChanged += new System.EventHandler(this.intersection_SelectedIndexChanged);
             // 
             // oldCount
             // 
@@ -134,6 +73,26 @@
             this.oldCount.TabIndex = 1;
             this.oldCount.Text = "Count:";
             // 
+            // oldPredictions
+            // 
+            this.oldPredictions.FormattingEnabled = true;
+            this.oldPredictions.Location = new System.Drawing.Point(19, 56);
+            this.oldPredictions.Name = "oldPredictions";
+            this.oldPredictions.Size = new System.Drawing.Size(187, 225);
+            this.oldPredictions.TabIndex = 0;
+            this.oldPredictions.SelectedIndexChanged += new System.EventHandler(this.OldSelected);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.newCount);
+            this.groupBox2.Controls.Add(this.newPredictions);
+            this.groupBox2.Location = new System.Drawing.Point(275, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(228, 303);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "NEW VERSION, correct predictions";
+            // 
             // newCount
             // 
             this.newCount.AutoSize = true;
@@ -143,14 +102,25 @@
             this.newCount.TabIndex = 2;
             this.newCount.Text = "Count:";
             // 
-            // intersectionCount
+            // newPredictions
             // 
-            this.intersectionCount.AutoSize = true;
-            this.intersectionCount.Location = new System.Drawing.Point(19, 29);
-            this.intersectionCount.Name = "intersectionCount";
-            this.intersectionCount.Size = new System.Drawing.Size(38, 13);
-            this.intersectionCount.TabIndex = 2;
-            this.intersectionCount.Text = "Count:";
+            this.newPredictions.FormattingEnabled = true;
+            this.newPredictions.Location = new System.Drawing.Point(21, 56);
+            this.newPredictions.Name = "newPredictions";
+            this.newPredictions.Size = new System.Drawing.Size(187, 225);
+            this.newPredictions.TabIndex = 1;
+            this.newPredictions.SelectedIndexChanged += new System.EventHandler(this.newSelected);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.purchasesCount);
+            this.groupBox3.Controls.Add(this.listOfPurchases);
+            this.groupBox3.Location = new System.Drawing.Point(806, 12);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(228, 303);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "List of Purchases";
             // 
             // purchasesCount
             // 
@@ -161,11 +131,77 @@
             this.purchasesCount.TabIndex = 2;
             this.purchasesCount.Text = "Count:";
             // 
+            // listOfPurchases
+            // 
+            this.listOfPurchases.FormattingEnabled = true;
+            this.listOfPurchases.Location = new System.Drawing.Point(22, 56);
+            this.listOfPurchases.Name = "listOfPurchases";
+            this.listOfPurchases.Size = new System.Drawing.Size(187, 225);
+            this.listOfPurchases.TabIndex = 1;
+            // 
+            // intersectPredictions
+            // 
+            this.intersectPredictions.Controls.Add(this.intersectionCount);
+            this.intersectPredictions.Controls.Add(this.intersection);
+            this.intersectPredictions.Location = new System.Drawing.Point(539, 12);
+            this.intersectPredictions.Name = "intersectPredictions";
+            this.intersectPredictions.Size = new System.Drawing.Size(228, 303);
+            this.intersectPredictions.TabIndex = 3;
+            this.intersectPredictions.TabStop = false;
+            this.intersectPredictions.Text = "INTERSECTION, correct predictions";
+            // 
+            // intersectionCount
+            // 
+            this.intersectionCount.AutoSize = true;
+            this.intersectionCount.Location = new System.Drawing.Point(19, 29);
+            this.intersectionCount.Name = "intersectionCount";
+            this.intersectionCount.Size = new System.Drawing.Size(38, 13);
+            this.intersectionCount.TabIndex = 2;
+            this.intersectionCount.Text = "Count:";
+            // 
+            // intersection
+            // 
+            this.intersection.FormattingEnabled = true;
+            this.intersection.Location = new System.Drawing.Point(22, 56);
+            this.intersection.Name = "intersection";
+            this.intersection.Size = new System.Drawing.Size(187, 225);
+            this.intersection.TabIndex = 1;
+            this.intersection.SelectedIndexChanged += new System.EventHandler(this.intersection_SelectedIndexChanged);
+            // 
+            // chart1
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
+            this.chart1.Location = new System.Drawing.Point(31, 345);
+            this.chart1.Name = "chart1";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "New version";
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
+            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Old version";
+            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
+            series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+            this.chart1.Series.Add(series1);
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(452, 300);
+            this.chart1.TabIndex = 4;
+            this.chart1.Text = "chart1";
+            title1.Name = "Title1";
+            title1.Text = "Common compares";
+            this.chart1.Titles.Add(title1);
+            this.chart1.Click += new System.EventHandler(this.chart1_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1049, 450);
+            this.ClientSize = new System.Drawing.Size(1049, 657);
+            this.Controls.Add(this.chart1);
             this.Controls.Add(this.intersectPredictions);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -181,6 +217,7 @@
             this.groupBox3.PerformLayout();
             this.intersectPredictions.ResumeLayout(false);
             this.intersectPredictions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -199,5 +236,6 @@
         private System.Windows.Forms.Label newCount;
         private System.Windows.Forms.Label purchasesCount;
         private System.Windows.Forms.Label intersectionCount;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
     }
 }

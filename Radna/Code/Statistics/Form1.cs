@@ -117,7 +117,7 @@ namespace Statistics
                 this.preparer.Text = "Preparer:   Not specified";
             this.status.Text = "Status:  " + status;
 
-            if (status == Baza.Enum.ProcessingStatus.Status.ERROR.ToString() || status == Baza.Enum.ProcessingStatus.Status.SUSPENDED.ToString())
+            if (status != Baza.Enum.ProcessingStatus.Status.SUCCESS.ToString())
             {
                 this.button1.Enabled = false;
                 this.button2.Enabled = false;
@@ -149,6 +149,11 @@ namespace Statistics
             {
                 this.parametersIDs.Items.Add(param);
             }
+        }
+
+        private void status_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
