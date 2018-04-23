@@ -82,6 +82,21 @@ namespace Baza.R
             en.Evaluate("try(T.cal <- cal.cbs[\"" + itemNo + "\", \"T.cal\"])");
             return en.Evaluate("try(pnbd.ConditionalExpectedTransactions(params, T.star = 1, x, t.x, T.cal))").AsNumeric().First();
         }
+        public static void DrawVennDiagram(int area1, int area2, int area3, int n12, int n23, int n13, int n123, string fileName)
+        {
+            en.Initialize();
+            CharacterVector fileNameVector = en.CreateCharacterVector(new[] { fileName });
+            en.SetSymbol("fileName", fileNameVector);
+
+            //en.Evaluate("result = tryCatch({ library(VennDiagram) }, warning = function(w) {}, error = function(e) { install.packages(\"VennDiagram\"); library(VennDiagram) }, finally = {})");
+            en.Evaluate("library(eulerr)");
+            en.Evaluate("png(filename=fileName, width=8, height=6, units='in', res=100)");
+            en.Evaluate("fit2 <- euler(c(Old = "+ area1 +", New = "+ area2 +", Occured = " + area3 + " ,\"Old&New\" = "+n12 +", \"Old&Occured\" = "+ n13 +", \"New&Occured\"= "+ n23 +",\"Old&New&Occured\" = "+ n123 +"))");
+            
+            en.Evaluate("myPlot <- plot(fit2, fills = c('orange', 'skyblue', 'mediumorchid'), edges = FALSE, fontsize = 15, quantities = list(fontsize = 15))");
+            en.Evaluate("print(myPlot)");
+            en.Evaluate("dev.off()");
+        }
         
     }
 }

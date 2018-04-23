@@ -46,11 +46,13 @@
             this.intersectionCount = new System.Windows.Forms.Label();
             this.intersection = new System.Windows.Forms.ListBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.vennDiagram = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.intersectPredictions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vennDiagram)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -178,12 +180,12 @@
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
-            series1.Name = "New version";
+            series1.Name = "New algorithm";
             series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
             series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
             series2.ChartArea = "ChartArea1";
             series2.Legend = "Legend1";
-            series2.Name = "Old version";
+            series2.Name = "Old algorithm";
             series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.String;
             series2.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
             this.chart1.Series.Add(series1);
@@ -196,11 +198,20 @@
             this.chart1.Titles.Add(title1);
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
+            // vennDiagram
+            // 
+            this.vennDiagram.Location = new System.Drawing.Point(561, 345);
+            this.vennDiagram.Name = "vennDiagram";
+            this.vennDiagram.Size = new System.Drawing.Size(454, 300);
+            this.vennDiagram.TabIndex = 5;
+            this.vennDiagram.TabStop = false;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1049, 657);
+            this.ClientSize = new System.Drawing.Size(1049, 673);
+            this.Controls.Add(this.vennDiagram);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.intersectPredictions);
             this.Controls.Add(this.groupBox3);
@@ -218,6 +229,7 @@
             this.intersectPredictions.ResumeLayout(false);
             this.intersectPredictions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vennDiagram)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -237,5 +249,6 @@
         private System.Windows.Forms.Label purchasesCount;
         private System.Windows.Forms.Label intersectionCount;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.PictureBox vennDiagram;
     }
 }
