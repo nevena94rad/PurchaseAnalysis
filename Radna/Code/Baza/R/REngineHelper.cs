@@ -88,7 +88,7 @@ namespace Baza.R
             CharacterVector fileNameVector = en.CreateCharacterVector(new[] { fileName });
             en.SetSymbol("fileName", fileNameVector);
 
-            //en.Evaluate("result = tryCatch({ library(VennDiagram) }, warning = function(w) {}, error = function(e) { install.packages(\"VennDiagram\"); library(VennDiagram) }, finally = {})");
+            en.Evaluate("result = tryCatch({ library(eulerr) }, warning = function(w) {}, error = function(e) { install.packages(\"eulerr\"); library(eulerr) }, finally = {})");
             en.Evaluate("library(eulerr)");
             en.Evaluate("png(filename=fileName, width=8, height=6, units='in', res=100)");
             en.Evaluate("fit2 <- euler(c(Old = "+ area1 +", New = "+ area2 +", Occured = " + area3 + " ,\"Old&New\" = "+n12 +", \"Old&Occured\" = "+ n13 +", \"New&Occured\"= "+ n23 +",\"Old&New&Occured\" = "+ n123 +"))");
