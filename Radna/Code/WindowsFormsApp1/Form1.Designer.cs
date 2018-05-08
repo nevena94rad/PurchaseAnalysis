@@ -59,8 +59,8 @@
             this.useGPI = new System.Windows.Forms.RadioButton();
             this.regularItems = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.gpiDigits = new System.Windows.Forms.Label();
+            this.selectGPIdigits = new System.Windows.Forms.NumericUpDown();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.GPIresult = new System.Windows.Forms.ComboBox();
@@ -70,7 +70,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectGPIdigits)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -354,8 +354,8 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.label16);
-            this.groupBox4.Controls.Add(this.numericUpDown1);
+            this.groupBox4.Controls.Add(this.gpiDigits);
+            this.groupBox4.Controls.Add(this.selectGPIdigits);
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.recency);
@@ -369,22 +369,22 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Stage TWO: prepare data";
             // 
-            // label16
+            // gpiDigits
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(26, 118);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(55, 13);
-            this.label16.TabIndex = 23;
-            this.label16.Text = "GPI digits:";
+            this.gpiDigits.AutoSize = true;
+            this.gpiDigits.Location = new System.Drawing.Point(26, 118);
+            this.gpiDigits.Name = "gpiDigits";
+            this.gpiDigits.Size = new System.Drawing.Size(55, 13);
+            this.gpiDigits.TabIndex = 23;
+            this.gpiDigits.Text = "GPI digits:";
             // 
-            // numericUpDown1
+            // selectGPIdigits
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(141, 116);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(105, 20);
-            this.numericUpDown1.TabIndex = 24;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.selectGPIdigits.Location = new System.Drawing.Point(141, 116);
+            this.selectGPIdigits.Name = "selectGPIdigits";
+            this.selectGPIdigits.Size = new System.Drawing.Size(105, 20);
+            this.selectGPIdigits.TabIndex = 24;
+            this.selectGPIdigits.Value = new decimal(new int[] {
             6,
             0,
             0,
@@ -463,7 +463,7 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.selectGPIdigits)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
@@ -506,8 +506,8 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.RadioButton useGPI;
         private System.Windows.Forms.RadioButton regularItems;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label gpiDigits;
+        private System.Windows.Forms.NumericUpDown selectGPIdigits;
         private System.Windows.Forms.ComboBox GPIresult;
         private System.Windows.Forms.Label selectGPIresult;
     }

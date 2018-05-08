@@ -166,10 +166,10 @@ namespace WindowsFormsApp1
         {
             if(regularItems.Checked == true)
             {
-                this.selectPreparer.ForeColor = System.Drawing.SystemColors.ControlText;
-                this.selectGPIresult.ForeColor = System.Drawing.SystemColors.ControlText;
-                this.preparer.Enabled = true;
-                this.GPIresult.Enabled = true;
+                this.gpiDigits.ForeColor = System.Drawing.SystemColors.GrayText;
+                this.selectGPIresult.ForeColor = System.Drawing.SystemColors.GrayText;
+                this.selectGPIdigits.Enabled = false;
+                this.GPIresult.Enabled = false;
             }
         }
 
@@ -177,10 +177,10 @@ namespace WindowsFormsApp1
         {
             if (useGPI.Checked == true)
             {
-                this.selectPreparer.ForeColor = System.Drawing.SystemColors.GrayText;
-                this.selectGPIresult.ForeColor = System.Drawing.SystemColors.GrayText;
-                this.preparer.Enabled = false;
-                this.GPIresult.Enabled = false;
+                this.gpiDigits.ForeColor = System.Drawing.SystemColors.ControlText;
+                this.selectGPIresult.ForeColor = System.Drawing.SystemColors.ControlText;
+                this.selectGPIdigits.Enabled = true;
+                this.GPIresult.Enabled = true;
             }
         }
     }
