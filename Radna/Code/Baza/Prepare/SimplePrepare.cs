@@ -12,7 +12,7 @@ using System.IO;
 
 namespace Baza.Prepare
 {
-    public class SimplePrepare : IPNBDPrepare ,IARIMAPrepare
+    public class SimplePrepare : I_PNBDPrepare ,I_ARIMAPrepare
     {
         public static string ScriptPath = null;
 

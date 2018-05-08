@@ -9,11 +9,11 @@ namespace Baza.PrepareCreator
 {
     public class CreatePNDBPrepare
     {
-        public static readonly List<IPNBDPrepare> allAvailablePreparers = new List<IPNBDPrepare> { new SimplePrepare() };
+        public static readonly List<I_PNBDPrepare> allAvailablePreparers = new List<I_PNBDPrepare> { new SimplePrepare() };
         
-        public static List<IPrepareDisplay> getAll()
+        public static List<I_PrepareDisplay> getAll()
         {
-            List<IPrepareDisplay> returnList = new List<IPrepareDisplay>();
+            List<I_PrepareDisplay> returnList = new List<I_PrepareDisplay>();
 
             foreach (var pr in allAvailablePreparers)
                 returnList.Add(pr);

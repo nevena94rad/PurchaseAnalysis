@@ -23,8 +23,8 @@ namespace WindowsFormsApp1
         public double percent = 10;
         public int recent = 6;
         public int maxCount = 30;
-        AbsCalculator selectedCalculator;
-        IPrepareDisplay selectedPreparer;
+        Abs_Calculator selectedCalculator;
+        I_PrepareDisplay selectedPreparer;
         public bool exit = false;
         
         public Form1()
@@ -43,19 +43,19 @@ namespace WindowsFormsApp1
             preparer.DataSource = null;
             preparer.Items.Clear();
             preparer.DisplayMember = "displayName";
-            AbsCalculator selected = (AbsCalculator) calculator.SelectedItem;
+            Abs_Calculator selected = (Abs_Calculator) calculator.SelectedItem;
             preparer.DataSource = selected.allAvailablePreparers;
         }
         
         private void button1_Click(object sender, EventArgs e)
         {
-            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, ((AbsCalculator)calculator.SelectedValue).displayText, ((IPrepareDisplay)preparer.SelectedValue).displayName);
+            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, ((Abs_Calculator)calculator.SelectedValue).displayText, ((I_PrepareDisplay)preparer.SelectedValue).displayName);
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;
 
-            selectedCalculator = (AbsCalculator)calculator.SelectedItem;
-            selectedPreparer = (IPrepareDisplay)preparer.SelectedItem;
+            selectedCalculator = (Abs_Calculator)calculator.SelectedItem;
+            selectedPreparer = (I_PrepareDisplay)preparer.SelectedItem;
             backgroundWorker1.RunWorkerAsync();
         }
 

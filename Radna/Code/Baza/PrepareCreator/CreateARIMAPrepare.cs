@@ -9,11 +9,11 @@ namespace Baza.PrepareCreator
 {
     public static class CreateARIMAPrepare
     {
-        public static readonly List<IARIMAPrepare> allAvailablePreparers = new List<IARIMAPrepare> { new SimplePrepare() };
+        public static readonly List<I_ARIMAPrepare> allAvailablePreparers = new List<I_ARIMAPrepare> { new SimplePrepare() };
 
-        public static List<IPrepareDisplay> getAll()
+        public static List<I_PrepareDisplay> getAll()
         {
-            List<IPrepareDisplay> returnList = new List<IPrepareDisplay>();
+            List<I_PrepareDisplay> returnList = new List<I_PrepareDisplay>();
 
             foreach (var pr in allAvailablePreparers)
                 returnList.Add(pr);

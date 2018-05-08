@@ -9,7 +9,7 @@ namespace Baza.Algorithm
 {
     public static class PredictionMaker
     {
-        public static AbsCalculator calculator { get; set; } = null;
+        public static Abs_Calculator calculator { get; set; } = null;
 
         public static int TotalCount = 0;
         public static int DoneCount = 0;
@@ -21,9 +21,9 @@ namespace Baza.Algorithm
                 calculator.makePrediction(date);
         }
         
-        public static List<AbsCalculator> getAllCalculators(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
+        public static List<Abs_Calculator> getAllCalculators(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
         {
-            List<AbsCalculator> returnList = new List<AbsCalculator>();
+            List<Abs_Calculator> returnList = new List<Abs_Calculator>();
 
             returnList.Add(new ARIMACalculator(OnProgressUpdate, OnProgressFinish, worker));
             returnList.Add(new PNBDCalculator(OnProgressUpdate, OnProgressFinish, worker));

@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 namespace Baza.Calculators
 {
-    public class ARIMACalculator : AbsCalculator
+    public class ARIMACalculator : Abs_Calculator
     {
         protected ARIMAData data = null;
         public static REngine en = REngine.GetInstance();
         public static Object thisLock = new Object();
-        public IARIMAPrepare preparer = null;
+        public I_ARIMAPrepare preparer = null;
         private static ILog log = LogManager.GetLogger(typeof(ARIMACalculator));
 
         public ARIMACalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker) : base(OnProgressUpdate, OnProgressFinish, worker)
@@ -28,9 +28,9 @@ namespace Baza.Calculators
             allAvailablePreparers = PrepareCreator.CreateARIMAPrepare.getAll();
         }
 
-        public override void setPreparer(IPrepareDisplay preparer)
+        public override void setPreparer(I_PrepareDisplay preparer)
         {
-            this.preparer = (IARIMAPrepare) preparer;
+            this.preparer = (I_ARIMAPrepare) preparer;
         }
         
         public override void makePrediction(int date)

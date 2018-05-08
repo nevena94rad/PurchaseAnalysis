@@ -10,7 +10,7 @@ namespace Baza.Data
     public class ARIMACustomerData
     {
         protected List<ARIMAItemData> items = null;
-        public static IARIMAPrepare preparer = null;
+        public static I_ARIMAPrepare preparer = null;
 
         public string Number { get; set; }
         public List<ARIMAItemData> itemPurchased

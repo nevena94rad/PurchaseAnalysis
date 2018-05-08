@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Baza.Prepare
 {
-    public interface IPrepareDisplay
+    public interface I_PrepareDisplay
     {
         string displayName { get; }
     }
