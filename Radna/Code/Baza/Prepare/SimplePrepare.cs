@@ -68,21 +68,48 @@ namespace Baza.Prepare
 
             return allCustomers;
         }
+
         public List<PNBDItemData> PNBDreadAllItems(string custNo)
         {
             List<PNBDItemData> returnList = new List<PNBDItemData>();
-            var distinctItems = Customer.GetAllItems(custNo);
-
+            List<string> distinctItems;
+            string queryString;
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
-            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
-            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
-            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
-            string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
 
-            string queryString = "select " + ItemID + "," + PurchaseDate + ", " + PurchaseQuantity + " from " + Table +
-                                   " where " + CustomerID + "= @CustID and " + PurchaseDate + "< @InvDate";
+            if (Parameters.useGPI == false)
+            {
+                distinctItems = Customer.GetAllItems(custNo);
+                
+                string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+                string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+                string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+                string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+                string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
 
+                queryString = "select " + ItemID + "," + PurchaseDate + ", " + PurchaseQuantity + " from " + Table +
+                                       " where " + CustomerID + "= @CustID and " + PurchaseDate + "< @InvDate";
+            }
+            else
+            {
+                distinctItems = Customer.GetAllItemsWithGPIs(custNo);
+
+                string PurchaseHistory_Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+                string PurchaseHistory_CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+                string PurchaseHistory_ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+                string PurchaseHistory_PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+                string PurchaseHistory_PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+                string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+                string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+                string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
+
+                queryString = "select " + ItemGPI_GPI + "," + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + "from ((select * from " + PurchaseHistory_Table +
+                                ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchaseHistory_ItemID + "= b." + ItemGPI_ItemID + ") " +
+                                       " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate" +
+                                       " and " + ItemGPI_GPI + " is not null";
+                
+            }
+            
             List<string> ids = new List<string>();
 
             using (var connection = new SqlConnection(connectionString))

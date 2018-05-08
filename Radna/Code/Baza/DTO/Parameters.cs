@@ -17,6 +17,7 @@ namespace Baza.DTO
         public static int predictionCountCutOff = 10;
         public static int processingDate;
         public static int ID;
+        public static bool useGPI = false;
 
         private static ILog log = LogManager.GetLogger(typeof(Parameters));
 

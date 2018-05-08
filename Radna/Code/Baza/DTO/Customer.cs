@@ -88,7 +88,54 @@ namespace Baza.DTO
 
             return allCustomers;
         }
-        
+
+        public static List<string> GetAllItemsWithGPIs(string custNo)
+        {
+            List<string> itemNos = new List<string>();
+
+            DateTime processingDateDateFormat = DateManipulation.intToDateTime(Parameters.processingDate);
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+
+            string PurchasePeriods_Table = ConfigurationManager.AppSettings[name: "PurchasePeriods"];
+            string PurchasePeriods_CustomerID = ConfigurationManager.AppSettings[name: "PurchasePeriods_CustomerID"];
+            string PurchasePeriods_ItemID = ConfigurationManager.AppSettings[name: "PurchasePeriods_ItemID"];
+            string PurchasePeriods_Period = ConfigurationManager.AppSettings[name: "PurchasePeriods_Period"];
+            string PurchasePeriods_PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
+            string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+            string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+            string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
+
+
+            string queryString = "select distinct(" + ItemGPI_GPI + ") from ( (select * from " + PurchasePeriods_Table +
+                ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchasePeriods_ItemID + "= b." + ItemGPI_ItemID + ") " +
+                " where " + PurchasePeriods_CustomerID + "= @custNo" + " and " + PurchasePeriods_PeriodEnd + "<@bDate and " + PurchasePeriods_PeriodEnd + ">@cDate" +
+                " and " + ItemGPI_GPI + " is not null" +
+                " group by " + ItemGPI_GPI + " having count(*)>1 and max(" + PurchasePeriods_PeriodEnd + ")>@bDateMinusNMonths " +
+                " and min(" + PurchasePeriods_Period + ") * 0.5< DATEDIFF(DAY, max(" + PurchasePeriods_PeriodEnd + "), @bDate) + 7" +
+                " and max(" + PurchasePeriods_Period + ") * 1.5 > DATEDIFF(DAY, max(" + PurchasePeriods_PeriodEnd + "), @bDate)";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@custNo", custNo);
+                command.Parameters.AddWithValue("@bDate", processingDateDateFormat.ToShortDateString());
+                command.Parameters.AddWithValue("@cDate", processingDateDateFormat.AddYears(-2).ToShortDateString());
+                command.Parameters.AddWithValue("@bDateMinusNMonths", processingDateDateFormat.AddMonths(-Parameters.customerRecency).ToShortDateString());
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        itemNos.Add(((String)reader[0]).Replace(" ", String.Empty));
+                    }
+                }
+            }
+
+            return itemNos;
+        }
+
         public static List<string> GetAllItems(string custNo)
         {
             List<string> itemNos = new List<string>();
