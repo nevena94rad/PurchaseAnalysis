@@ -16,11 +16,12 @@ namespace Baza.DTO
         public static double predictionPercentageCutOff = 10;
         public static int predictionCountCutOff = 10;
         public static int processingDate;
+        public static int gpiDigits;
         public static int ID;
 
         private static ILog log = LogManager.GetLogger(typeof(Parameters));
 
-        public static void LoadParameters(int date, int recency, string percentage, string count, string calculator, string preparer)
+        public static void LoadParameters(int date, int recency, string percentage, string count, string calculator, string preparer, int numOfGpiDigits)
         {
             if (recency > 0)
                 customerRecency = recency;
@@ -32,6 +33,7 @@ namespace Baza.DTO
                 predictionCountCutOff = Int32.Parse(count);
 
             processingDate = date;
+            gpiDigits = numOfGpiDigits;
 
             InsertIntoDatabase(calculator, preparer);
         }
@@ -56,6 +58,7 @@ namespace Baza.DTO
             values.Add("customerRecency", customerRecency.ToString());
             values.Add("predictionPercentageCutOff", predictionPercentageCutOff.ToString());
             values.Add("predictionCountCutOff", predictionCountCutOff.ToString());
+            values.Add("gpiDigits", gpiDigits.ToString());
             values.Add("processingDate", processingDate.ToString());
             jsonParameters = JsonConvert.SerializeObject(values);
 

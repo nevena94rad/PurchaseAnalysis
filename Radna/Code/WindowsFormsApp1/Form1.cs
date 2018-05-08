@@ -32,9 +32,15 @@ namespace WindowsFormsApp1
             InitializeComponent();
             DateTime lastTransactionDate = Customer.GetLastTransactionDate();
             dateTimePicker1.Value = lastTransactionDate.AddDays(-7);
+
             regularItems.Checked = true;
+
+            selectGPIdigits.Maximum = GPI.getMaxNumOfDigits();
+            selectGPIdigits.Value = selectGPIdigits.Maximum;
+
             calculator.DisplayMember = "displayText";
-            calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1); 
+            calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1);
+
             setPreparer();
         }
 
@@ -49,7 +55,7 @@ namespace WindowsFormsApp1
         
         private void button1_Click(object sender, EventArgs e)
         {
-            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, ((Abs_Calculator)calculator.SelectedValue).displayText, ((I_PrepareDisplay)preparer.SelectedValue).displayName);
+            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, ((Abs_Calculator)calculator.SelectedValue).displayText, ((I_PrepareDisplay)preparer.SelectedValue).displayName, (int)selectGPIdigits.Value);
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;
@@ -186,14 +192,6 @@ namespace WindowsFormsApp1
 
         private void selectGPIdigits_ValueChanged(object sender, EventArgs e)
         {
-            if (selectGPIdigits.Value <= 0)
-            {
-
-            }
-            else
-            {
-                recent = (int)recency.Value;
-            }
         }
     }
 }
