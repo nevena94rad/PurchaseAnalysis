@@ -183,5 +183,17 @@ namespace WindowsFormsApp1
                 this.GPIresult.Enabled = true;
             }
         }
+
+        private void selectGPIdigits_ValueChanged(object sender, EventArgs e)
+        {
+            if (selectGPIdigits.Value <= 0)
+            {
+
+            }
+            else
+            {
+                recent = (int)recency.Value;
+            }
+        }
     }
 }

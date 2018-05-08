@@ -389,6 +389,7 @@
             0,
             0,
             0});
+            this.selectGPIdigits.ValueChanged += new System.EventHandler(this.selectGPIdigits_ValueChanged);
             // 
             // label15
             // 
