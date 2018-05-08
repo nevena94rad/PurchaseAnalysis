@@ -1,4 +1,5 @@
 ﻿using Baza.Algorithm;
+using Baza.GPISelector;
 using Baza.Prepare;
 using log4net;
 using System;
@@ -23,6 +24,7 @@ namespace Baza.Calculators
         public string displayText { get; set; }
 
         public List<I_PrepareDisplay> allAvailablePreparers = null;
+        public static I_GPISelector gpiSelector = null;
         
         public Abs_Calculator (System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
         {

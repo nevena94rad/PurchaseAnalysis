@@ -18,6 +18,7 @@ namespace Baza.DTO
         public static int processingDate;
         public static int gpiDigits;
         public static int ID;
+        public static bool useGPI = false;
 
         private static ILog log = LogManager.GetLogger(typeof(Parameters));
 

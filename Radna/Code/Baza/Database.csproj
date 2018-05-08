@@ -80,6 +80,8 @@
     <Compile Include="DTO\Statistics.cs" />
     <Compile Include="DTO\TempFile.cs" />
     <Compile Include="Enum\ProcessingStatus.cs" />
+    <Compile Include="GPISelector\GPILastPurchased.cs" />
+    <Compile Include="GPISelector\GPIMostPurchased.cs" />
     <Compile Include="GPISelector\I_GPISelector.cs" />
     <Compile Include="PrepareCreator\CreateARIMAPrepare.cs" />
     <Compile Include="PrepareCreator\CreatePNDBPrepare.cs" />
