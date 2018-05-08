@@ -14,12 +14,12 @@ using System.Data.SqlClient;
 
 namespace Baza.Calculators
 {
-    public class PNBDCalculator : Calculator
+    public class PNBDCalculator : AbsCalculator
     {
         protected PNBDData data = null;
         public static REngine en = REngine.GetInstance();
         public static Object thisLock = new Object();
-        public PNBDPrepare preparer = null;
+        public IPNBDPrepare preparer = null;
 
         public PNBDCalculator(System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker) :base(OnProgressUpdate, OnProgressFinish, worker)
         {
@@ -27,9 +27,9 @@ namespace Baza.Calculators
             allAvailablePreparers = PrepareCreator.CreatePNDBPrepare.getAll();
         }
 
-        public override void setPreparer(PrepareDisplay preparer)
+        public override void setPreparer(IPrepareDisplay preparer)
         {
-            this.preparer = (PNBDPrepare) preparer;
+            this.preparer = (IPNBDPrepare) preparer;
         }
 
         public override void makePrediction(int date)

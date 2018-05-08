@@ -10,7 +10,7 @@ namespace Baza.Data
     public class PNBDCustomerData
     {
         protected List<PNBDItemData> items = null;
-        public static PNBDPrepare preparer = null;
+        public static IPNBDPrepare preparer = null;
 
         public string Number { get; set; }
         public int modelID { get; set; }

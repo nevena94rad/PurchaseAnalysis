@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Baza.Calculators
 {
-    public abstract class Calculator
+    public abstract class AbsCalculator
     {
         protected static System.ComponentModel.BackgroundWorker worker = null;
         protected static event System.Action OnProgressUpdate;
         protected static event System.Action<string> OnProgressFinish;
-        protected static ILog log = LogManager.GetLogger(typeof(Calculator));
+        protected static ILog log = LogManager.GetLogger(typeof(AbsCalculator));
 
         protected static int TotalCount = 0;
         protected static int DoneCount = 0;
@@ -22,13 +22,13 @@ namespace Baza.Calculators
         public static string message = "";
         public string displayText { get; set; }
 
-        public List<PrepareDisplay> allAvailablePreparers = null;
+        public List<IPrepareDisplay> allAvailablePreparers = null;
         
-        public Calculator (System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
+        public AbsCalculator (System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
         {
-            Calculator.OnProgressUpdate = OnProgressUpdate;
-            Calculator.OnProgressFinish = OnProgressFinish;
-            Calculator.worker = worker;
+            AbsCalculator.OnProgressUpdate = OnProgressUpdate;
+            AbsCalculator.OnProgressFinish = OnProgressFinish;
+            AbsCalculator.worker = worker;
         }
         
         //// upise u parent total count i done count i uradi on progressupdate 
@@ -46,7 +46,7 @@ namespace Baza.Calculators
             OnProgressFinish?.Invoke(message);
         }
         public abstract void makePrediction(int date);
-        public abstract void setPreparer(PrepareDisplay preparer);
+        public abstract void setPreparer(IPrepareDisplay preparer);
 
     }
 }

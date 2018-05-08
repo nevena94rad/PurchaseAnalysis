@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Baza.Prepare
 {
-    public interface PNBDPrepare : PrepareDisplay
+    public interface IPNBDPrepare : IPrepareDisplay
     {
         PNBDData PNBDprepare(int date);
         List<string> PNBDreadAllCustomers();
