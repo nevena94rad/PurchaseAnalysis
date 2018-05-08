@@ -32,6 +32,7 @@ namespace WindowsFormsApp1
             InitializeComponent();
             DateTime lastTransactionDate = Customer.GetLastTransactionDate();
             dateTimePicker1.Value = lastTransactionDate.AddDays(-7);
+            regularItems.Checked = true;
             calculator.DisplayMember = "displayText";
             calculator.DataSource = PredictionMaker.getAllCalculators(t1_OnProgressUpdate, t2_OnFinishUpdate, backgroundWorker1); 
             setPreparer();
@@ -153,6 +154,33 @@ namespace WindowsFormsApp1
                 backgroundWorker1.CancelAsync();
                 exit = true;
                 e.Cancel = true;
+            }
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            if(regularItems.Checked == true)
+            {
+                this.selectPreparer.ForeColor = System.Drawing.SystemColors.ControlText;
+                this.selectGPIresult.ForeColor = System.Drawing.SystemColors.ControlText;
+                this.preparer.Enabled = true;
+                this.GPIresult.Enabled = true;
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (useGPI.Checked == true)
+            {
+                this.selectPreparer.ForeColor = System.Drawing.SystemColors.GrayText;
+                this.selectGPIresult.ForeColor = System.Drawing.SystemColors.GrayText;
+                this.preparer.Enabled = false;
+                this.GPIresult.Enabled = false;
             }
         }
     }
