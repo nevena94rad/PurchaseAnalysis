@@ -14,6 +14,7 @@ using Baza.Enum;
 using Baza.Algorithm;
 using Baza.Calculators;
 using Baza.Prepare;
+using Baza.GPISelector;
 
 namespace WindowsFormsApp1
 {
@@ -25,6 +26,7 @@ namespace WindowsFormsApp1
         public int maxCount = 30;
         Abs_Calculator selectedCalculator;
         I_PrepareDisplay selectedPreparer;
+        I_GPISelector selectedGpi;
         public bool exit = false;
         
         public Form1()
@@ -51,19 +53,27 @@ namespace WindowsFormsApp1
             preparer.DisplayMember = "displayName";
             Abs_Calculator selected = (Abs_Calculator) calculator.SelectedItem;
             preparer.DataSource = selected.allAvailablePreparers;
+
+            GPIresult.DataSource = null;
+            GPIresult.Items.Clear();
+            GPIresult.DisplayMember = "displayName";
+            GPIresult.DataSource = selected.allAvailableSelectors;
         }
         
         private void button1_Click(object sender, EventArgs e)
         {
-            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, 
-                                        ((Abs_Calculator)calculator.SelectedValue).displayText, ((I_PrepareDisplay)preparer.SelectedValue).displayName, 
-                                        (int)selectGPIdigits.Value, useGPI.Checked);
+            Parameters.processingDate = DateManipulation.DateTimeToint(dateTimePicker1.Value);
+            Parameters.useGPI = useGPI.Checked;
+            Parameters.gpiDigits = (int)selectGPIdigits.Value;
+            Parameters.LoadParameters((Int32)recency.Value, percentage.Text, count.Text, ((Abs_Calculator)calculator.SelectedValue).displayText, 
+                                        ((I_PrepareDisplay)preparer.SelectedValue).displayName, ((I_GPISelector)GPIresult.SelectedValue).displayName);
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;
 
             selectedCalculator = (Abs_Calculator)calculator.SelectedItem;
             selectedPreparer = (I_PrepareDisplay)preparer.SelectedItem;
+            selectedGpi = (I_GPISelector)GPIresult.SelectedItem;
             backgroundWorker1.RunWorkerAsync();
         }
 
@@ -71,6 +81,7 @@ namespace WindowsFormsApp1
         {
             PredictionMaker.calculator = selectedCalculator;
             selectedCalculator.setPreparer(selectedPreparer);
+            selectedCalculator.setGPIselector(selectedGpi);
             PredictionMaker.startProccess(DateManipulation.DateTimeToint(dateTimePicker1.Value));
         }
 
@@ -194,6 +205,11 @@ namespace WindowsFormsApp1
 
         private void selectGPIdigits_ValueChanged(object sender, EventArgs e)
         {
+        }
+
+        private void preparer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

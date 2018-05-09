@@ -24,13 +24,19 @@ namespace Baza.Calculators
         public string displayText { get; set; }
 
         public List<I_PrepareDisplay> allAvailablePreparers = null;
-        public static I_GPISelector gpiSelector = new GPILastPurchased();
+        public List<I_GPISelector> allAvailableSelectors = null;
+        public static I_GPISelector gpiSelector = null;
         
         public Abs_Calculator (System.Action OnProgressUpdate, System.Action<string> OnProgressFinish, System.ComponentModel.BackgroundWorker worker)
         {
             Abs_Calculator.OnProgressUpdate = OnProgressUpdate;
             Abs_Calculator.OnProgressFinish = OnProgressFinish;
             Abs_Calculator.worker = worker;
+            allAvailableSelectors = new List<I_GPISelector>
+            {
+                new GPILastPurchased(),
+                new GPIMostPurchased()
+            };
         }
         
         //// upise u parent total count i done count i uradi on progressupdate 
@@ -46,6 +52,10 @@ namespace Baza.Calculators
         protected void Finish()
         {
             OnProgressFinish?.Invoke(message);
+        }
+        public void setGPIselector(I_GPISelector GPISelector)
+        {
+            gpiSelector = GPISelector;
         }
         public abstract void makePrediction(int date);
         public abstract void setPreparer(I_PrepareDisplay preparer);

@@ -22,7 +22,7 @@ namespace Baza.DTO
 
         private static ILog log = LogManager.GetLogger(typeof(Parameters));
 
-        public static void LoadParameters(int date, int recency, string percentage, string count, string calculator, string preparer, int numOfGpiDigits, bool isGpi)
+        public static void LoadParameters(int recency, string percentage, string count, string calculator, string preparer,string GPIresult)
         {
             if (recency > 0)
                 customerRecency = recency;
@@ -33,14 +33,10 @@ namespace Baza.DTO
             if (count != "")
                 predictionCountCutOff = Int32.Parse(count);
 
-            processingDate = date;
-            gpiDigits = numOfGpiDigits;
-            useGPI = isGpi;
-
-            InsertIntoDatabase(calculator, preparer);
+            InsertIntoDatabase(calculator, preparer, GPIresult);
         }
 
-        public static void InsertIntoDatabase(string calculator, string preparer)
+        public static void InsertIntoDatabase(string calculator, string preparer, string gpiResult)
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "Parameters"];
@@ -62,6 +58,7 @@ namespace Baza.DTO
             values.Add("predictionPercentageCutOff", predictionPercentageCutOff.ToString());
             values.Add("predictionCountCutOff", predictionCountCutOff.ToString());
             values.Add("gpiDigits", gpiDigits.ToString());
+            values.Add("gpiResult", gpiResult);
             values.Add("processingDate", processingDate.ToString());
             jsonParameters = JsonConvert.SerializeObject(values);
 
