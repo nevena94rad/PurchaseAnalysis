@@ -205,15 +205,7 @@ namespace WindowsFormsApp1
                 this.GPIresult.Enabled = true;
             }
         }
-
-        private void selectGPIdigits_ValueChanged(object sender, EventArgs e)
-        {
-        }
         
-        private void preparer_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
 
     }
 }

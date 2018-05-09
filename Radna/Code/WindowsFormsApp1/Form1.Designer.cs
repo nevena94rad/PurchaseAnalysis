@@ -176,7 +176,7 @@
             // 
             this.percentage.Location = new System.Drawing.Point(146, 44);
             this.percentage.Name = "percentage";
-            this.percentage.Size = new System.Drawing.Size(84, 20);
+            this.percentage.Size = new System.Drawing.Size(102, 20);
             this.percentage.TabIndex = 10;
             this.percentage.Text = "10";
             this.percentage.TextChanged += new System.EventHandler(this.percentage_TextChanged);
@@ -194,7 +194,7 @@
             // 
             this.count.Location = new System.Drawing.Point(146, 115);
             this.count.Name = "count";
-            this.count.Size = new System.Drawing.Size(84, 20);
+            this.count.Size = new System.Drawing.Size(102, 20);
             this.count.TabIndex = 12;
             this.count.Text = "30";
             this.count.TextChanged += new System.EventHandler(this.count_TextChanged);
@@ -291,7 +291,6 @@
             this.preparer.Name = "preparer";
             this.preparer.Size = new System.Drawing.Size(105, 21);
             this.preparer.TabIndex = 22;
-            this.preparer.SelectedIndexChanged += new System.EventHandler(this.preparer_SelectedIndexChanged);
             // 
             // groupBox1
             // 
@@ -390,7 +389,6 @@
             0,
             0,
             0});
-            this.selectGPIdigits.ValueChanged += new System.EventHandler(this.selectGPIdigits_ValueChanged);
             // 
             // label15
             // 
@@ -424,7 +422,7 @@
             this.GPIresult.FormattingEnabled = true;
             this.GPIresult.Location = new System.Drawing.Point(144, 179);
             this.GPIresult.Name = "GPIresult";
-            this.GPIresult.Size = new System.Drawing.Size(86, 21);
+            this.GPIresult.Size = new System.Drawing.Size(104, 21);
             this.GPIresult.TabIndex = 24;
             // 
             // selectGPIresult
