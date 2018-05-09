@@ -64,6 +64,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.model = new System.Windows.Forms.Label();
             this.preparer = new System.Windows.Forms.Label();
+            this.gpi = new System.Windows.Forms.Label();
+            this.gpiDigits = new System.Windows.Forms.Label();
+            this.gpiResult = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -339,7 +342,7 @@
             // custRecency
             // 
             this.custRecency.AutoSize = true;
-            this.custRecency.Location = new System.Drawing.Point(405, 16);
+            this.custRecency.Location = new System.Drawing.Point(405, 116);
             this.custRecency.Name = "custRecency";
             this.custRecency.Size = new System.Drawing.Size(100, 13);
             this.custRecency.TabIndex = 8;
@@ -357,7 +360,7 @@
             // countCutOff
             // 
             this.countCutOff.AutoSize = true;
-            this.countCutOff.Location = new System.Drawing.Point(405, 113);
+            this.countCutOff.Location = new System.Drawing.Point(546, 89);
             this.countCutOff.Name = "countCutOff";
             this.countCutOff.Size = new System.Drawing.Size(71, 13);
             this.countCutOff.TabIndex = 12;
@@ -425,7 +428,7 @@
             // model
             // 
             this.model.AutoSize = true;
-            this.model.Location = new System.Drawing.Point(405, 40);
+            this.model.Location = new System.Drawing.Point(405, 13);
             this.model.Name = "model";
             this.model.Size = new System.Drawing.Size(39, 13);
             this.model.TabIndex = 21;
@@ -434,17 +437,47 @@
             // preparer
             // 
             this.preparer.AutoSize = true;
-            this.preparer.Location = new System.Drawing.Point(405, 66);
+            this.preparer.Location = new System.Drawing.Point(405, 36);
             this.preparer.Name = "preparer";
             this.preparer.Size = new System.Drawing.Size(50, 13);
             this.preparer.TabIndex = 22;
             this.preparer.Text = "Preparer:";
+            // 
+            // gpi
+            // 
+            this.gpi.AutoSize = true;
+            this.gpi.Location = new System.Drawing.Point(546, 13);
+            this.gpi.Name = "gpi";
+            this.gpi.Size = new System.Drawing.Size(54, 13);
+            this.gpi.TabIndex = 23;
+            this.gpi.Text = "GPI used:";
+            // 
+            // gpiDigits
+            // 
+            this.gpiDigits.AutoSize = true;
+            this.gpiDigits.Location = new System.Drawing.Point(546, 36);
+            this.gpiDigits.Name = "gpiDigits";
+            this.gpiDigits.Size = new System.Drawing.Size(55, 13);
+            this.gpiDigits.TabIndex = 24;
+            this.gpiDigits.Text = "GPI digits:";
+            // 
+            // gpiResult
+            // 
+            this.gpiResult.AutoSize = true;
+            this.gpiResult.Location = new System.Drawing.Point(405, 63);
+            this.gpiResult.Name = "gpiResult";
+            this.gpiResult.Size = new System.Drawing.Size(56, 13);
+            this.gpiResult.TabIndex = 25;
+            this.gpiResult.Text = "GPI result:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(660, 647);
+            this.Controls.Add(this.gpiResult);
+            this.Controls.Add(this.gpiDigits);
+            this.Controls.Add(this.gpi);
             this.Controls.Add(this.preparer);
             this.Controls.Add(this.model);
             this.Controls.Add(this.label3);
@@ -522,6 +555,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label model;
         private System.Windows.Forms.Label preparer;
+        private System.Windows.Forms.Label gpi;
+        private System.Windows.Forms.Label gpiDigits;
+        private System.Windows.Forms.Label gpiResult;
     }
 }
 

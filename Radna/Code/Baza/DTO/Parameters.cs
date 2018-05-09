@@ -146,10 +146,11 @@ namespace Baza.DTO
             return ids;
         }
 
-        public static Dictionary<string,string> GetParameters(int parametersId, out string status)
+        public static Dictionary<string,string> GetParameters(int parametersId, out string status, out bool useGpi)
         {
             string jsonParameters = "";
             status = "";
+            useGpi = false;
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string Table = ConfigurationManager.AppSettings[name: "Parameters"];
             string ID = ConfigurationManager.AppSettings[name: "Parameters_ID"];
@@ -157,6 +158,7 @@ namespace Baza.DTO
             string ProcessingStatus = ConfigurationManager.AppSettings[name: "Parameters_ProcessingStatus"];
             string ProcessingCalculator = ConfigurationManager.AppSettings[name: "Parameters_ProcessingCalculator"];
             string ProcessingPreparer = ConfigurationManager.AppSettings[name: "Parameters_ProcessingPreparer"];
+            string UseGpi = ConfigurationManager.AppSettings[name: "Parameters_UseGpi"];
 
             string queryString = "select " + ProcessingParameters + "," + ProcessingStatus + " from " + Table + " where " + ID + "=@ID";
 
@@ -192,7 +194,7 @@ namespace Baza.DTO
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters = JsonConvert.DeserializeObject<Dictionary<string,string>>(jsonParameters);
 
-            string queryString2 = "select " + ProcessingCalculator + ", " + ProcessingPreparer + " from " + Table + " where " + ID + "=@ID";
+            string queryString2 = "select " + ProcessingCalculator + ", " + ProcessingPreparer + ", " + UseGpi + " from " + Table + " where " + ID + "=@ID";
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -212,6 +214,8 @@ namespace Baza.DTO
                                 parameters.Add("calculator", (string)reader[0]);
                             if (reader[1] != null)
                                 parameters.Add("preparer", (string)reader[1]);
+                            if (reader[2] != null)
+                                useGpi = (bool)reader[2];
                         }
                         catch (Exception e)
                         {

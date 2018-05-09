@@ -102,7 +102,8 @@ namespace Statistics
             int parametersID = (int)this.parametersIDs.SelectedItem;
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             string status = "";
-            parameters = Parameters.GetParameters(parametersID, out status);
+            bool useGpi = false;
+            parameters = Parameters.GetParameters(parametersID, out status, out useGpi);
             
             this.custRecency.Text = "Customer Recency:  " + parameters["customerRecency"];
             this.percentageCutOff.Text = "Percentage CutOff:  " + parameters["predictionPercentageCutOff"];
@@ -115,6 +116,22 @@ namespace Statistics
                 this.preparer.Text = "Preparer:   " + parameters["preparer"];
             else
                 this.preparer.Text = "Preparer:   Not specified";
+
+            //gpi used
+            if (useGpi)
+            {
+                this.gpi.Text = "GPI used: YES";
+                this.gpiDigits.Text = "GPI digits: " + parameters["gpiDigits"];
+                this.gpiResult.Text = "GPI result: " + parameters["gpiResult"];
+            }
+            //gpi not used
+            else
+            {
+                this.gpi.Text = "GPI used: NO";
+                this.gpiDigits.Text = "";
+                this.gpiResult.Text = "";
+            }
+
             this.status.Text = "Status:  " + status;
 
             if (status != Baza.Enum.ProcessingStatus.Status.SUCCESS.ToString())
