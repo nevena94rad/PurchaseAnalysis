@@ -21,7 +21,7 @@ namespace Baza.DTO
             string Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
             string GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
 
-            string queryString = "select top 1 LEN(" + GPI + ") itemGPI from " + Table + " where " + GPI + " IS NOT NULL order by itemGPI ASC";
+            string queryString = "select  MAX(LEN(" + GPI + ")) itemGPI from " + Table;
 
             using (var connection = new SqlConnection(connectionString))
             {

@@ -25,6 +25,7 @@ namespace WindowsFormsApp1
         public int maxCount = 30;
         Abs_Calculator selectedCalculator;
         I_PrepareDisplay selectedPreparer;
+        public bool exitEnabled = true;
         public bool exit = false;
         
         public Form1()
@@ -61,6 +62,7 @@ namespace WindowsFormsApp1
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;
+            exitEnabled = false;
 
             selectedCalculator = (Abs_Calculator)calculator.SelectedItem;
             selectedPreparer = (I_PrepareDisplay)preparer.SelectedItem;
@@ -98,6 +100,7 @@ namespace WindowsFormsApp1
 
                 StartB.Enabled = true;
                 StopB.Enabled = false;
+                exitEnabled = true;
 
                 if (exit)
                     base.Close();
@@ -157,7 +160,7 @@ namespace WindowsFormsApp1
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (exit == false)
+            if (exitEnabled == false)
             {
                 backgroundWorker1.CancelAsync();
                 exit = true;
@@ -195,5 +198,7 @@ namespace WindowsFormsApp1
         private void selectGPIdigits_ValueChanged(object sender, EventArgs e)
         {
         }
+
+        
     }
 }

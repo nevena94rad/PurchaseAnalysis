@@ -250,14 +250,17 @@ namespace Baza.DTO
 
                 queryString = "select sum(" + PurchaseHistory_PurchaseQuantity + ") from " + PurchaseHistory_Table +
                     " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_PurchaseDate + "=@definedDate and " + PurchaseHistory_ItemID + " in ( select " +
-                    ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " = @itemNo)";
+                    ItemGPI_ItemID + " from " + ItemGPI_Table + " where CAST(LEFT(" + ItemGPI_GPI + ", "+ Parameters.gpiDigits +") AS VARCHAR(20)) = @itemNo)";
             }
 
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.AddWithValue("@custNo", custNo);
-                command.Parameters.AddWithValue("@itemNo", item);
+                if (Parameters.useGPI == false)
+                    command.Parameters.AddWithValue("@itemNo", item);
+                else
+                    command.Parameters.AddWithValue("@itemNo", item.Length>= Parameters.gpiDigits ? item.Substring(0, Parameters.gpiDigits): item);
                 command.Parameters.AddWithValue("@definedDate", date);
                 connection.Open();
 

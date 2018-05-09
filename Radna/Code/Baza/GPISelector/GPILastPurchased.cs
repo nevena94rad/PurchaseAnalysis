@@ -30,7 +30,8 @@ namespace Baza.GPISelector
 
             queryString = "select a." + PurchaseHistory_ItemID + ", max(" + PurchaseHistory_PurchaseDate + ") from((select * from " + PurchaseHistory_Table +
                                 ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchaseHistory_ItemID + "= b." + ItemGPI_ItemID + ") " + 
-                                   " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate and " + ItemGPI_GPI + " =@itemGPI " +
+                                   " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate and " +
+                                   "CAST(LEFT(" + ItemGPI_GPI + ", "+ Parameters.gpiDigits+ ") AS VARCHAR(20))" + " =@itemGPI " +
                                    "group by a." + PurchaseHistory_ItemID;
 
             using (var connection = new SqlConnection(connectionString))
@@ -40,7 +41,7 @@ namespace Baza.GPISelector
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.AddWithValue("@CustID", customer);
                 command.Parameters.AddWithValue("@InvDate", Parameters.processingDate);
-                command.Parameters.AddWithValue("@itemGPI", GPInumber);
+                command.Parameters.AddWithValue("@itemGPI", GPInumber.Length >= Parameters.gpiDigits ? GPInumber.Substring(0, Parameters.gpiDigits) : GPInumber);
 
                 using (var reader = command.ExecuteReader())
                 {

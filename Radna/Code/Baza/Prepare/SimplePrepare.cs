@@ -103,10 +103,10 @@ namespace Baza.Prepare
                 string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
                 string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
 
-                queryString = "select " + ItemGPI_GPI + "," + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from ((select * from " + PurchaseHistory_Table +
-                                ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchaseHistory_ItemID + "= b." + ItemGPI_ItemID + ") " +
-                                       " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate" +
-                                       " and " + ItemGPI_GPI + " is not null";
+                queryString = "select CAST(LEFT(" + ItemGPI_GPI + ", "+ Parameters.gpiDigits + ") AS VARCHAR(50))," + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity +
+                                " from ((select * from " + PurchaseHistory_Table + ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchaseHistory_ItemID + 
+                                "= b." + ItemGPI_ItemID + ") " + " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate" +
+                                " and " + ItemGPI_GPI + " is not null";
                 
             }
             
