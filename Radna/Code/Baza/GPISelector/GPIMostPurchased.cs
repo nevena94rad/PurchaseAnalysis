@@ -8,7 +8,7 @@ namespace Baza.GPISelector
 {
     public class GPIMostPurchased : I_GPISelector
     {
-        public string Select(List<string> items, string customer, string GPInumber)
+        public string Select(string customer, string GPInumber)
         {
             return "";
         }

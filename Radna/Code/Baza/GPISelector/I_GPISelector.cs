@@ -8,6 +8,6 @@ namespace Baza.GPISelector
 {
     public interface I_GPISelector
     {
-        string Select(List<string> items, string customer, string GPInumber);
+        string Select(string customer, string GPInumber);
     }
 }

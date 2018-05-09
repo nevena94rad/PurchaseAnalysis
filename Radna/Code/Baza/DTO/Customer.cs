@@ -223,14 +223,35 @@ namespace Baza.DTO
             int sum = 0;
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
-            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
-            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
-            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
-            string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+            string queryString;
 
-            string queryString = "select sum(" + PurchaseQuantity + ") from " + Table +
-                " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "=@definedDate";
+            if (Parameters.useGPI == false)
+            {
+                string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+                string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+                string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+                string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+                string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+                queryString = "select sum(" + PurchaseQuantity + ") from " + Table +
+                    " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "=@definedDate";
+            }
+            else
+            {
+                string PurchaseHistory_Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+                string PurchaseHistory_CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+                string PurchaseHistory_ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+                string PurchaseHistory_PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+                string PurchaseHistory_PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+                string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+                string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+                string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
+
+                queryString = "select sum(" + PurchaseHistory_PurchaseQuantity + ") from " + PurchaseHistory_Table +
+                    " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_PurchaseDate + "=@definedDate and " + PurchaseHistory_ItemID + " in ( select " +
+                    ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " = @itemNo)";
+            }
 
             using (var connection = new SqlConnection(connectionString))
             {
