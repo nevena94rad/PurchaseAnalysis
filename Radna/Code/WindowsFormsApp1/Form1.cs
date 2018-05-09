@@ -55,8 +55,9 @@ namespace WindowsFormsApp1
         
         private void button1_Click(object sender, EventArgs e)
         {
-            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, ((Abs_Calculator)calculator.SelectedValue).displayText, ((I_PrepareDisplay)preparer.SelectedValue).displayName, (int)selectGPIdigits.Value);
-            Parameters.useGPI = useGPI.Checked;
+            Parameters.LoadParameters(DateManipulation.DateTimeToint(dateTimePicker1.Value), (Int32)recency.Value, percentage.Text, count.Text, 
+                                        ((Abs_Calculator)calculator.SelectedValue).displayText, ((I_PrepareDisplay)preparer.SelectedValue).displayName, 
+                                        (int)selectGPIdigits.Value, useGPI.Checked);
             label3.Text = "Start: " + DateTime.Now;
             StopB.Enabled = true;
             StartB.Enabled = false;

@@ -22,7 +22,7 @@ namespace Baza.DTO
 
         private static ILog log = LogManager.GetLogger(typeof(Parameters));
 
-        public static void LoadParameters(int date, int recency, string percentage, string count, string calculator, string preparer, int numOfGpiDigits)
+        public static void LoadParameters(int date, int recency, string percentage, string count, string calculator, string preparer, int numOfGpiDigits, bool isGpi)
         {
             if (recency > 0)
                 customerRecency = recency;
@@ -35,6 +35,7 @@ namespace Baza.DTO
 
             processingDate = date;
             gpiDigits = numOfGpiDigits;
+            useGPI = isGpi;
 
             InsertIntoDatabase(calculator, preparer);
         }
@@ -47,9 +48,10 @@ namespace Baza.DTO
             string ProcessingParameters = ConfigurationManager.AppSettings[name: "Parameters_ProcessingParameters"];
             string ProcessingCalculator = ConfigurationManager.AppSettings[name: "Parameters_ProcessingCalculator"];
             string ProcessingPreparer = ConfigurationManager.AppSettings[name: "Parameters_ProcessingPreparer"];
+            string UseGpi = ConfigurationManager.AppSettings[name: "Parameters_UseGpi"];
 
-            string queryString = "insert into " + Table + "(" + ProcessingStart + "," + ProcessingParameters + ", " + ProcessingCalculator + ", " + ProcessingPreparer +
-                ") OUTPUT INSERTED.ID values (@ProcessingStart , @Parameters , @Calculator , @Preparer) ";
+            string queryString = "insert into " + Table + "(" + ProcessingStart + "," + ProcessingParameters + ", " + ProcessingCalculator + ", " + ProcessingPreparer + ", " + UseGpi +
+                ") OUTPUT INSERTED.ID values (@ProcessingStart , @Parameters , @Calculator , @Preparer, @UseGpi) ";
             queryString += @"SELECT SCOPE_IDENTITY();";
 
             DateTime processingStart = DateTime.Now;
@@ -73,6 +75,7 @@ namespace Baza.DTO
                 command.Parameters.AddWithValue("@Parameters", jsonParameters);
                 command.Parameters.AddWithValue("@Calculator", calculator);
                 command.Parameters.AddWithValue("@Preparer", preparer);
+                command.Parameters.AddWithValue("@UseGpi", useGPI);
 
                 ID = Convert.ToInt32(command.ExecuteScalar());
             }
