@@ -291,6 +291,7 @@
             this.preparer.Name = "preparer";
             this.preparer.Size = new System.Drawing.Size(105, 21);
             this.preparer.TabIndex = 22;
+            this.preparer.SelectedIndexChanged += new System.EventHandler(this.preparer_SelectedIndexChanged);
             // 
             // groupBox1
             // 

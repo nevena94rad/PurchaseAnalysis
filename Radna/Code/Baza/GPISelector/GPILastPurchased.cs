@@ -11,6 +11,7 @@ namespace Baza.GPISelector
 {
     public class GPILastPurchased : I_GPISelector
     {
+        public string displayName { get { return "Last purchased"; } }
         public string Select(string customer, string GPInumber)
         {
             string last = "";
