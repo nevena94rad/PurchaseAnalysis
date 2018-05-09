@@ -26,11 +26,8 @@ namespace WindowsFormsApp1
         public int maxCount = 30;
         Abs_Calculator selectedCalculator;
         I_PrepareDisplay selectedPreparer;
-<<<<<<< HEAD
-        public bool exitEnabled = true;
-=======
         I_GPISelector selectedGpi;
->>>>>>> e0e98225a48abad28a39590f1c1f71fccb0196a1
+        public bool exitEnabled = true;
         public bool exit = false;
         
         public Form1()
@@ -212,14 +209,11 @@ namespace WindowsFormsApp1
         private void selectGPIdigits_ValueChanged(object sender, EventArgs e)
         {
         }
-
-<<<<<<< HEAD
         
-=======
         private void preparer_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
->>>>>>> e0e98225a48abad28a39590f1c1f71fccb0196a1
+
     }
 }
