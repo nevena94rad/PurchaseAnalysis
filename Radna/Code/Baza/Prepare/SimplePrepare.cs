@@ -377,6 +377,68 @@ namespace Baza.Prepare
 
             return Consumptions;
         }
+
+        public List<ARIMAConsumptionData> ARIMAgetGlobalGPIConsumption(string GPINo, int start, int end)
+        {
+            List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string PurchaseHistory_Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string PurchaseHistory_ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+            string PurchaseHistory_PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+            string PurchaseHistory_PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+            string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+            string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+            string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
+
+            string queryString = "select " + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
+                                   " where " + PurchaseHistory_PurchaseDate + "<= @end and" + PurchaseHistory_ItemID + " in "+
+                                   "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@GPI )" +
+                                   " order by " + PurchaseHistory_PurchaseDate;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@GPI", GPINo);
+                command.Parameters.AddWithValue("@end", end);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        quantity.Add(new ARIMAConsumptionData { Date = (int)reader[0], Value = (int)reader[1] });
+                    }
+                }
+            }
+
+            List<ARIMAConsumptionData> quantityList = (from purchases in quantity
+                                                       group purchases by purchases.Date into purchaseByDate
+                                                       select new ARIMAConsumptionData { Date = purchaseByDate.Key, Value = purchaseByDate.Sum(x => x.Value) }).OrderBy(x => x.Date).ToList();
+
+            quantityList.RemoveAll(x => x.Value == 0);
+
+            List<ARIMAConsumptionData> Consumptions = new List<ARIMAConsumptionData>();
+            Consumptions = TransformQuantityData(quantityList);
+
+            DateTime stopedAsDate = DateManipulation.intToDateTime(Consumptions[Consumptions.Count - 1].Date).AddDays(1);
+            int stopedAsInt = DateManipulation.DateTimeToint(stopedAsDate);
+
+            double avg = Consumptions.Average(x => x.Value);
+
+            while (stopedAsInt < Parameters.processingDate)
+            {
+                Consumptions.Add(new ARIMAConsumptionData { Date = stopedAsInt, Value = avg });
+
+                stopedAsDate = stopedAsDate.AddDays(1);
+                stopedAsInt = DateManipulation.DateTimeToint(stopedAsDate);
+            }
+
+            return Consumptions;
+        }
+
         public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end)
         {
             List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
