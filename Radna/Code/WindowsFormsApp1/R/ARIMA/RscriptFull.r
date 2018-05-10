@@ -1,5 +1,5 @@
-﻿library(forecast)
-
+﻿result = tryCatch({ library(forecast) }, warning = function(w) {}, error = function(e) { install.packages('forecast', repos='https://fourdots.com/mirror/CRAN/'); }, finally = {})
+library(forecast)
 args <- commandArgs(trailingOnly = TRUE)
 Qty <- as.numeric(read.table(args[1]))
 ConsumptionLength <- as.numeric(args[2])

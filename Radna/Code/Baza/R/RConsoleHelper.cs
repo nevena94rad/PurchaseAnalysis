@@ -67,6 +67,7 @@ namespace Baza.R
                         proc.Start();
                         result = proc.StandardOutput.ReadToEnd();
                     }
+                    result = result.Substring(result.IndexOf("[1]"));
                     var split = result.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                     ret = Convert.ToDouble(split[0].Remove(0,4));
                     model = split[1].Remove(0, 4);
