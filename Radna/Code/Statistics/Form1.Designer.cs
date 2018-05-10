@@ -414,6 +414,7 @@
             this.cutOffPercentage.Name = "cutOffPercentage";
             this.cutOffPercentage.Size = new System.Drawing.Size(135, 21);
             this.cutOffPercentage.TabIndex = 18;
+            this.cutOffPercentage.SelectedIndexChanged += new System.EventHandler(this.cutOffPercentage_SelectedIndexChanged);
             // 
             // label3
             // 

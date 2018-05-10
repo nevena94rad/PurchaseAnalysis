@@ -88,11 +88,21 @@ namespace Statistics
         {
             this.parametersIDs.Text = "";
             this.parametersIDs.Items.Clear();
+
             this.percentageCutOff.Text = "Percentage CutOff:";
             this.countCutOff.Text = "Count CutOff:";
             this.custRecency.Text = "Customer Recency:";
+
             this.status.Text = "Status:";
             this.status.ForeColor = Color.Black;
+
+            this.gpi.Text = "GPI used:";
+            this.gpiDigits.Text = "GPI digits: ";
+            this.gpiResult.Text = "GPI result: ";
+
+            this.model.Text = "Model: ";
+            this.preparer.Text = "Preparer: ";
+
             this.button1.Enabled = false;
             this.button2.Enabled = false;
         }
@@ -169,6 +179,11 @@ namespace Statistics
         }
 
         private void status_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cutOffPercentage_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
