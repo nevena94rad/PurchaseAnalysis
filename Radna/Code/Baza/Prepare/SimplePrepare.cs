@@ -93,6 +93,7 @@ namespace Baza.Prepare
             }
             else
             {
+                // vadi za customera sve brojeve GPI-eve za koje ima smisla raditi predikciju (vise od jedne kupovine)
                 distinctItems = Customer.GetAllItemsWithGPIs(custNo);
 
                 string PurchaseHistory_Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
@@ -105,12 +106,15 @@ namespace Baza.Prepare
                 string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
                 string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
 
+                // vadi za customera sve kupovine za SVE GPI-eve
                 queryString = "select CAST(LEFT(" + ItemGPI_GPI + ", "+ Parameters.gpiDigits + ") AS VARCHAR(50))," + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity +
                                 " from ((select * from " + PurchaseHistory_Table + ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchaseHistory_ItemID + 
                                 "= b." + ItemGPI_ItemID + ") " + " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate" +
                                 " and " + ItemGPI_GPI + " is not null";
 
+                // vadi za customera sve brojeve item-a za koje ima smisla raditi predikciju (vise od jedne kupovine)
                 distinctItems2 = Customer.GetAllItemsWithOUTGPIs(custNo);
+                // vadi za customera sve kupovine za SVE item-e
                 queryString2 = "select " + PurchaseHistory_ItemID + "," + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
                                        " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate";
             }
@@ -258,19 +262,29 @@ namespace Baza.Prepare
 
             return returnData;
         }
-        public int ARIMAgetStartDate(string custNo,string itemNo)
+        public int ARIMAgetStartDate(string custNo,string itemNo, bool isGPI = false)
         {
-            int start = -1; 
+            int start = -1;
+
+            string queryString;
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
-            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
-            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
-            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+            string PurchaseHistory_Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string PurchaseHistory_CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string PurchaseHistory_ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+            string PurchaseHistory_PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
 
-            string queryString = "select min(" + PurchaseDate + ") from " +
-                Table + " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "<@Date";
+            string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+            string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+            string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
 
+            if (isGPI == false)
+                queryString = "select min(" + PurchaseHistory_PurchaseDate + ") from " + PurchaseHistory_Table + 
+                    " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_ItemID + "=@itemNo and " + PurchaseHistory_PurchaseDate + "<@Date";
+            else
+                queryString = "select min(" + PurchaseHistory_PurchaseDate + ") from " + PurchaseHistory_Table +
+                    " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_PurchaseDate + "<@Date and " + PurchaseHistory_ItemID + " in " +
+                    "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@itemNo )";
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -294,18 +308,28 @@ namespace Baza.Prepare
             }
             return start;
         }
-        public int ARIMAgetEndDate(string custNo, string itemNo)
+        public int ARIMAgetEndDate(string custNo, string itemNo, bool isGPI = false)
         {
             int end = -1;
+            string queryString;
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
-            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
-            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
-            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+            string PurchaseHistory_Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string PurchaseHistory_CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string PurchaseHistory_ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+            string PurchaseHistory_PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
 
-            string queryString = "select max(" + PurchaseDate + ") from " +
-                Table + " where " + CustomerID + "=@custNo and " + ItemID + "=@itemNo and " + PurchaseDate + "<@Date";
+            string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+            string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+            string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
+
+            if (isGPI == false)
+                queryString = "select max(" + PurchaseHistory_PurchaseDate + ") from " +
+                    PurchaseHistory_Table + " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_ItemID + "=@itemNo and " + PurchaseHistory_PurchaseDate + "<@Date";
+            else
+                queryString = "select max(" + PurchaseHistory_PurchaseDate + ") from " + PurchaseHistory_Table +
+                    " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_PurchaseDate + "<@Date and " + PurchaseHistory_ItemID + " in " +
+                    "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@itemNo )";
 
 
             using (var connection = new SqlConnection(connectionString))
@@ -439,7 +463,7 @@ namespace Baza.Prepare
             return Consumptions;
         }
 
-        public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end)
+        public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end, bool isGPI = false)
         {
             List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
             int endMinus2Years = DateManipulation.DateTimeToint(DateManipulation.intToDateTime(end).AddYears(-2));
