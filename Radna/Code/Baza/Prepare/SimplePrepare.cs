@@ -494,16 +494,28 @@ namespace Baza.Prepare
             List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
             int endMinus2Years = DateManipulation.DateTimeToint(DateManipulation.intToDateTime(end).AddYears(-2));
 
-            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
-            string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
-            string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
-            string ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
-            string PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
-            string PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+            string queryString;
 
-            string queryString = "select " + PurchaseDate + ", " + PurchaseQuantity + " from " + Table +
-                                   " where " + ItemID + "= @ItemID and " + CustomerID + "= @CustID and " +
-                                   PurchaseDate + ">= @begin and " + PurchaseDate + "<= @end order by " + PurchaseDate;
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+            string PurchaseHistory_Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
+            string PurchaseHistory_CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
+            string PurchaseHistory_ItemID = ConfigurationManager.AppSettings[name: "PurchaseHistory_ItemID"];
+            string PurchaseHistory_PurchaseDate = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseDate"];
+            string PurchaseHistory_PurchaseQuantity = ConfigurationManager.AppSettings[name: "PurchaseHistory_PurchaseQuantity"];
+
+            string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+            string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+            string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
+
+            if (isGPI == false)
+                queryString = "select " + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
+                                   " where " + PurchaseHistory_ItemID + "= @ItemID and " + PurchaseHistory_CustomerID + "= @CustID and " +
+                                   PurchaseHistory_PurchaseDate + ">= @begin and " + PurchaseHistory_PurchaseDate + "<= @end order by " + PurchaseHistory_PurchaseDate;
+            else
+                queryString = "select " + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
+                                   " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_ItemID + " in " +
+                                   "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@ItemID ) and " + 
+                                   PurchaseHistory_PurchaseDate + ">= @begin and " + PurchaseHistory_PurchaseDate + "<= @end order by " + PurchaseHistory_PurchaseDate;
 
             using (var connection = new SqlConnection(connectionString))
             {
