@@ -107,11 +107,11 @@ namespace Baza.DTO
             string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
 
 
-            string queryString = "select distinct(" + ItemGPI_GPI + ") from ( (select * from " + PurchasePeriods_Table +
+            string queryString = "select max(" + ItemGPI_GPI + ") from ( (select * from " + PurchasePeriods_Table +
                 ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchasePeriods_ItemID + "= b." + ItemGPI_ItemID + ") " +
                 " where " + PurchasePeriods_CustomerID + "= @custNo" + " and " + PurchasePeriods_PeriodEnd + "<@bDate and " + PurchasePeriods_PeriodEnd + ">@cDate" +
                 " and " + ItemGPI_GPI + " is not null" +
-                " group by " + ItemGPI_GPI + " having count(*)>1 and max(" + PurchasePeriods_PeriodEnd + ")>@bDateMinusNMonths " +
+                " group by CAST(LEFT(" + ItemGPI_GPI + ", " + Parameters.gpiDigits + ") AS VARCHAR(20)) having count(*)>1 and max(" + PurchasePeriods_PeriodEnd + ")>@bDateMinusNMonths " +
                 " and min(" + PurchasePeriods_Period + ") * 0.5< DATEDIFF(DAY, max(" + PurchasePeriods_PeriodEnd + "), @bDate) + 7" +
                 " and max(" + PurchasePeriods_Period + ") * 1.5 > DATEDIFF(DAY, max(" + PurchasePeriods_PeriodEnd + "), @bDate)";
 
