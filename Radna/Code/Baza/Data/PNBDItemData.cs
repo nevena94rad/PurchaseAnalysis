@@ -8,6 +8,7 @@ namespace Baza.Data
 {
     public class PNBDItemData
     {
+        public bool isGPI { get; set; } = false;
         public string Number { get; set; }
         public List<PNBDPurchaseData> purchases { get; set; }
         public int LastPurchase { get { return purchases.Max(x => x.purchaseDate); } }

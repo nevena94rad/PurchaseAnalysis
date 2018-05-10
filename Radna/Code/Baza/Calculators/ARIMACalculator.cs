@@ -239,7 +239,7 @@ namespace Baza.Calculators
             retPredict.CustNo = customer;
             retPredict.itemNo = item.Number;
             retPredict.model = model;
-            int lastPurchase = Customer.getPurchaseQuantity(customer, item.Number, item.EndDate);
+            int lastPurchase = Customer.getPurchaseQuantity(customer, item.Number, item.EndDate, false);
             retPredict.predictedConsumption = lastPurchase > 0 ? (predictConsumption / lastPurchase) : -1;
             
            

@@ -136,6 +136,52 @@ namespace Baza.DTO
             return itemNos;
         }
 
+        public static List<string> GetAllItemsWithOUTGPIs(string custNo)
+        {
+            List<string> itemNos = new List<string>();
+
+            DateTime processingDateDateFormat = DateManipulation.intToDateTime(Parameters.processingDate);
+
+            var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
+
+            string Table = ConfigurationManager.AppSettings[name: "PurchasePeriods"];
+            string CustomerID = ConfigurationManager.AppSettings[name: "PurchasePeriods_CustomerID"];
+            string ItemID = ConfigurationManager.AppSettings[name: "PurchasePeriods_ItemID"];
+            string Period = ConfigurationManager.AppSettings[name: "PurchasePeriods_Period"];
+            string PeriodEnd = ConfigurationManager.AppSettings[name: "PurchasePeriods_PeriodEnd"];
+
+            string ItemGPI_Table = ConfigurationManager.AppSettings[name: "ItemGPI"];
+            string ItemGPI_GPI = ConfigurationManager.AppSettings[name: "ItemGPI_GPI"];
+            string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
+
+            string queryString = "select distinct(" + ItemID + ") from " + Table +
+                " where " + CustomerID + "= @custNo" + " and " + PeriodEnd + "<@bDate and " + PeriodEnd + ">@cDate" +
+                " group by " + ItemID + " having count(*)>1 and max(" + PeriodEnd + ")>@bDateMinusNMonths " +
+                " and min(" + Period + ") * 0.5< DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) + 7" +
+                " and max(" + Period + ") * 1.5 > DATEDIFF(DAY, max(" + PeriodEnd + "), @bDate) and " + ItemID + " not in" +
+                " (select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " is not null)";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@custNo", custNo);
+                command.Parameters.AddWithValue("@bDate", processingDateDateFormat.ToShortDateString());
+                command.Parameters.AddWithValue("@cDate", processingDateDateFormat.AddYears(-2).ToShortDateString());
+                command.Parameters.AddWithValue("@bDateMinusNMonths", processingDateDateFormat.AddMonths(-Parameters.customerRecency).ToShortDateString());
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        itemNos.Add(((String)reader[0]).Replace(" ", String.Empty));
+                    }
+                }
+            }
+
+            return itemNos;
+        }
+
         public static List<string> GetAllItems(string custNo)
         {
             List<string> itemNos = new List<string>();
@@ -218,14 +264,14 @@ namespace Baza.DTO
             return lastPurchases;
         }
 
-        public static int getPurchaseQuantity(string custNo,string item, int date)
+        public static int getPurchaseQuantity(string custNo,string item, int date, bool isGPI)
         {
             int sum = 0;
 
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
             string queryString;
 
-            if (Parameters.useGPI == false)
+            if (isGPI == false)
             {
                 string Table = ConfigurationManager.AppSettings[name: "PurchaseHistory"];
                 string CustomerID = ConfigurationManager.AppSettings[name: "PurchaseHistory_CustomerID"];
@@ -257,7 +303,7 @@ namespace Baza.DTO
             {
                 var command = new SqlCommand(queryString, connection);
                 command.Parameters.AddWithValue("@custNo", custNo);
-                if (Parameters.useGPI == false)
+                if (isGPI == false)
                     command.Parameters.AddWithValue("@itemNo", item);
                 else
                     command.Parameters.AddWithValue("@itemNo", item.Length>= Parameters.gpiDigits ? item.Substring(0, Parameters.gpiDigits): item);

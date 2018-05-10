@@ -20,6 +20,7 @@ namespace Baza.DTO
         public string itemNo;
         public double predictedConsumption;
         public string model;
+        public bool isGPI;
 
         public static REngine en = REngine.GetInstance();
         private static Object thisLock = new Object();

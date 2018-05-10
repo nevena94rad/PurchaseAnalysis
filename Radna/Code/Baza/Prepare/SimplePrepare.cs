@@ -74,6 +74,8 @@ namespace Baza.Prepare
             List<PNBDItemData> returnList = new List<PNBDItemData>();
             List<string> distinctItems;
             string queryString;
+            List<string> distinctItems2 = null;
+            string queryString2 = null;
             var connectionString = ConfigurationManager.ConnectionStrings[name: "PED"].ConnectionString;
 
             if (Parameters.useGPI == false)
@@ -107,7 +109,10 @@ namespace Baza.Prepare
                                 " from ((select * from " + PurchaseHistory_Table + ") a inner join ( select * from " + ItemGPI_Table + ") b on a." + PurchaseHistory_ItemID + 
                                 "= b." + ItemGPI_ItemID + ") " + " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate" +
                                 " and " + ItemGPI_GPI + " is not null";
-                
+
+                distinctItems2 = Customer.GetAllItemsWithOUTGPIs(custNo);
+                queryString2 = "select " + PurchaseHistory_ItemID + "," + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
+                                       " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_PurchaseDate + "< @InvDate";
             }
             
             List<string> ids = new List<string>();
@@ -133,10 +138,44 @@ namespace Baza.Prepare
                             }
                             else
                             {
-                                PNBDItemData item = new PNBDItemData() { Number = (string)reader[0] };
+                                PNBDItemData item = new PNBDItemData() { Number = (string)reader[0], isGPI = Parameters.useGPI };
                                 ids.Add((string)reader[0]);
                                 item.purchases.Add(new PNBDPurchaseData() { purchaseDate = (int)reader[1], purcaseQuantity = (int)reader[2] });
                                 returnList.Add(item);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (distinctItems2 != null)
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    var command = new SqlCommand(queryString2, connection);
+                    command.Parameters.AddWithValue("@CustID", custNo);
+                    command.Parameters.AddWithValue("@InvDate", Parameters.processingDate);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (distinctItems2.Contains((string)reader[0]))
+                            {
+                                if (ids.Contains((string)reader[0]))
+                                {
+                                    var item = returnList.Find(x => x.Number == (string)reader[0]);
+                                    item.purchases.Add(new PNBDPurchaseData() { purchaseDate = (int)reader[1], purcaseQuantity = (int)reader[2] });
+                                }
+                                else
+                                {
+                                    PNBDItemData item = new PNBDItemData() { Number = (string)reader[0], isGPI = false };
+                                    ids.Add((string)reader[0]);
+                                    item.purchases.Add(new PNBDPurchaseData() { purchaseDate = (int)reader[1], purcaseQuantity = (int)reader[2] });
+                                    returnList.Add(item);
+                                }
                             }
                         }
                     }

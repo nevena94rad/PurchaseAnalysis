@@ -135,22 +135,22 @@ namespace Baza.Calculators
                     if (end != -1)
                     {
                         var predicted = REngineHelper.PNBDgetItemPredictionData(customer.itemPurchased[i].Number);
-                        var qty = Customer.getPurchaseQuantity(customer.Number, customer.itemPurchased[i].Number, end);
+                        var qty = Customer.getPurchaseQuantity(customer.Number, customer.itemPurchased[i].Number, end, customer.itemPurchased[i].isGPI);
 
                         if (predicted >= qty && predicted < 100 * qty)
                         {
                             var percentage = 50 + 45 * Math.Pow((1 - qty / predicted), 10);
-                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage });
+                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage, isGPI = customer.itemPurchased[i].isGPI });
                         }
                         else if (predicted > 100 * qty)
                         {
                             var percentage = 95;
-                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage });
+                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage, isGPI = customer.itemPurchased[i].isGPI });
                         }
                         else if (predicted < qty)
                         {
                             var percentage = 50 * Math.Pow((predicted / qty), 10);
-                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage });
+                            returnList.Add(new Prediction() { itemNo = customer.itemPurchased[i].Number, predictedConsumption = percentage, isGPI = customer.itemPurchased[i].isGPI });
                         }
                     }
                 }
@@ -202,7 +202,7 @@ namespace Baza.Calculators
                     var command = new SqlCommand(queryString, connection);
                     command.Parameters.AddWithValue("@CustNo", custNo);
 
-                    if (Parameters.useGPI == false)
+                    if (predictions[i].isGPI == false)
                         command.Parameters.AddWithValue("@ItemNo", predictions[i].itemNo);
                     else
                         command.Parameters.AddWithValue("@ItemNo", gpiSelector.Select(custNo, predictions[i].itemNo));
