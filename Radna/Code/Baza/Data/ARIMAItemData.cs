@@ -11,6 +11,7 @@ namespace Baza.Data
         public string Number { get; set; }
         public int StartDate { get; set; }
         public int EndDate { get; set; }
+        public bool IsGPI { get; set; }
         public List<ARIMAConsumptionData> customerConsumption { get; set; }
 
         public ARIMAItemData()
