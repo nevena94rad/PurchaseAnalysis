@@ -162,7 +162,10 @@ namespace Baza.Calculators
 
                     var command2 = new SqlCommand(queryString2, connection);
                     command2.Parameters.AddWithValue("@CustNo", customer);
-                    command2.Parameters.AddWithValue("@ItemNo", sortedPredictions[i].itemNo);
+                    if (!Parameters.useGPI)
+                        command2.Parameters.AddWithValue("@ItemNo", sortedPredictions[i].itemNo);
+                    else
+                        command2.Parameters.AddWithValue("@ItemNo", gpiSelector.Select(customer, sortedPredictions[i].itemNo));
                     command2.Parameters.AddWithValue("@ProcessingValue", sortedPredictions[i].predictedConsumption);
                     command2.Parameters.AddWithValue("@Model", idOfInserted);
 
