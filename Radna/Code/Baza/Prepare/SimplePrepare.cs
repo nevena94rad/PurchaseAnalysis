@@ -249,18 +249,19 @@ namespace Baza.Prepare
             foreach (var item in items)
             {
                 ARIMAItemData itemData = new ARIMAItemData() { Number = item };
-                itemData.StartDate = ARIMAgetStartDate(custNo, item);
-                itemData.EndDate = ARIMAgetEndDate(custNo, item);
+                itemData.StartDate = ARIMAgetStartDate(custNo, item, false);
+                itemData.EndDate = ARIMAgetEndDate(custNo, item, false);
+                itemData.IsGPI = false;
                 lock (ARIMAData.thisLock)
                 {
-                    if (ARIMAData.AllItemData.Find(x => x.Number == item) == null)
+                    if (ARIMAData.AllItemData.Find(x => (x.Number == item && x.IsGPI == false)) == null)
                     {
                         int endDate = Parameters.processingDate;
                         int startDate = DateManipulation.DateTimeToint(DateManipulation.intToDateTime(Parameters.processingDate).AddYears(-2));
                         ARIMAData.AllItemData.Add(new ARIMAItemData() { Number = item, customerConsumption = ARIMAgetGlobalConsumption(item, startDate, endDate), EndDate = endDate, StartDate = startDate, IsGPI = false });
                     }
                 }
-                itemData.customerConsumption = ARIMAgetCustomerConsumption(custNo, item, itemData.StartDate, itemData.EndDate);
+                itemData.customerConsumption = ARIMAgetCustomerConsumption(custNo, item, itemData.StartDate, itemData.EndDate, false);
                 returnData.Add(itemData);
             }
 
@@ -270,25 +271,26 @@ namespace Baza.Prepare
                 foreach (var gpi in items)
                 {
                     ARIMAItemData itemData = new ARIMAItemData() { Number = gpi };
-                    itemData.StartDate = ARIMAgetStartDate(custNo, gpi);
-                    itemData.EndDate = ARIMAgetEndDate(custNo, gpi);
+                    itemData.StartDate = ARIMAgetStartDate(custNo, gpi, true);
+                    itemData.EndDate = ARIMAgetEndDate(custNo, gpi, true);
+                    itemData.IsGPI = true;
                     lock (ARIMAData.thisLock)
                     {
-                        if (ARIMAData.AllItemData.Find(x => x.Number == gpi) == null)
+                        if (ARIMAData.AllItemData.Find(x => (x.Number == gpi && x.IsGPI == true)) == null)
                         {
                             int endDate = Parameters.processingDate;
                             int startDate = DateManipulation.DateTimeToint(DateManipulation.intToDateTime(Parameters.processingDate).AddYears(-2));
                             ARIMAData.AllItemData.Add(new ARIMAItemData() { Number = gpi, customerConsumption = ARIMAgetGlobalGPIConsumption(gpi, startDate, endDate), EndDate = endDate, StartDate = startDate, IsGPI = true });
                         }
                     }
-                    itemData.customerConsumption = ARIMAgetCustomerConsumption(custNo, gpi, itemData.StartDate, itemData.EndDate);
+                    itemData.customerConsumption = ARIMAgetCustomerConsumption(custNo, gpi, itemData.StartDate, itemData.EndDate, true);
                     returnData.Add(itemData);
                 }
             }
 
             return returnData;
         }
-        public int ARIMAgetStartDate(string custNo,string itemNo, bool isGPI = false)
+        public int ARIMAgetStartDate(string custNo,string itemNo, bool isGPI)
         {
             int start = -1;
 
@@ -334,7 +336,7 @@ namespace Baza.Prepare
             }
             return start;
         }
-        public int ARIMAgetEndDate(string custNo, string itemNo, bool isGPI = false)
+        public int ARIMAgetEndDate(string custNo, string itemNo, bool isGPI)
         {
             int end = -1;
             string queryString;
@@ -489,7 +491,7 @@ namespace Baza.Prepare
             return Consumptions;
         }
 
-        public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end, bool isGPI = false)
+        public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end, bool isGPI)
         {
             List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
             int endMinus2Years = DateManipulation.DateTimeToint(DateManipulation.intToDateTime(end).AddYears(-2));
