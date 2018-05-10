@@ -312,8 +312,8 @@ namespace Baza.Prepare
             else
                 queryString = "select min(" + PurchaseHistory_PurchaseDate + ") from " + PurchaseHistory_Table +
                     " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_PurchaseDate + "<@Date and " + PurchaseHistory_ItemID + " in " +
-                    "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@itemNo )";
-
+                    "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where CAST(LEFT(" + ItemGPI_GPI + ", " + Parameters.gpiDigits + ") AS VARCHAR(20)) =@itemNo )";
+            
             using (var connection = new SqlConnection(connectionString))
             {
                 var command = new SqlCommand(queryString, connection);
@@ -357,7 +357,7 @@ namespace Baza.Prepare
             else
                 queryString = "select max(" + PurchaseHistory_PurchaseDate + ") from " + PurchaseHistory_Table +
                     " where " + PurchaseHistory_CustomerID + "=@custNo and " + PurchaseHistory_PurchaseDate + "<@Date and " + PurchaseHistory_ItemID + " in " +
-                    "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@itemNo )";
+                    "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where CAST(LEFT(" + ItemGPI_GPI + ", " + Parameters.gpiDigits + ") AS VARCHAR(20)) =@itemNo )";
 
 
             using (var connection = new SqlConnection(connectionString))
@@ -446,7 +446,7 @@ namespace Baza.Prepare
 
             string queryString = "select " + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
                                    " where " + PurchaseHistory_PurchaseDate + "<= @end and" + PurchaseHistory_ItemID + " in "+
-                                   "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@GPI )" +
+                                   "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where CAST(LEFT(" + ItemGPI_GPI + ", " + Parameters.gpiDigits + ") AS VARCHAR(20)) =@GPI )" +
                                    " order by " + PurchaseHistory_PurchaseDate;
 
             using (var connection = new SqlConnection(connectionString))
@@ -516,7 +516,7 @@ namespace Baza.Prepare
             else
                 queryString = "select " + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
                                    " where " + PurchaseHistory_CustomerID + "= @CustID and " + PurchaseHistory_ItemID + " in " +
-                                   "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where " + ItemGPI_GPI + " =@ItemID ) and " + 
+                                   "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where CAST(LEFT(" + ItemGPI_GPI + ", " + Parameters.gpiDigits + ") AS VARCHAR(20)) =@ItemID ) and " + 
                                    PurchaseHistory_PurchaseDate + ">= @begin and " + PurchaseHistory_PurchaseDate + "<= @end order by " + PurchaseHistory_PurchaseDate;
 
             using (var connection = new SqlConnection(connectionString))
