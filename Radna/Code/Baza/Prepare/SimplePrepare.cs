@@ -445,7 +445,7 @@ namespace Baza.Prepare
             string ItemGPI_ItemID = ConfigurationManager.AppSettings[name: "ItemGPI_ItemID"];
 
             string queryString = "select " + PurchaseHistory_PurchaseDate + ", " + PurchaseHistory_PurchaseQuantity + " from " + PurchaseHistory_Table +
-                                   " where " + PurchaseHistory_PurchaseDate + "<= @end and" + PurchaseHistory_ItemID + " in "+
+                                   " where " + PurchaseHistory_PurchaseDate + "<= @end and " + PurchaseHistory_ItemID + " in "+
                                    "(select " + ItemGPI_ItemID + " from " + ItemGPI_Table + " where CAST(LEFT(" + ItemGPI_GPI + ", " + Parameters.gpiDigits + ") AS VARCHAR(20)) =@GPI )" +
                                    " order by " + PurchaseHistory_PurchaseDate;
 

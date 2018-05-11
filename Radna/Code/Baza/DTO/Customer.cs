@@ -314,7 +314,7 @@ namespace Baza.DTO
                 {
                     if (reader.Read())
                     {
-                        sum = (int)reader[0];
+                        sum = Int32.Parse(reader[0].ToString());
                     }
                 }
             }

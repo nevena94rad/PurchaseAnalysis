@@ -80,7 +80,7 @@ namespace Baza.R
             }
             catch (Exception ex)
             {
-                log.Warn(ex.Message + " Arguments: " + args);
+                log.Warn(ex.Message + " Arguments: " + args[1] + " " + args[2] + " " + args[3] + " " + args[4]);
                 return -1;
             }
             finally
