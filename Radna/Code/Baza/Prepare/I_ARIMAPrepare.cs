@@ -16,8 +16,9 @@ namespace Baza.Prepare
         int ARIMAgetEndDate(string custNo, string itemNo, bool isGPI);
         List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo, string itemNo, int start, int end, bool isGPI);
         List<ARIMAConsumptionData> ARIMAgetGlobalConsumption(string itemNo, int start, int end);
-        List<ARIMAConsumptionData> TransformQuantityData(List<ARIMAConsumptionData> quantity);
-        string GetScriptPath();
+        List<ARIMAConsumptionData> ARIMATransformQuantityData(List<ARIMAConsumptionData> quantity);
+        int ARIMAgetPurchaseQuantity(string custNo, string item, int date, bool isGPI);
+        string ARIMAgetScriptPath();
 
     }
 }

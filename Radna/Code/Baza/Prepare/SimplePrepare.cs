@@ -68,7 +68,10 @@ namespace Baza.Prepare
 
             return allCustomers;
         }
-
+        public int PNBDgetPurchaseQuantity(string custNo, string item, int date, bool isGPI)
+        {
+            return Customer.getPurchaseQuantity(custNo, item, date, isGPI);
+        }
         public List<PNBDItemData> PNBDreadAllItems(string custNo)
         {
             List<PNBDItemData> returnList = new List<PNBDItemData>();
@@ -429,7 +432,6 @@ namespace Baza.Prepare
 
             return Consumptions;
         }
-
         public List<ARIMAConsumptionData> ARIMAgetGlobalGPIConsumption(string GPINo, int start, int end)
         {
             List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
@@ -473,7 +475,7 @@ namespace Baza.Prepare
             quantityList.RemoveAll(x => x.Value == 0);
 
             List<ARIMAConsumptionData> Consumptions = new List<ARIMAConsumptionData>();
-            Consumptions = TransformQuantityData(quantityList);
+            Consumptions = ARIMATransformQuantityData(quantityList);
 
             DateTime stopedAsDate = DateManipulation.intToDateTime(Consumptions[Consumptions.Count - 1].Date).AddDays(1);
             int stopedAsInt = DateManipulation.DateTimeToint(stopedAsDate);
@@ -490,7 +492,6 @@ namespace Baza.Prepare
 
             return Consumptions;
         }
-
         public List<ARIMAConsumptionData> ARIMAgetCustomerConsumption(string custNo,string itemNo, int start, int end, bool isGPI)
         {
             List<ARIMAConsumptionData> quantity = new List<ARIMAConsumptionData>();
@@ -545,10 +546,10 @@ namespace Baza.Prepare
             quantityList.RemoveAll(x => x.Value == 0);
 
             List<ARIMAConsumptionData> returnList = new List<ARIMAConsumptionData>();
-            returnList = TransformQuantityData(quantityList);
+            returnList = ARIMATransformQuantityData(quantityList);
             return returnList;
         }
-        public List<ARIMAConsumptionData> TransformQuantityData(List<ARIMAConsumptionData> quantity)
+        public List<ARIMAConsumptionData> ARIMATransformQuantityData(List<ARIMAConsumptionData> quantity)
         {
             List<ARIMAConsumptionData> returnList = new List<ARIMAConsumptionData>();
             DateTime current = DateManipulation.intToDateTime(quantity[0].Date);
@@ -576,8 +577,11 @@ namespace Baza.Prepare
 
             return returnList;
         }
-
-        public string GetScriptPath()
+        public int ARIMAgetPurchaseQuantity(string custNo, string item, int date, bool isGPI)
+        {
+            return Customer.getPurchaseQuantity(custNo, item, date, isGPI);
+        }
+        public string ARIMAgetScriptPath()
         {
             if (ScriptPath != null)
                 return ScriptPath;
@@ -596,5 +600,11 @@ namespace Baza.Prepare
 
             return ScriptPath;
         }
+
+        
+
+        
+
+        
     }
 }

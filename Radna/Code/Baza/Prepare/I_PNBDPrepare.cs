@@ -12,6 +12,7 @@ namespace Baza.Prepare
         PNBDData PNBDprepare(int date);
         List<string> PNBDreadAllCustomers();
         List<PNBDItemData> PNBDreadAllItems(string custNo);
-        
+        int PNBDgetPurchaseQuantity(string custNo, string item, int date, bool isGPI);
+
     }
 }

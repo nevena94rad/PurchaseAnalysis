@@ -218,7 +218,7 @@ namespace Baza.Calculators
                     globalConsumption.customerConsumption.Add(el);
             }
 
-            string filePath = preparer.GetScriptPath();
+            string filePath = preparer.ARIMAgetScriptPath();
             int sum = (DateManipulation.intToDateTime(item.EndDate) - DateManipulation.intToDateTime(item.StartDate)).Days;
 
             string param1 = "";
@@ -242,7 +242,7 @@ namespace Baza.Calculators
             retPredict.CustNo = customer;
             retPredict.itemNo = item.Number;
             retPredict.model = model;
-            int lastPurchase = Customer.getPurchaseQuantity(customer, item.Number, item.EndDate, item.IsGPI);
+            int lastPurchase = preparer.ARIMAgetPurchaseQuantity(customer, item.Number, item.EndDate, item.IsGPI);
             retPredict.predictedConsumption = lastPurchase > 0 ? (predictConsumption / lastPurchase) : -1;
             
            

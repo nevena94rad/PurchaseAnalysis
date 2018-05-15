@@ -135,7 +135,7 @@ namespace Baza.Calculators
                     if (end != -1)
                     {
                         var predicted = REngineHelper.PNBDgetItemPredictionData(customer.itemPurchased[i].Number);
-                        var qty = Customer.getPurchaseQuantity(customer.Number, customer.itemPurchased[i].Number, end, customer.itemPurchased[i].isGPI);
+                        var qty = preparer.PNBDgetPurchaseQuantity(customer.Number, customer.itemPurchased[i].Number, end, customer.itemPurchased[i].isGPI);
 
                         if (predicted >= qty && predicted < 100 * qty)
                         {
